@@ -25,7 +25,7 @@ func IsNotNil() testpredicate.Predicate {
 		})
 }
 
-// IsEqualTo tests if a value is comaprable and equal to the reference value
+// IsEqualTo tests if a value is comparable and equal to the reference value
 func IsEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value == %v", utils.FormatValue(rhs)),

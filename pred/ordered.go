@@ -84,7 +84,7 @@ func GreaterOrEqualTo(rhs interface{}) testpredicate.Predicate {
 }
 
 // CloseTo return a predicate to check if a numeric value is almost equal to
-// the reference value, withing the specified tolerance
+// the reference value, within the specified tolerance
 func CloseTo(rhs, tolerance float64) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value ≈ %v ± %v", rhs, tolerance),

@@ -12,7 +12,7 @@ import (
 // ValueAsInt
 // ValueAsFloat
 // ValueAsUInt
-//   Convert value to a prefered int or float type if possible
+//   Convert value to a preferred int or float type if possible
 //
 // CompareOrdered
 // CompareUnordered
@@ -163,8 +163,8 @@ func ValueAsFloat(value interface{}) (float64, bool) {
 
 // CompareOrdered returns the result of the comparison of two values of compatible
 // type that can be ordered, including ints, floats, strings, byte slices,
-// and slices of comparable orderable values. Values of different tyype or
-// values of ther same type that cannot be ordered return an error.
+// and slices of comparable orderable values. Values of different type or
+// values of the same type that cannot be ordered return an error.
 func CompareOrdered(lhs, rhs interface{}) (int, error) {
 
 	if lhsInt, ok := ValueAsInt(lhs); ok {

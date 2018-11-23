@@ -26,7 +26,7 @@ func FormatValue(value interface{}) string {
 
 // FormatDetails formats a list of assertion details into a string. When details
 // starts with a string, it is interpreted as a format string using the rest of
-// ther details as argumetns. Otherwise, details are printed as a space
+// their details as argumetns. Otherwise, details are printed as a space
 // separated list of values.
 func FormatDetails(details ...interface{}) string {
 	if len(details) == 0 {
