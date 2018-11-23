@@ -2,7 +2,9 @@
 
 Unit-testing predicates for Go.
 
-*banners here*
+[![GoDoc](https://godoc.org/github.com/marcus999/go-testpredicate?status.svg)](https://godoc.org/github.com/marcus999/go-testpredicate)
+[![Build Status](https://travis-ci.org/marcus999/go-testpredicate.svg?branch=master)](https://travis-ci.org/marcus999/go-testpredicate)
+[![Go Report Card](https://goreportcard.com/badge/github.com/marcus999/go-testpredicate)](https://goreportcard.com/report/github.com/marcus999/go-testpredicate)
 
 Package `go-testpredicate` complements the built-in go testing package with a
 way to define expectations in a concise and self describing way. When a test
