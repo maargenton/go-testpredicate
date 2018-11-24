@@ -30,12 +30,12 @@ package examples_test
 import (
     "testing"
 
-    "github.com/marcus999/go-testpredredicate"
-    "github.com/marcus999/go-testpredredicate/pred"
+    "github.com/marcus999/go-testpredicate"
+    "github.com/marcus999/go-testpredicate/pred"
 )
 
 func TestExample(t *testing.T) {
-    assert := testpredredicate.NewAsserter(t)
+    assert := testpredicate.NewAsserter(t)
     assert.That(123, pred.Lt(123))
 }
 ```
