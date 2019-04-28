@@ -25,6 +25,11 @@ func IsNotNil() testpredicate.Predicate {
 		})
 }
 
+// Eq is a shorter alias for IsEqualTo
+func Eq(rhs interface{}) testpredicate.Predicate {
+	return IsEqualTo(rhs)
+}
+
 // IsEqualTo tests if a value is comparable and equal to the reference value
 func IsEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
@@ -36,6 +41,11 @@ func IsEqualTo(rhs interface{}) testpredicate.Predicate {
 			}
 			return r, nil
 		})
+}
+
+// Ne is a shorter alias for IsNotEqualTo
+func Ne(rhs interface{}) testpredicate.Predicate {
+	return IsNotEqualTo(rhs)
 }
 
 // IsNotEqualTo tests if a value is comparable but different than the reference value

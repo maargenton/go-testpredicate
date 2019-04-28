@@ -52,7 +52,7 @@ func TestIsNotNil(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestIsEqualTo(t *testing.T) {
-	p := pred.IsEqualTo("123")
+	p := pred.Eq("123")
 
 	validateredicate(t, p, &predicateExpectation{
 		value:        "123",
@@ -77,7 +77,7 @@ func TestIsEqualTo(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestNotIsEqualTo(t *testing.T) {
-	p := pred.IsNotEqualTo("123")
+	p := pred.Ne("123")
 
 	validateredicate(t, p, &predicateExpectation{
 		value:        "124",
