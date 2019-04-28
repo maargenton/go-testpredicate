@@ -3,8 +3,8 @@ package pred
 import (
 	"fmt"
 
-	"github.com/marcus999/go-testpredicate"
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // Lt is a shorter alias for IsLessThan

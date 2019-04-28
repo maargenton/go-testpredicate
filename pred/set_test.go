@@ -3,8 +3,8 @@ package pred_test
 import (
 	"testing"
 
-	"github.com/marcus999/go-testpredicate"
-	"github.com/marcus999/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pred"
 )
 
 // ---------------------------------------------------------------------------

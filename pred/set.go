@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/marcus999/go-testpredicate"
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // IsSubsetOf returns a predicate that checks

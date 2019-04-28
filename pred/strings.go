@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/marcus999/go-testpredicate"
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // Matches returns a predicate that checks if a string matches a regular

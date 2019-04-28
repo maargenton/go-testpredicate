@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // Asserter is a wrapper around a testing interface that can verify predicates

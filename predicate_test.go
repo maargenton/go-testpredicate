@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	testpredicate "github.com/marcus999/go-testpredicate"
+	testpredicate "github.com/maargenton/go-testpredicate"
 )
 
 // ---------------------------------------------------------------------------

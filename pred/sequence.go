@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/marcus999/go-testpredicate"
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // IsEmpty returns a predicate that checks if a value is nil

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/marcus999/go-testpredicate"
+	"github.com/maargenton/go-testpredicate"
 )
 
 type predicateExpectation struct {

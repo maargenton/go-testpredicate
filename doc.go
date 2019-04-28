@@ -20,8 +20,8 @@ Usage
 	import (
 		"testing"
 
-		"github.com/marcus999/go-testpredicate"
-		"github.com/marcus999/go-testpredicate/pred"
+		"github.com/maargenton/go-testpredicate"
+		"github.com/maargenton/go-testpredicate/pred"
 	)
 
 	func TestExample(t *testing.T) {
@@ -32,7 +32,7 @@ Usage
 Output
 
 	--- FAIL: TestExample (0.00s)
-	/go/src/github.com/marcus999/go-testpred/examples/example_test.go:12:
+	/go/src/github.com/maargenton/go-testpred/examples/example_test.go:12:
 		expected: value < 123,
 		value: 123
 */

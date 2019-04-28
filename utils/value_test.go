@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/marcus999/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/utils"
 )
 
 func TestValueAsInt(t *testing.T) {
