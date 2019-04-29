@@ -73,3 +73,17 @@ func TestIsErrorWithWrappedError(t *testing.T) {
 		result: testpredicate.PredicatePassed,
 	})
 }
+
+func TestIsErrorNil(t *testing.T) {
+	p := pred.IsError(nil)
+
+	validatePredicate(t, p, &predicateExpectation{
+		value:  nil,
+		result: testpredicate.PredicatePassed,
+	})
+	validatePredicate(t, p, &predicateExpectation{
+		value:       io.EOF,
+		result:      testpredicate.PredicateFailed,
+		errMatchers: []string{"detailed error:"},
+	})
+}

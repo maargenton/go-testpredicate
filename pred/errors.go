@@ -31,6 +31,9 @@ func IsError(expectedErr error) testpredicate.Predicate {
 		fmt.Sprintf("value is an error matching %v", expectedErr),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 			if value == nil {
+				if expectedErr == nil {
+					return testpredicate.PredicatePassed, nil
+				}
 				return testpredicate.PredicateFailed, nil
 			} else if err, ok := value.(error); ok {
 				if xerrors.Is(err, expectedErr) {
