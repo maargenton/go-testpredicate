@@ -49,3 +49,62 @@ Output:
 ```
 
 ## Built-in predicates
+
+### Nil and equality
+
+- `IsNil()`
+- `IsNotNil()`
+- `IsEqualTo( value )` / `Eq( value )`
+- `IsNotEqualTo( value )` / `Ne( value )`
+- `IsNoError()`, preferred to IsNil() for testing errors
+- `IsError( error )`, preferred to IsEqualTo() for testing errors
+
+### Order comparable values
+
+- `LessThan( value )` / `Lt( value )`
+- `LessOrEqualTo( value )` / `Le( value )`
+- `GreaterThan( value )` / `Gt( value )`
+- `GreaterOrEqualTo( value )` / `Ge( value )`
+- `CloseTo( value, tolerance )`, for floating point values
+
+### String and sequence values
+
+- `IsEmpty()`
+- `IsNotEmpty()`
+- `StartsWith( value )`
+- `Contains( value )`
+- `EndsWith( value )`
+- `Matches( regexp )`, for string values
+
+### Sets
+
+- `IsSubsetOf( collection )`
+- `IsSupersetOf( collection )`
+- `IsDisjointSetFrom( collection )`
+- `IsEqualSet( collection )`
+
+## Composable predicates
+
+Some predicates are not directly testing against a specific value, but instead define how to transform the value before applying a nested predicate, or how to apply the nested predicate to the elements of a collection
+
+### Strings
+
+- `ToUpper( predicate )`: apply predicate to the uppercase version of a string
+- `ToLower( predicate )`: apply predicate to the lowercase version of a string
+- `ToString( predicate )`: apply predicate to the stringified version of a value
+
+### Collections attributes
+
+- `Length( predicate )`: apply predicate to the length of a collection or string
+- `Capacity( predicate )`: apply predicate to the capacity of a collection
+- `MapKeys( predicate )`: apply predicate to a collection made of the keys of a map
+- `MapValues( predicate )`: apply predicate to a collection made of the values of a map
+
+### Collections elements
+
+- `All( predicate )`: all elements must match the predicate
+- `Any( predicate )`: at least one element must match the predicate
+- `AllKeys( predicate )`: all keys of a map must match the predicate
+- `AnyKey( predicate )`: at least one key of a map must match the predicate
+- `AllValues( predicate )`: all values of a map must match the predicate
+- `AnyValue( predicate )`: at least one value of a map must match the predicate
