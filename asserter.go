@@ -17,23 +17,26 @@ type Asserter interface {
 	That(value interface{}, predicate Predicate, details ...interface{})
 }
 
-// TestingContext defines an abstraction of testing.T interface for use in the
-// context of a predicate evaluation
-type TestingContext interface {
+// NewAsserter return an implementation of the Asserter interface wrapping a
+// testing.T context
+func NewAsserter(t testingContext) Asserter {
+	return &testingAsserter{t: t}
+}
+
+//
+// ---------------------------------------------------------------------------
+// Implementation of the Asserter interface
+// ---------------------------------------------------------------------------
+
+type testingContext interface {
 	Helper()
 	Errorf(format string, args ...interface{})
 }
 
-var _ TestingContext = &testing.T{}
-
-// NewAsserter return an implementation of the Asserter interface wrapping a
-// testing.T context
-func NewAsserter(t TestingContext) Asserter {
-	return &testingAsserter{t: t}
-}
+var _ testingContext = &testing.T{}
 
 type testingAsserter struct {
-	t TestingContext
+	t testingContext
 }
 
 func (assert *testingAsserter) That(value interface{}, predicate Predicate, details ...interface{}) {
