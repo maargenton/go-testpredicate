@@ -24,6 +24,8 @@ func IsNoError() testpredicate.Predicate {
 		})
 }
 
+// IsError tests if an error value matches a specific error,
+// using xerrros.Is() to support go v1.13 error wrapping
 func IsError(expectedErr error) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
 		fmt.Sprintf("value is an error matching %v", expectedErr),
