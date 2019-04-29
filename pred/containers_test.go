@@ -13,19 +13,19 @@ import (
 func TestAll(t *testing.T) {
 	p := pred.All(pred.Lt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        []int{1, 2, 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"all of value < 10"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 12, 5, 10},
 		result: testpredicate.PredicateFailed,
 		errMatchers: []string{
 			"failed for value[1]: 12",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  123,
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -40,7 +40,7 @@ func TestAll(t *testing.T) {
 func TestAny(t *testing.T) {
 	p := pred.Any(pred.Gt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        []int{1, 12, 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"any of value > 10"},
@@ -48,18 +48,18 @@ func TestAny(t *testing.T) {
 			"passed for value[1]: 12",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 5, 10},
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  123,
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
 			"/value .* of type .* is not a container/",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []interface{}{1, "abc", 345},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -75,19 +75,19 @@ func TestAny(t *testing.T) {
 func TestAllKeys(t *testing.T) {
 	p := pred.AllKeys(pred.Lt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        map[int]int{1: 1, 2: 2, 5: 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"all of value.Keys() < 10"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[int]int{1: 1, 12: 2, 5: 5},
 		result: testpredicate.PredicateFailed,
 		errMatchers: []string{
 			"failed for key 12",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 2, 3},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -102,24 +102,24 @@ func TestAllKeys(t *testing.T) {
 func TestAnyKey(t *testing.T) {
 	p := pred.AnyKey(pred.Lt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        map[int]int{10: 1, 20: 2, 5: 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"any of value.Keys() < 10"},
 		errMatchers:  []string{`/.*/`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[int]int{10: 1, 20: 2, 50: 5},
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 2, 3},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
 			"/value .* of type .* is not a map/",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[string]int{"10": 1, "20": 2, "50": 5},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -135,19 +135,19 @@ func TestAnyKey(t *testing.T) {
 func TestAllValues(t *testing.T) {
 	p := pred.AllValues(pred.Lt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        map[int]int{1: 1, 2: 2, 5: 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"all of value.Values() < 10"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[int]int{1: 1, 2: 12, 5: 5},
 		result: testpredicate.PredicateFailed,
 		errMatchers: []string{
 			"failed for value[2]: 12",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 2, 3},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -162,24 +162,24 @@ func TestAllValues(t *testing.T) {
 func TestAnyValue(t *testing.T) {
 	p := pred.AnyValue(pred.Lt(10))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        map[int]int{1: 10, 2: 20, 5: 5},
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"any of value.Values() < 10"},
 		errMatchers:  []string{`/.*/`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[int]int{1: 10, 2: 20, 5: 50},
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{1, 2, 3},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
 			"/value .* of type .* is not a map/",
 		},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  map[int]string{1: "10", 2: "20", 5: "50"},
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -195,7 +195,7 @@ func TestAnyValue(t *testing.T) {
 func TestMapKeys(t *testing.T) {
 	p := pred.MapKeys(pred.IsSubsetOf([]string{"aaa", "bbb", "ccc"}))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value: map[string]int{
 			"aaa": 1,
 			"bbb": 2,
@@ -204,7 +204,7 @@ func TestMapKeys(t *testing.T) {
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value.Keys() is subset of "},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value: map[string]int{
 			"aaa": 1,
 			"bcb": 2,
@@ -213,7 +213,7 @@ func TestMapKeys(t *testing.T) {
 		result:      testpredicate.PredicateFailed,
 		errMatchers: []string{`extra values:`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:       []int{1, 4, 3},
 		result:      testpredicate.PredicateInvalid,
 		errMatchers: []string{`/value .* of type .* is not a map/`},
@@ -226,7 +226,7 @@ func TestMapKeys(t *testing.T) {
 func TestMapValues(t *testing.T) {
 	p := pred.MapValues(pred.IsSubsetOf([]int{1, 2, 3}))
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value: map[string]int{
 			"aaa": 1,
 			"bbb": 2,
@@ -235,7 +235,7 @@ func TestMapValues(t *testing.T) {
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value.Values() is subset of "},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value: map[string]int{
 			"aaa": 1,
 			"bcb": 4,
@@ -244,7 +244,7 @@ func TestMapValues(t *testing.T) {
 		result:      testpredicate.PredicateFailed,
 		errMatchers: []string{`extra values: 4`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:       []int{1, 4, 3},
 		result:      testpredicate.PredicateInvalid,
 		errMatchers: []string{`/value .* of type .* is not a map/`},

@@ -14,16 +14,16 @@ import (
 func TestIsNil(t *testing.T) {
 	p := pred.IsNil()
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        nil,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value is nil"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  123,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateFailed,
 	})
@@ -36,12 +36,12 @@ func TestIsNil(t *testing.T) {
 func TestIsNotNil(t *testing.T) {
 	p := pred.IsNotNil()
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        123,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value is not nil"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  nil,
 		result: testpredicate.PredicateFailed,
 	})
@@ -54,16 +54,16 @@ func TestIsNotNil(t *testing.T) {
 func TestIsEqualTo(t *testing.T) {
 	p := pred.Eq("123")
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        "123",
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{`value == "123"`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "124",
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  124,
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -79,16 +79,16 @@ func TestIsEqualTo(t *testing.T) {
 func TestNotIsEqualTo(t *testing.T) {
 	p := pred.Ne("123")
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        "124",
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{`value != "123"`},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "123",
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  124,
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{

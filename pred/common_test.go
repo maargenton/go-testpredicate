@@ -16,7 +16,7 @@ type predicateExpectation struct {
 	errMatchers  []string
 }
 
-func validateredicate(t *testing.T, p testpredicate.Predicate, exp *predicateExpectation) {
+func validatePredicate(t *testing.T, p testpredicate.Predicate, exp *predicateExpectation) {
 	t.Helper()
 	if p == nil {
 		t.Errorf("\npredicate should not be nil")

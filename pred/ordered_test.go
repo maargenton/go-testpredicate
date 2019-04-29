@@ -14,16 +14,16 @@ import (
 func TestLessThan(t *testing.T) {
 
 	p := pred.Lt(123)
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        120,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value < 123"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  123,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -39,16 +39,16 @@ func TestLessThan(t *testing.T) {
 func TestLessOrEqual(t *testing.T) {
 
 	p := pred.Le(123)
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        123,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value <= 123"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  124,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -64,16 +64,16 @@ func TestLessOrEqual(t *testing.T) {
 func TestGreaterThan(t *testing.T) {
 
 	p := pred.Gt(123)
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        124,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value > 123"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  123,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -89,16 +89,16 @@ func TestGreaterThan(t *testing.T) {
 func TestGreaterOrEqual(t *testing.T) {
 
 	p := pred.Ge(123)
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        123,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value >= 123"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  122,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{
@@ -113,26 +113,26 @@ func TestGreaterOrEqual(t *testing.T) {
 func TestCloseTo(t *testing.T) {
 
 	p := pred.CloseTo(123, 5)
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:        118,
 		result:       testpredicate.PredicatePassed,
 		descMatchers: []string{"value ≈ 123 ± 5"},
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  128,
 		result: testpredicate.PredicatePassed,
 	})
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  117,
 		result: testpredicate.PredicateFailed,
 	})
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  129,
 		result: testpredicate.PredicateFailed,
 	})
 
-	validateredicate(t, p, &predicateExpectation{
+	validatePredicate(t, p, &predicateExpectation{
 		value:  "abc",
 		result: testpredicate.PredicateInvalid,
 		errMatchers: []string{

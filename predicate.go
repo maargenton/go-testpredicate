@@ -53,16 +53,22 @@ func (r PredicateResult) String() string {
 // PredicateFunc is a the function type that implements a predicate
 type PredicateFunc func(value interface{}) (PredicateResult, error)
 
-// PredicateBoolFunc is a the function type that implements a predicate, returning
-// a boolean and an error. Any error returned is interpreted as an invalid result
-// due to a failure during evaluation. If a valid nagative result needs an explanation
-// for its failure, use PredicateFunc instead
+// PredicateBoolFunc is a the function type that implements a predicate,
+// returning a boolean and an error. Any error returned is interpreted as an
+// invalid result due to a failure during evaluation. If a valid negative
+// result needs an explanation for its failure, use PredicateFunc instead.
 type PredicateBoolFunc func(value interface{}) (bool, error)
 
-// Predicate defined the minimum interface that predicates must implement
+// Predicate defines the minimum interface that predicates must implement
 type Predicate interface {
 	fmt.Stringer
 	Evaluate(value interface{}) (PredicateResult, error)
+}
+
+// SpecialValueFormatingPredicate defines an optional interface that predicates
+// can implement to provide a custom value formater
+type SpecialValueFormatingPredicate interface {
+	FormatPredicateValue(value interface{}) string
 }
 
 //
@@ -76,7 +82,7 @@ func MakePredicate(description string, fn PredicateFunc) Predicate {
 }
 
 // MakeBoolPredicate wraps a predicate function returning bool into a predicate
-// itnerface. Any error returned from the function is interpreted as an invalid
+// interface. Any error returned from the function is interpreted as an invalid
 // evaluation.
 func MakeBoolPredicate(description string, fn PredicateBoolFunc) Predicate {
 	return MakePredicate(description,
