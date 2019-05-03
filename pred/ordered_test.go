@@ -140,3 +140,18 @@ func TestCloseTo(t *testing.T) {
 		},
 	})
 }
+
+func TestCloseToEx(t *testing.T) {
+
+	p := pred.CloseTo([3]float64{1, 2, 3}, 0.2)
+	validatePredicate(t, p, &predicateExpectation{
+		value:        [3]float64{1, 2.1, 3},
+		result:       testpredicate.PredicatePassed,
+		descMatchers: []string{"value ≈ [1 2 3] ± 0.2"},
+	})
+	validatePredicate(t, p, &predicateExpectation{
+		value:        [3]float64{1, 2.3, 3},
+		result:       testpredicate.PredicateFailed,
+		descMatchers: []string{"value ≈ [1 2 3] ± 0.2"},
+	})
+}

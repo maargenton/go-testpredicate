@@ -1,6 +1,7 @@
 package utils_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/utils"
@@ -298,6 +299,91 @@ func TestComapareUnordered(t *testing.T) {
 			t.Errorf(
 				"\nexpected CompareOrdered(%#+v, %#+v) = %v,\nactual = %v",
 				input.lhs, input.rhs, input.result, r)
+		}
+	}
+}
+
+func TestMaxAbsoluteDifference(t *testing.T) {
+	var inputs = []struct {
+		lhs, rhs interface{}
+		diff     float64
+	}{
+		{[3]float64{1, 2, 3}, [3]float64{1, 2, 3}, 0},
+		{[3]float64{1, 2, 3}, [3]float64{1.1, 2, 3}, 0.1},
+		{[3]float64{1, 2, 3}, [3]float64{1.1, 2.2, 3.3}, 0.3},
+
+		{[]float64{1, 2, 3}, []float64{1, 2, 3}, 0},
+		{[]float64{1, 2, 3}, []float64{1.1, 2, 3}, 0.1},
+		{[]float64{1, 2, 3}, []float64{1.1, 2.2, 3.3}, 0.3},
+
+		{
+			[][]float64{
+				[]float64{1, 2, 3},
+				[]float64{2, 3, 4}},
+			[][]float64{
+				[]float64{1, 2, 3},
+				[]float64{2, 3, 4},
+			},
+			0,
+		},
+
+		{
+			[][]float64{
+				[]float64{1, 2, 3},
+				[]float64{2, 3, 4}},
+			[][]float64{
+				[]float64{1.1, 2.2, 3.3},
+				[]float64{2.2, 3.3, 4.4},
+			},
+			0.4,
+		},
+	}
+
+	for _, input := range inputs {
+		r, err := utils.MaxAbsoluteDifference(input.lhs, input.rhs)
+		if err != nil {
+			t.Error(err)
+		}
+		if math.Abs(r-input.diff) > 0.00001 {
+			t.Errorf("expected difference: %v\nactual:%v", input.diff, r)
+		}
+	}
+}
+
+func TestMaxAbsoluteDifferenceErrors(t *testing.T) {
+	var inputs = []struct {
+		lhs, rhs interface{}
+		err      string
+	}{
+		{
+			[]float64{1, 2, 3},
+			[]float64{1, 2, 3, 4},
+			"value length (3 and 4) mismatched",
+		},
+		{
+			[]interface{}{1, 2, 3},
+			[]interface{}{1, "2", 3},
+			"failed to compare values at index 1, value \"2\" of type string cannot be converted to float",
+		},
+		{
+			[]interface{}{"1", 2, 3},
+			[]interface{}{1, 2, 3},
+			"failed to compare values at index 0, value \"1\" of type string cannot be converted to float",
+		},
+	}
+
+	for _, input := range inputs {
+		_, err := utils.MaxAbsoluteDifference(input.lhs, input.rhs)
+		if err == nil {
+			t.Errorf(
+				"expected error for MaxAbsoluteDifference( %#v, %#v)",
+				input.lhs, input.rhs)
+		}
+		if err.Error() != input.err {
+			t.Errorf(
+				"unexpected error for MaxAbsoluteDifference( %#v, %#v):\n%v",
+				input.lhs, input.rhs, err)
+
 		}
 	}
 }

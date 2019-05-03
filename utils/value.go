@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 )
@@ -19,6 +20,11 @@ import (
 //   Compare two values to either find an order between them, or just check
 //   for equality. Both functions are lenient, using numeric value conversion
 //   and first difference for sequence comparison.
+//
+// MaxAbsoluteDifference
+//   Returns the maximum absolute difference of all the components. Both
+//   values must have the same shape and must be composed of values convertible
+//   to float64 for comparison
 
 // ---------------------------------------------------------------------------
 // Helper functions to normalize numeric values into comparable type
@@ -340,4 +346,53 @@ func compareUnorderedSlices(lhs, rhs interface{}) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// MaxAbsoluteDifference returns the maximum absolute difference of all the
+// components. Both values must have the same shape and must be composed of
+// values convertible to float64 for comparison
+func MaxAbsoluteDifference(lhs, rhs interface{}) (float64, error) {
+
+	a := reflect.ValueOf(lhs)
+	b := reflect.ValueOf(rhs)
+	ka := a.Kind()
+	kb := b.Kind()
+	if (ka == reflect.Slice || ka == reflect.Array) &&
+		(kb == reflect.Slice || kb == reflect.Array) {
+
+		na := a.Len()
+		nb := b.Len()
+
+		if na != nb {
+			return 0, fmt.Errorf("value length (%v and %v) mismatched", na, nb)
+		}
+
+		max := 0.0
+		for i := 0; i < na; i++ {
+			va := a.Index(i).Interface()
+			vb := b.Index(i).Interface()
+			d, err := MaxAbsoluteDifference(va, vb)
+			if err != nil {
+				return 0, fmt.Errorf("failed to compare values at index %v, %v", i, err)
+			}
+
+			if d > max {
+				max = d
+			}
+		}
+
+		return max, nil
+	}
+
+	if fa, ok := ValueAsFloat(lhs); ok {
+		if fb, ok := ValueAsFloat(rhs); ok {
+			return math.Abs(fa - fb), nil
+		}
+		return 0, fmt.Errorf(
+			"value %v of type %T cannot be converted to float",
+			FormatValue(rhs), rhs)
+	}
+	return 0, fmt.Errorf(
+		"value %v of type %T cannot be converted to float",
+		FormatValue(lhs), lhs)
 }

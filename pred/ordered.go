@@ -83,19 +83,22 @@ func GreaterOrEqualTo(rhs interface{}) testpredicate.Predicate {
 		})
 }
 
-// CloseTo return a predicate to check if a numeric value is almost equal to
-// the reference value, within the specified tolerance
-func CloseTo(rhs, tolerance float64) testpredicate.Predicate {
+// CloseTo return a predicate to check if a value is almost equal to
+// the reference value, within the specified tolerance. Value and reference
+// value can numeric, or slice or array of numeric values, of equal size
+func CloseTo(rhs interface{}, tolerance float64) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value ≈ %v ± %v", rhs, tolerance),
+
 		func(value interface{}) (bool, error) {
-			v, ok := utils.ValueAsFloat(value)
-			if !ok {
-				return false, fmt.Errorf(
-					"value %v of type %T cannot be converted to float",
-					utils.FormatValue(value), value)
+			d, err := utils.MaxAbsoluteDifference(value, rhs)
+			if err != nil {
+				return false, err
+			}
+			if d > tolerance {
+				return false, nil
 			}
 
-			return (v >= rhs-tolerance && v <= rhs+tolerance), nil
+			return true, nil
 		})
 }

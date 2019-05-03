@@ -20,12 +20,12 @@ func TestFormatValue(t *testing.T) {
 	}{
 		{"value", `"value"`},
 		{
-			"aaaaaaaaaabbbbbbbbbbccccccccccdddddddddd",
-			`"aaaaaaaaaabbbbbbbbbbccccccccccdddddddddd"`,
+			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhh",
+			`"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhh"`,
 		},
 		{
-			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee",
-			`"aaaaaaaaaabbbbbbbbbbccc...ccddddddddddeeeeeeeeee"`,
+			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhhhh",
+			`"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhh..."`,
 		},
 		{
 			[]int{123, 456, 789},
@@ -33,15 +33,26 @@ func TestFormatValue(t *testing.T) {
 		},
 		{
 			[]struct {
-				filed1, field2 int
+				field1, field2 int
 				field3         string
 			}{
 				{123, 456, "field3-value1"},
 			},
-			`[]struct { filed1 int; f...ield3:"field3-value1"}}`,
+			`[{field1:123 field2:456 field3:field3-value1}]`,
+		},
+		{
+			make([]int, 20),
+			`[]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}`,
+		},
+		{
+			make([]int, 39),
+			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]`,
+		},
+		{
+			make([]int, 40),
+			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...`,
 		},
 	}
-
 	for _, input := range inputs {
 		result := utils.FormatValue(input.value)
 		if result != input.expected {

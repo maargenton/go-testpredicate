@@ -13,15 +13,30 @@ func WrapError(nestedErr error, format string, a ...interface{}) error {
 }
 
 // FormatValue retruns a string representing the value, truncated
-// to a reasonable max size of 50
+// to a maximum length of 80.
 func FormatValue(value interface{}) string {
+	if _, ok := value.(string); ok {
+		s := fmt.Sprintf("%#v", value)
+		l := len(s)
+		if l <= 80 {
+			return s
+		}
+		return s[0:76] + "..." + s[l-1:l]
+	}
+
 	s := fmt.Sprintf("%#v", value)
 	l := len(s)
-
-	if l > 50 {
-		s = s[0:24] + "..." + s[l-23:l]
+	if l <= 80 {
+		return s
 	}
-	return s
+
+	s = fmt.Sprintf("%+v", value)
+	l = len(s)
+	if l <= 80 {
+		return s
+	}
+
+	return s[0:77] + "..."
 }
 
 // FormatDetails formats a list of assertion details into a string. When details
