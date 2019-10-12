@@ -108,3 +108,12 @@ Some predicates are not directly testing against a specific value, but instead d
 - `AnyKey( predicate )`: at least one key of a map must match the predicate
 - `AllValues( predicate )`: all values of a map must match the predicate
 - `AnyValue( predicate )`: at least one value of a map must match the predicate
+
+## Special predicates
+
+### Panic
+
+- `Panics()`: evaluates value as a callable function and expect it to panic
+- `PanicsAndResult( predicate )`: evaluates value as a callable function,
+  expects it to panic, and evaluates the panic value against the nested
+  predicate
