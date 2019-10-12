@@ -1,10 +1,10 @@
 package pred
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/maargenton/go-testpredicate"
-	"golang.org/x/xerrors"
 )
 
 // IsNoError tests if an error value is nil
@@ -25,7 +25,7 @@ func IsNoError() testpredicate.Predicate {
 }
 
 // IsError tests if an error value matches a specific error,
-// using xerrros.Is() to support go v1.13 error wrapping
+// using errros.Is() to support go v1.13 error wrapping
 func IsError(expectedErr error) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
 		fmt.Sprintf("value is an error matching %v", expectedErr),
@@ -36,7 +36,7 @@ func IsError(expectedErr error) testpredicate.Predicate {
 				}
 				return testpredicate.PredicateFailed, nil
 			} else if err, ok := value.(error); ok {
-				if xerrors.Is(err, expectedErr) {
+				if errors.Is(err, expectedErr) {
 					return testpredicate.PredicatePassed, nil
 				}
 				return testpredicate.PredicateFailed,

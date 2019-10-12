@@ -1,12 +1,12 @@
 package pred_test
 
 import (
+	"fmt"
 	"io"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate"
 	"github.com/maargenton/go-testpredicate/pred"
-	"golang.org/x/xerrors"
 )
 
 // ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ func TestIsError(t *testing.T) {
 
 func TestIsErrorWithWrappedError(t *testing.T) {
 	p := pred.IsError(io.EOF)
-	err := xerrors.Errorf("custom error, base error: %w", io.EOF)
+	err := fmt.Errorf("custom error, base error: %w", io.EOF)
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:  err,
