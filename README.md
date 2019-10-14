@@ -54,6 +54,8 @@ Output:
 
 - `IsNil()`
 - `IsNotNil()`
+- `IsTrue()`
+- `IsFalse()`
 - `IsEqualTo( value )` / `Eq( value )`
 - `IsNotEqualTo( value )` / `Ne( value )`
 - `IsNoError()`, preferred to IsNil() for testing errors
