@@ -1,6 +1,10 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/maargenton/go-testpredicate/pkg/value"
+)
 
 // WrapError appends the nested error after the formated message, on a new line
 func WrapError(nestedErr error, format string, a ...interface{}) error {
@@ -14,7 +18,12 @@ func WrapError(nestedErr error, format string, a ...interface{}) error {
 
 // FormatValue retruns a string representing the value, truncated
 // to a maximum length of 80.
-func FormatValue(value interface{}) string {
+func FormatValue(v interface{}) string {
+	return value.Format(v)
+	// return formatValue(v)
+}
+
+func formatValue(value interface{}) string {
 	if _, ok := value.(string); ok {
 		s := fmt.Sprintf("%#v", value)
 		l := len(s)

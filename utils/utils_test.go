@@ -29,7 +29,7 @@ func TestFormatValue(t *testing.T) {
 		},
 		{
 			[]int{123, 456, 789},
-			`[]int{123, 456, 789}`,
+			`[]int{ 123, 456, 789 }`,
 		},
 		{
 			[]struct {
@@ -38,7 +38,13 @@ func TestFormatValue(t *testing.T) {
 			}{
 				{123, 456, "field3-value1"},
 			},
-			`[{field1:123 field2:456 field3:field3-value1}]`,
+			"[]struct {...} {\n" +
+				"\tstruct {...} {\n" +
+				"\t\tfield1: 123,\n" +
+				"\t\tfield2: 456,\n" +
+				"\t\tfield3: \"field3-value1\",\n" +
+				"\t},\n" +
+				"}",
 		},
 		{
 			make([]int, 20),
