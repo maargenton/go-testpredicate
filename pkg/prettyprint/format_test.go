@@ -1,11 +1,13 @@
 package prettyprint_test
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/pkg/value"
 	"github.com/maargenton/go-testpredicate/pred"
 )
@@ -40,13 +42,13 @@ var anonymousStruct = &struct {
 	details: "MakeBoolPredicate wraps a predicate function\nreturning bool into a predicateinterface. Any error returned from the function is interpreted as an invalid evaluation.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 }
 
-func TestXXX(t *testing.T) {
+func TestFormatValueWithStruct(t *testing.T) {
 	assert := testpredicate.NewAsserter(t)
 	assert.That(true, pred.Eq(true))
 
-	s := value.Format(anonymousStruct)
+	s := prettyprint.FormatValue(anonymousStruct)
 	_ = s
-	// fmt.Print(s)
+	fmt.Print(s)
 	// assert.That(s, pred.Eq(""))
 
 	lines := strings.Split(s, "\n")
