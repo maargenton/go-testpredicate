@@ -22,31 +22,6 @@ func FormatValue(v interface{}) string {
 	return prettyprint.FormatValue(v)
 }
 
-func formatValue(value interface{}) string {
-	if _, ok := value.(string); ok {
-		s := fmt.Sprintf("%#v", value)
-		l := len(s)
-		if l <= 80 {
-			return s
-		}
-		return s[0:76] + "..." + s[l-1:l]
-	}
-
-	s := fmt.Sprintf("%#v", value)
-	l := len(s)
-	if l <= 80 {
-		return s
-	}
-
-	s = fmt.Sprintf("%+v", value)
-	l = len(s)
-	if l <= 80 {
-		return s
-	}
-
-	return s[0:77] + "..."
-}
-
 // FormatDetails formats a list of assertion details into a string. When details
 // starts with a string, it is interpreted as a format string using the rest of
 // their details as argumetns. Otherwise, details are printed as a space
