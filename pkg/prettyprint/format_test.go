@@ -4,9 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
-	"github.com/maargenton/go-testpredicate/pred"
 )
 
 func makeInts(n int) []int {
@@ -17,75 +15,89 @@ func makeInts(n int) []int {
 	return r
 }
 
-func TestFormatValueWithShortListCollapsesValuesIntoASingleLine(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
+type formatExpectation struct {
+	lineCount int
+	maxWidth  int
+}
 
+func validateFormat(t *testing.T, s string, exp *formatExpectation) {
+	t.Helper()
+
+	lines := strings.Split(s, "\n")
+	if l := len(lines); l != exp.lineCount {
+		t.Fatalf("\nexpected %v line(s)\n"+
+			"actual:  %v line(s)\n"+
+			"value:  |%v|\n", exp.lineCount, l, s)
+	}
+
+	for i, line := range lines {
+		line = strings.Replace(line, "\t", "    ", -1)
+		l := len([]rune(line))
+		if l > exp.maxWidth {
+			t.Fatalf("\nexpected all lines to be no more than %v long\n"+
+				"length:  %v for line %v\n"+
+				"ruler:  |0----v----1----v----2----v----3----v----4----v----5----v----6----v----7----v----8----v----| \n"+
+				"line:   |%v|\n", exp.maxWidth, l, i, line)
+		}
+	}
+}
+
+func TestFormatValueWithShortListCollapsesValuesIntoASingleLine(t *testing.T) {
 	v := makeInts(3)
 	s := prettyprint.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(1)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 1,
+		maxWidth:  81,
+	})
 }
 
 func TestFormatValueCollapsesNestedLists(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := struct{ i []int }{i: makeInts(3)}
 	s := prettyprint.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(3)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 3,
+		maxWidth:  81,
+	})
 }
 
 func TestFormatValueWithLongListCollapsesValuesIntoMultipleLines(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := makeInts(30)
 	s := prettyprint.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(5)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 5,
+		maxWidth:  80,
+	})
 }
 
 func TestFormatValueWithWeryLongListTruncatesCollapsedLines(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := makeInts(200)
 	s := prettyprint.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(14)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 14,
+		maxWidth:  80,
+	})
 }
 
 func TestFormatValueWithWeryLongListTruncatesCollapsedLinesToMaxWrapped(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	pp := prettyprint.New()
 	pp.MaxWrapped = 5
 	v := makeInts(200)
 	s := pp.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(9)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 9,
+		maxWidth:  80,
+	})
 }
 
 // ---------------------------------------------------------------------------
 // Test alignment of values in key-value tokens
 
 func TestFormatValueAlignsValues(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := struct {
 		a          int
 		bbbbbbbbbb int
@@ -96,14 +108,15 @@ func TestFormatValueAlignsValues(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines[1], pred.Eq("\ta:          1,"))
-	assert.That(lines[2], pred.Eq("\tbbbbbbbbbb: 2,"))
+	if l := lines[1]; l != "\ta:          1," {
+		t.Fatalf("\nunexpected line 1: |%v|", l)
+	}
+	if l := lines[2]; l != "\tbbbbbbbbbb: 2," {
+		t.Fatalf("\nunexpected line 2: |%v|", l)
+	}
 }
 
 func TestFormatValueAlignsValuesInChunks(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := struct {
 		a          int
 		bbbbbbbbbb int
@@ -120,65 +133,77 @@ func TestFormatValueAlignsValuesInChunks(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines[1], pred.Eq("\ta:          1,"))
-	assert.That(lines[2], pred.Eq("\tbbbbbbbbbb: 2,"))
-	assert.That(lines[7], pred.Eq("\td:   4,"))
-	assert.That(lines[8], pred.Eq("\teee: 5,"))
+
+	if l := lines[1]; l != "\ta:          1," {
+		t.Fatalf("\nunexpected line 1: |%v|", l)
+	}
+	if l := lines[2]; l != "\tbbbbbbbbbb: 2," {
+		t.Fatalf("\nunexpected line 2: |%v|", l)
+	}
+
+	if l := lines[7]; l != "\td:   4," {
+		t.Fatalf("\nunexpected line 7: |%v|", l)
+	}
+	if l := lines[8]; l != "\teee: 5," {
+		t.Fatalf("\nunexpected line 8: |%v|", l)
+	}
 }
 
 // ---------------------------------------------------------------------------
 // Test long tokens are wrapped onto multiple lines
 
 func TestFormatValueWrapsLongStringTokens(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := strings.Repeat("abcdefghi ", 20)
 	s := prettyprint.FormatValue(v)
 
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Gt(1)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 3,
+		maxWidth:  80,
+	})
 }
 
 func TestFormatValueForceWrapsLongStringTokens(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := strings.Repeat("abcdefghi ", 20) +
 		strings.Repeat("_aaabbb_", 20) +
 		strings.Repeat("abcdefghi ", 20)
-
 	s := prettyprint.FormatValue(v)
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(8)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 8,
+		maxWidth:  81,
+	})
 }
 
 func TestFormatValueCanBreakOnEscapedCharacters(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := strings.Repeat("abcdefghi\n", 20)
 	s := prettyprint.FormatValue(v)
-	// fmt.Println(s)
-	// t.Fail()
+
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 4,
+		maxWidth:  81,
+	})
+
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(4)))
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
-	assert.That(lines[:3], pred.All(pred.EndsWith("\\n↩")))
+	for i, line := range lines[:3] {
+		if !strings.HasSuffix(line, "\\n↩") {
+			t.Fatalf(
+				"\nexpected line breaks on '\\n' with wrap marker\n"+
+					"line:    %v\n"+
+					"actual: |...%v|",
+				i, line[len(line)-10:],
+			)
+		}
+	}
 }
 
 func TestFormatValueBreakAlignment(t *testing.T) {
-	assert := testpredicate.NewAsserter(t)
-	assert.That(true, pred.Eq(true))
-
 	v := strings.Repeat("a bb ccc dddd eeeee ffffff ggggg hhhh iii jj k ", 80)
 	s := prettyprint.FormatValue(v)
-	// fmt.Println(s)
-	// t.Fail()
-	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
+
+	validateFormat(t, s, &formatExpectation{
+		lineCount: 51,
+		maxWidth:  81,
+	})
 }
 
 // var anonymousStruct = &struct {
