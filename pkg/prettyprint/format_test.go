@@ -25,7 +25,7 @@ func TestFormatValueWithShortListCollapsesValuesIntoASingleLine(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(2)))
+	assert.That(lines, pred.Length(pred.Eq(1)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -37,7 +37,7 @@ func TestFormatValueCollapsesNestedLists(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(4)))
+	assert.That(lines, pred.Length(pred.Eq(3)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -49,7 +49,7 @@ func TestFormatValueWithLongListCollapsesValuesIntoMultipleLines(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(6)))
+	assert.That(lines, pred.Length(pred.Eq(5)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -61,7 +61,7 @@ func TestFormatValueWithWeryLongListTruncatesCollapsedLines(t *testing.T) {
 	s := prettyprint.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(15)))
+	assert.That(lines, pred.Length(pred.Eq(14)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -75,7 +75,7 @@ func TestFormatValueWithWeryLongListTruncatesCollapsedLinesToMaxWrapped(t *testi
 	s := pp.FormatValue(v)
 
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(10)))
+	assert.That(lines, pred.Length(pred.Eq(9)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -151,7 +151,7 @@ func TestFormatValueForceWrapsLongStringTokens(t *testing.T) {
 
 	s := prettyprint.FormatValue(v)
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(9)))
+	assert.That(lines, pred.Length(pred.Eq(8)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 }
 
@@ -164,7 +164,7 @@ func TestFormatValueCanBreakOnEscapedCharacters(t *testing.T) {
 	// fmt.Println(s)
 	// t.Fail()
 	lines := strings.Split(s, "\n")
-	assert.That(lines, pred.Length(pred.Eq(5)))
+	assert.That(lines, pred.Length(pred.Eq(4)))
 	assert.That(lines, pred.All(pred.Length(pred.Le(82))))
 	assert.That(lines[:3], pred.All(pred.EndsWith("\\n↩")))
 }

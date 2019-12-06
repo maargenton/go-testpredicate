@@ -54,7 +54,14 @@ func (f *Formatter) FormatValue(v interface{}) string {
 	var buf strings.Builder
 	f.writeTokens(&buf, tokens)
 
-	return buf.String()
+	return trimTrailingNewlines(buf.String(), f.NewlineStr)
+}
+
+func trimTrailingNewlines(s, newline string) string {
+	for strings.HasSuffix(s, newline) {
+		s = s[:len(s)-len(newline)]
+	}
+	return s
 }
 
 // collapseLeaves either folds leaf sub-tokens into the parent or group them

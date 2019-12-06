@@ -25,7 +25,7 @@ func TestFormatValue(t *testing.T) {
 		},
 		{
 			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhhhh",
-			`"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhh..."`,
+			"\"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhh↩\n\t↪hh\"",
 		},
 		{
 			[]int{123, 456, 789},
@@ -48,15 +48,23 @@ func TestFormatValue(t *testing.T) {
 		},
 		{
 			make([]int, 20),
-			`[]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}`,
+			`[]int{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }`,
 		},
 		{
 			make([]int, 39),
-			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]`,
+			"[]int{\n" +
+				"\t0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n" +
+				"\t0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n" +
+				"\t// len() = 39\n" +
+				"}",
 		},
 		{
 			make([]int, 40),
-			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...`,
+			"[]int{\n" +
+				"\t0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n" +
+				"\t0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n" +
+				"\t// len() = 40\n" +
+				"}",
 		},
 	}
 	for _, input := range inputs {

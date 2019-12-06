@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 
-	"github.com/maargenton/go-testpredicate/pkg/value"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // WrapError appends the nested error after the formated message, on a new line
@@ -19,8 +19,7 @@ func WrapError(nestedErr error, format string, a ...interface{}) error {
 // FormatValue retruns a string representing the value, truncated
 // to a maximum length of 80.
 func FormatValue(v interface{}) string {
-	return value.Format(v)
-	// return formatValue(v)
+	return prettyprint.FormatValue(v)
 }
 
 func formatValue(value interface{}) string {
