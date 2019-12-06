@@ -16,7 +16,7 @@ func TestIsSubsetOf(t *testing.T) {
 	validatePredicate(t, p, &predicateExpectation{
 		value:        []int{3, 1},
 		result:       testpredicate.PredicatePassed,
-		descMatchers: []string{"value is subset of []int{1, 2, 3}"},
+		descMatchers: []string{"value is subset of []int{ 1, 2, 3 }"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:       []int{3, 4, 1},
@@ -71,7 +71,7 @@ func TestIsSupersetOf(t *testing.T) {
 	validatePredicate(t, p, &predicateExpectation{
 		value:        []int{3, 1, 4, 2},
 		result:       testpredicate.PredicatePassed,
-		descMatchers: []string{"value is superset of []int{1, 2, 3}"},
+		descMatchers: []string{"value is superset of []int{ 1, 2, 3 }"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  []int{3},

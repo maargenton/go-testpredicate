@@ -32,6 +32,16 @@ func TestAll(t *testing.T) {
 			"/value .* of type .* is not a container/",
 		},
 	})
+
+	var p2 = pred.All(pred.Length(pred.Le(3)))
+	validatePredicate(t, p2, &predicateExpectation{
+		value:  []string{"a", "bb", "ccc", "dddd", "eeeee"},
+		result: testpredicate.PredicateFailed,
+		errMatchers: []string{
+			"failed for value[3]:",
+			"length: 4",
+		},
+	})
 }
 
 // ---------------------------------------------------------------------------
