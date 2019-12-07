@@ -24,7 +24,7 @@ func All(p testpredicate.Predicate) testpredicate.Predicate {
 				for i, n := 0, rv.Len(); i < n; i++ {
 					v := rv.Index(i).Interface()
 					r, err := p.Evaluate(v)
-					if err != nil || r != testpredicate.PredicatePassed {
+					if r != testpredicate.PredicatePassed {
 						err = utils.WrapError(err,
 							"failed for value[%v]: %v",
 							i, utils.FormatValue(v))
@@ -57,7 +57,7 @@ func Any(p testpredicate.Predicate) testpredicate.Predicate {
 				for i, n := 0, rv.Len(); i < n; i++ {
 					v := rv.Index(i).Interface()
 					r, err := p.Evaluate(v)
-					if err != nil || r == testpredicate.PredicateInvalid {
+					if r == testpredicate.PredicateInvalid {
 						err = utils.WrapError(err,
 							"failed for value[%v]: %v",
 							i, utils.FormatValue(v))
@@ -98,7 +98,7 @@ func AllKeys(p testpredicate.Predicate) testpredicate.Predicate {
 			for _, kv := range rmap.MapKeys() {
 				k := kv.Interface()
 				r, err := p.Evaluate(k)
-				if err != nil || r != testpredicate.PredicatePassed {
+				if r != testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
 						"failed for key %v", utils.FormatValue(k))
 					return r, err
@@ -127,7 +127,7 @@ func AnyKey(p testpredicate.Predicate) testpredicate.Predicate {
 				k := kv.Interface()
 				r, err := p.Evaluate(k)
 
-				if err != nil || r == testpredicate.PredicateInvalid {
+				if r == testpredicate.PredicateInvalid {
 					err = utils.WrapError(err,
 						"failed for key: %v",
 						utils.FormatValue(k))
@@ -163,7 +163,7 @@ func AllValues(p testpredicate.Predicate) testpredicate.Predicate {
 				k := kv.Interface()
 				v := rmap.MapIndex(kv).Interface()
 				r, err := p.Evaluate(v)
-				if err != nil || r != testpredicate.PredicatePassed {
+				if r != testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
 						"failed for value[%v]: %v",
 						utils.FormatValue(k), utils.FormatValue(v))
@@ -194,7 +194,7 @@ func AnyValue(p testpredicate.Predicate) testpredicate.Predicate {
 				v := rmap.MapIndex(kv).Interface()
 
 				r, err := p.Evaluate(v)
-				if err != nil || r == testpredicate.PredicateInvalid {
+				if r == testpredicate.PredicateInvalid {
 					err = utils.WrapError(err,
 						"failed for value[%v]: %v",
 						utils.FormatValue(k), utils.FormatValue(v))

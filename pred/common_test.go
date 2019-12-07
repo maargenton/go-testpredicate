@@ -60,7 +60,7 @@ func validatePredicate(t *testing.T, p testpredicate.Predicate, exp *predicateEx
 
 func checkConatinsOrRegexpMatch(s, match string) (bool, error) {
 	if strings.HasPrefix(match, "/") && strings.HasSuffix(match, "/") {
-		re := match[1 : len(match)-1]
+		re := "(?s)" + match[1:len(match)-1]
 		return regexp.MatchString(re, s)
 	}
 

@@ -9,63 +9,6 @@ import (
 )
 
 // ---------------------------------------------------------------------------
-// utils.FormatValue()
-// ---------------------------------------------------------------------------
-
-func TestFormatValue(t *testing.T) {
-
-	var inputs = []struct {
-		value    interface{}
-		expected string
-	}{
-		{"value", `"value"`},
-		{
-			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhh",
-			`"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhh"`,
-		},
-		{
-			"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhhhh",
-			`"aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhh..."`,
-		},
-		{
-			[]int{123, 456, 789},
-			`[]int{123, 456, 789}`,
-		},
-		{
-			[]struct {
-				field1, field2 int
-				field3         string
-			}{
-				{123, 456, "field3-value1"},
-			},
-			`[{field1:123 field2:456 field3:field3-value1}]`,
-		},
-		{
-			make([]int, 20),
-			`[]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}`,
-		},
-		{
-			make([]int, 39),
-			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]`,
-		},
-		{
-			make([]int, 40),
-			`[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...`,
-		},
-	}
-	for _, input := range inputs {
-		result := utils.FormatValue(input.value)
-		if result != input.expected {
-			t.Errorf(
-				"\nFormatValue( %#+v )\n"+
-					"expected: %v\n"+
-					"actual:   %v\n",
-				input.value, input.expected, result)
-		}
-	}
-}
-
-// ---------------------------------------------------------------------------
 // utils.WrapError()
 // ---------------------------------------------------------------------------
 
