@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
+	"github.com/maargenton/go-testpredicate/pkg/value"
 	"github.com/maargenton/go-testpredicate/utils"
 )
 
@@ -56,7 +58,7 @@ func IsNotEmpty() testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T cannot be tested for emptiness",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 		})
 }
@@ -75,11 +77,11 @@ func preCheckSubsequence(v1, v2 reflect.Value) error {
 
 	if !sequenceType(v1.Kind()) {
 		return fmt.Errorf("value %v of type %T is not a sequence",
-			utils.FormatValue(v1.Interface()), v1.Interface())
+			prettyprint.FormatValue(v1.Interface()), v1.Interface())
 	}
 	if !sequenceType(v2.Kind()) {
 		return fmt.Errorf("value %v of type %T is not a sequence",
-			utils.FormatValue(v2.Interface()), v2.Interface())
+			prettyprint.FormatValue(v2.Interface()), v2.Interface())
 	}
 	return nil
 }
@@ -97,7 +99,7 @@ func indexOfSubsequence(seq, sub reflect.Value) int {
 			v1 := seq.Index(i + j)
 			v2 := sub.Index(j)
 
-			eq, _ := utils.CompareUnordered(v1.Interface(), v2.Interface())
+			eq, _ := value.CompareUnordered(v1.Interface(), v2.Interface())
 			if !eq {
 				allEq = false
 				break
@@ -114,7 +116,7 @@ func indexOfSubsequence(seq, sub reflect.Value) int {
 // StartsWith returns a predicate that checks
 func StartsWith(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value starts with %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value starts with %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			v1 := reflect.ValueOf(value)
@@ -141,7 +143,7 @@ func StartsWith(rhs interface{}) testpredicate.Predicate {
 // Contains returns a predicate that checks
 func Contains(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value contains %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value contains %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			v1 := reflect.ValueOf(value)
@@ -168,7 +170,7 @@ func Contains(rhs interface{}) testpredicate.Predicate {
 // EndsWith returns a predicate that checks
 func EndsWith(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value ends with %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value ends with %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			v1 := reflect.ValueOf(value)

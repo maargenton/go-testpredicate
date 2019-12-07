@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
 // Lt is a shorter alias for IsLessThan
@@ -16,9 +16,9 @@ func Lt(rhs interface{}) testpredicate.Predicate {
 // the specified value
 func LessThan(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
-		fmt.Sprintf("value < %v", utils.FormatValue(rhs)),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareOrdered(value, rhs)
+		fmt.Sprintf("value < %v", rhs),
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareOrdered(v, rhs)
 			if err != nil {
 				return false, err
 			}
@@ -36,8 +36,8 @@ func Le(rhs interface{}) testpredicate.Predicate {
 func LessOrEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value <= %v", rhs),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareOrdered(value, rhs)
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareOrdered(v, rhs)
 			if err != nil {
 				return false, err
 			}
@@ -55,8 +55,8 @@ func Gt(rhs interface{}) testpredicate.Predicate {
 func GreaterThan(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value > %v", rhs),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareOrdered(value, rhs)
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareOrdered(v, rhs)
 			if err != nil {
 				return false, err
 			}
@@ -74,8 +74,8 @@ func Ge(rhs interface{}) testpredicate.Predicate {
 func GreaterOrEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value >= %v", rhs),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareOrdered(value, rhs)
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareOrdered(v, rhs)
 			if err != nil {
 				return false, err
 			}
@@ -90,8 +90,8 @@ func CloseTo(rhs interface{}, tolerance float64) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
 		fmt.Sprintf("value ≈ %v ± %v", rhs, tolerance),
 
-		func(value interface{}) (bool, error) {
-			d, err := utils.MaxAbsoluteDifference(value, rhs)
+		func(v interface{}) (bool, error) {
+			d, err := value.MaxAbsoluteDifference(v, rhs)
 			if err != nil {
 				return false, err
 			}

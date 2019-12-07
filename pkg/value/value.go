@@ -1,4 +1,4 @@
-package utils
+package value
 
 import (
 	"bytes"
@@ -6,13 +6,15 @@ import (
 	"math"
 	"reflect"
 	"strings"
+
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // Synopsis:
 //
-// ValueAsInt
-// ValueAsFloat
-// ValueAsUInt
+// AsInt
+// AsFloat
+// AsUInt
 //   Convert value to a preferred int or float type if possible
 //
 // CompareOrdered
@@ -30,8 +32,8 @@ import (
 // Helper functions to normalize numeric values into comparable type
 // ---------------------------------------------------------------------------
 
-// ValueAsInt return the value as an int64 if possible
-func ValueAsInt(value interface{}) (int64, bool) {
+// AsInt return the value as an int64 if possible
+func AsInt(value interface{}) (int64, bool) {
 	switch v := value.(type) {
 	case int:
 		return int64(v), true
@@ -66,8 +68,8 @@ func ValueAsInt(value interface{}) (int64, bool) {
 	}
 }
 
-// ValueAsUInt return the value as an uint64 if possible
-func ValueAsUInt(value interface{}) (uint64, bool) {
+// AsUInt return the value as an uint64 if possible
+func AsUInt(value interface{}) (uint64, bool) {
 	switch v := value.(type) {
 	case int:
 		if v < 0 {
@@ -113,8 +115,8 @@ func ValueAsUInt(value interface{}) (uint64, bool) {
 	}
 }
 
-// ValueAsFloat return the value as a flaot64 if possible
-func ValueAsFloat(value interface{}) (float64, bool) {
+// AsFloat return the value as a flaot64 if possible
+func AsFloat(value interface{}) (float64, bool) {
 	switch v := value.(type) {
 	case float32:
 		return float64(v), true
@@ -173,20 +175,20 @@ func ValueAsFloat(value interface{}) (float64, bool) {
 // values of the same type that cannot be ordered return an error.
 func CompareOrdered(lhs, rhs interface{}) (int, error) {
 
-	if lhsInt, ok := ValueAsInt(lhs); ok {
-		if rhsInt, ok := ValueAsInt(rhs); ok {
+	if lhsInt, ok := AsInt(lhs); ok {
+		if rhsInt, ok := AsInt(rhs); ok {
 			return compareInt(lhsInt, rhsInt), nil
 		}
 	}
 
-	if lhsUInt, ok := ValueAsUInt(lhs); ok {
-		if rhsUInt, ok := ValueAsUInt(rhs); ok {
+	if lhsUInt, ok := AsUInt(lhs); ok {
+		if rhsUInt, ok := AsUInt(rhs); ok {
 			return compareUInt(lhsUInt, rhsUInt), nil
 		}
 	}
 
-	if lhsFloat, ok := ValueAsFloat(lhs); ok {
-		if rhsFloat, ok := ValueAsFloat(rhs); ok {
+	if lhsFloat, ok := AsFloat(lhs); ok {
+		if rhsFloat, ok := AsFloat(rhs); ok {
 			return compareFloat(lhsFloat, rhsFloat), nil
 		}
 	}
@@ -284,20 +286,20 @@ func compareOrderedSlices(lhs, rhs interface{}) (int, error) {
 // Values of different tyype that cannot be compared return an error.
 func CompareUnordered(lhs, rhs interface{}) (bool, error) {
 
-	if lhsInt, ok := ValueAsInt(lhs); ok {
-		if rhsInt, ok := ValueAsInt(rhs); ok {
+	if lhsInt, ok := AsInt(lhs); ok {
+		if rhsInt, ok := AsInt(rhs); ok {
 			return lhsInt == rhsInt, nil
 		}
 	}
 
-	if lhsUInt, ok := ValueAsUInt(lhs); ok {
-		if rhsUInt, ok := ValueAsUInt(rhs); ok {
+	if lhsUInt, ok := AsUInt(lhs); ok {
+		if rhsUInt, ok := AsUInt(rhs); ok {
 			return lhsUInt == rhsUInt, nil
 		}
 	}
 
-	if lhsFloat, ok := ValueAsFloat(lhs); ok {
-		if rhsFloat, ok := ValueAsFloat(rhs); ok {
+	if lhsFloat, ok := AsFloat(lhs); ok {
+		if rhsFloat, ok := AsFloat(rhs); ok {
 			return lhsFloat == rhsFloat, nil
 		}
 	}
@@ -384,15 +386,15 @@ func MaxAbsoluteDifference(lhs, rhs interface{}) (float64, error) {
 		return max, nil
 	}
 
-	if fa, ok := ValueAsFloat(lhs); ok {
-		if fb, ok := ValueAsFloat(rhs); ok {
+	if fa, ok := AsFloat(lhs); ok {
+		if fb, ok := AsFloat(rhs); ok {
 			return math.Abs(fa - fb), nil
 		}
 		return 0, fmt.Errorf(
 			"value %v of type %T cannot be converted to float",
-			FormatValue(rhs), rhs)
+			prettyprint.FormatValue(rhs), rhs)
 	}
 	return 0, fmt.Errorf(
 		"value %v of type %T cannot be converted to float",
-		FormatValue(lhs), lhs)
+		prettyprint.FormatValue(lhs), lhs)
 }

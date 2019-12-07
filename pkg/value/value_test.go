@@ -1,13 +1,13 @@
-package utils_test
+package value_test
 
 import (
 	"math"
 	"testing"
 
-	"github.com/maargenton/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
-func TestValueAsInt(t *testing.T) {
+func TestAsInt(t *testing.T) {
 	var inputs = []struct {
 		value    interface{}
 		expected int64
@@ -36,7 +36,7 @@ func TestValueAsInt(t *testing.T) {
 	}
 
 	for _, in := range inputs {
-		v, success := utils.ValueAsInt(in.value)
+		v, success := value.AsInt(in.value)
 		if success != in.success {
 			if in.success {
 				t.Errorf("Expected successful conversion for value %v", in.value)
@@ -52,7 +52,7 @@ func TestValueAsInt(t *testing.T) {
 	}
 }
 
-func TestValueAsUInt(t *testing.T) {
+func TestAsUInt(t *testing.T) {
 	var inputs = []struct {
 		value    interface{}
 		expected uint64
@@ -87,7 +87,7 @@ func TestValueAsUInt(t *testing.T) {
 	}
 
 	for _, in := range inputs {
-		v, success := utils.ValueAsUInt(in.value)
+		v, success := value.AsUInt(in.value)
 		if success != in.success {
 			if in.success {
 				t.Errorf("Expected successful conversion for value %v", in.value)
@@ -103,7 +103,7 @@ func TestValueAsUInt(t *testing.T) {
 	}
 }
 
-func TestValueAsFloat(t *testing.T) {
+func TestAsFloat(t *testing.T) {
 	var inputs = []struct {
 		value    interface{}
 		expected float64
@@ -146,7 +146,7 @@ func TestValueAsFloat(t *testing.T) {
 	}
 
 	for _, in := range inputs {
-		v, success := utils.ValueAsFloat(in.value)
+		v, success := value.AsFloat(in.value)
 		if success != in.success {
 			if in.success {
 				t.Errorf("Expected successful conversion for value %v", in.value)
@@ -160,7 +160,7 @@ func TestValueAsFloat(t *testing.T) {
 				v, v, in.value, in.value, in.expected)
 		}
 
-		if iv, integerType := utils.ValueAsInt(in.value); integerType && in.success {
+		if iv, integerType := value.AsInt(in.value); integerType && in.success {
 			if iv != int64(in.expected) {
 				t.Errorf("Value %v wasn't preserved through float conversion", v)
 
@@ -215,7 +215,7 @@ func TestComapareOrdered(t *testing.T) {
 	}
 
 	for _, input := range inputs {
-		r, err := utils.CompareOrdered(input.lhs, input.rhs)
+		r, err := value.CompareOrdered(input.lhs, input.rhs)
 		if input.err && err == nil {
 			t.Errorf(
 				"\nexpected CompareOrdered(%#+v, %#+v) to return an error",
@@ -284,7 +284,7 @@ func TestComapareUnordered(t *testing.T) {
 	}
 
 	for _, input := range inputs {
-		r, err := utils.CompareUnordered(input.lhs, input.rhs)
+		r, err := value.CompareUnordered(input.lhs, input.rhs)
 		if input.err && err == nil {
 			t.Errorf(
 				"\nexpected CompareOrdered(%#+v, %#+v) to return an error",
@@ -340,7 +340,7 @@ func TestMaxAbsoluteDifference(t *testing.T) {
 	}
 
 	for _, input := range inputs {
-		r, err := utils.MaxAbsoluteDifference(input.lhs, input.rhs)
+		r, err := value.MaxAbsoluteDifference(input.lhs, input.rhs)
 		if err != nil {
 			t.Error(err)
 		}
@@ -373,7 +373,7 @@ func TestMaxAbsoluteDifferenceErrors(t *testing.T) {
 	}
 
 	for _, input := range inputs {
-		_, err := utils.MaxAbsoluteDifference(input.lhs, input.rhs)
+		_, err := value.MaxAbsoluteDifference(input.lhs, input.rhs)
 		if err == nil {
 			t.Errorf(
 				"expected error for MaxAbsoluteDifference( %#v, %#v)",
@@ -383,7 +383,6 @@ func TestMaxAbsoluteDifferenceErrors(t *testing.T) {
 			t.Errorf(
 				"unexpected error for MaxAbsoluteDifference( %#v, %#v):\n%v",
 				input.lhs, input.rhs, err)
-
 		}
 	}
 }

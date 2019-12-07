@@ -5,7 +5,8 @@ import (
 	"reflect"
 
 	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
+	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
 // IsNil tests if a value is nil
@@ -70,9 +71,9 @@ func Eq(rhs interface{}) testpredicate.Predicate {
 // IsEqualTo tests if a value is comparable and equal to the reference value
 func IsEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
-		fmt.Sprintf("value == %v", utils.FormatValue(rhs)),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareUnordered(value, rhs)
+		fmt.Sprintf("value == %v", prettyprint.FormatValue(rhs)),
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareUnordered(v, rhs)
 			if err != nil {
 				return false, err
 			}
@@ -88,9 +89,9 @@ func Ne(rhs interface{}) testpredicate.Predicate {
 // IsNotEqualTo tests if a value is comparable but different than the reference value
 func IsNotEqualTo(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakeBoolPredicate(
-		fmt.Sprintf("value != %v", utils.FormatValue(rhs)),
-		func(value interface{}) (bool, error) {
-			r, err := utils.CompareUnordered(value, rhs)
+		fmt.Sprintf("value != %v", prettyprint.FormatValue(rhs)),
+		func(v interface{}) (bool, error) {
+			r, err := value.CompareUnordered(v, rhs)
 			if err != nil {
 				return false, err
 			}
