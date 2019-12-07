@@ -1,66 +1,66 @@
 // +build go1.13
 
-package pred_test
+package p_test
 
 import (
 	"fmt"
 	"io"
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.IsError()
+// p.IsError()
 // ---------------------------------------------------------------------------
 
 func TestIsError(t *testing.T) {
-	p := pred.IsError(io.EOF)
+	pred := p.IsError(io.EOF)
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        nil,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is an error matching"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        io.ErrClosedPipe,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is an error matching"},
 		errMatchers:  []string{"detailed error:"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        io.EOF,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is an error matching"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"/value of type .* is not an error/"},
 	})
 }
 
 func TestIsErrorWithWrappedError(t *testing.T) {
-	p := pred.IsError(io.EOF)
+	pred := p.IsError(io.EOF)
 	err := fmt.Errorf("custom error, base error: %w", io.EOF)
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  err,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 }
 
 func TestIsErrorNil(t *testing.T) {
-	p := pred.IsError(nil)
+	pred := p.IsError(nil)
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  nil,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       io.EOF,
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{"detailed error:"},
 	})
 }

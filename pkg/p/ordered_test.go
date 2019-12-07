@@ -1,31 +1,31 @@
-package pred_test
+package p_test
 
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.LessThan()
+// p.LessThan()
 // ---------------------------------------------------------------------------
 
 func TestLessThan(t *testing.T) {
 
-	p := pred.Lt(123)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.Lt(123)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        120,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value < 123"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  123,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "abc",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are not order comparable/`,
 		},
@@ -33,24 +33,24 @@ func TestLessThan(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.LessOrEqual()
+// p.LessOrEqual()
 // ---------------------------------------------------------------------------
 
 func TestLessOrEqual(t *testing.T) {
 
-	p := pred.Le(123)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.Le(123)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        123,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value <= 123"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  124,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "abc",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are not order comparable/`,
 		},
@@ -58,24 +58,24 @@ func TestLessOrEqual(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.GreaterThan()
+// p.GreaterThan()
 // ---------------------------------------------------------------------------
 
 func TestGreaterThan(t *testing.T) {
 
-	p := pred.Gt(123)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.Gt(123)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        124,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value > 123"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  123,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "abc",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are not order comparable/`,
 		},
@@ -83,58 +83,58 @@ func TestGreaterThan(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.GreaterOrEqual()
+// p.GreaterOrEqual()
 // ---------------------------------------------------------------------------
 
 func TestGreaterOrEqual(t *testing.T) {
 
-	p := pred.Ge(123)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.Ge(123)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        123,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value >= 123"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  122,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "abc",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are not order comparable/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.CloseTo()
+// p.CloseTo()
 // ---------------------------------------------------------------------------
 
 func TestCloseTo(t *testing.T) {
 
-	p := pred.CloseTo(123, 5)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.CloseTo(123, 5)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        118,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value ≈ 123 ± 5"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  128,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  117,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  129,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "abc",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`value "abc" of type string cannot be converted to float`,
 		},
@@ -143,15 +143,15 @@ func TestCloseTo(t *testing.T) {
 
 func TestCloseToEx(t *testing.T) {
 
-	p := pred.CloseTo([3]float64{1, 2, 3}, 0.2)
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.CloseTo([3]float64{1, 2, 3}, 0.2)
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        [3]float64{1, 2.1, 3},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value ≈ [1 2 3] ± 0.2"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        [3]float64{1, 2.3, 3},
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value ≈ [1 2 3] ± 0.2"},
 	})
 }

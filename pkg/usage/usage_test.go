@@ -3,8 +3,8 @@ package usage_test
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/assert"
+	"github.com/maargenton/go-testpredicate/pkg/p"
 )
 
 var skip = true
@@ -13,44 +13,44 @@ func TestEmpty(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := testpredicate.NewAsserter(t)
-	assert.That(nil, pred.IsNil())
+	assert := assert.New(t)
+	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3}
-	assert.That(v, pred.IsEmpty())
+	assert.That(v, p.IsEmpty())
 }
 
 func TestContains(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := testpredicate.NewAsserter(t)
-	assert.That(nil, pred.IsNil())
+	assert := assert.New(t)
+	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	w := []int{3, 4, 6}
-	assert.That(v, pred.Contains(w))
+	assert.That(v, p.Contains(w))
 }
 
 func TestContainsWrongType(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := testpredicate.NewAsserter(t)
-	assert.That(nil, pred.IsNil())
+	assert := assert.New(t)
+	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	w := struct{ v []int }{v: []int{3, 4, 6}}
-	assert.That(v, pred.Contains(w))
+	assert.That(v, p.Contains(w))
 }
 
 func TestLength(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := testpredicate.NewAsserter(t)
-	assert.That(nil, pred.IsNil())
+	assert := assert.New(t)
+	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
-	assert.That(v, pred.Length(pred.Lt(4)))
+	assert.That(v, p.Length(p.Lt(4)))
 }

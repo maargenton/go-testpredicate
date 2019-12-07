@@ -1,22 +1,21 @@
-package pred
+package p
 
 import (
 	"fmt"
 	"reflect"
 	"strings"
 
-	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
-	"github.com/maargenton/go-testpredicate/utils"
 )
 
 // All tests if a sub-predicate passes for all elements of an array
 // or slice
-func All(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func All(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "all of value", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			rv := reflect.ValueOf(value)
 			switch rv.Kind() {
@@ -25,17 +24,17 @@ func All(p testpredicate.Predicate) testpredicate.Predicate {
 				for i, n := 0, rv.Len(); i < n; i++ {
 					v := rv.Index(i).Interface()
 					r, err := p.Evaluate(v)
-					if r != testpredicate.PredicatePassed {
-						err = utils.WrapError(err,
+					if r != predicate.Passed {
+						err = predicate.WrapError(err,
 							"failed for value[%v]: %v",
 							i, prettyprint.FormatValue(v))
 						return r, err
 					}
 				}
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 
 			default:
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a container",
 						prettyprint.FormatValue(value), value)
@@ -45,11 +44,11 @@ func All(p testpredicate.Predicate) testpredicate.Predicate {
 
 // Any tests if a sub-predicate passes for any elements of an array
 // or slice
-func Any(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func Any(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "any of value", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			rv := reflect.ValueOf(value)
 			switch rv.Kind() {
@@ -58,23 +57,23 @@ func Any(p testpredicate.Predicate) testpredicate.Predicate {
 				for i, n := 0, rv.Len(); i < n; i++ {
 					v := rv.Index(i).Interface()
 					r, err := p.Evaluate(v)
-					if r == testpredicate.PredicateInvalid {
-						err = utils.WrapError(err,
+					if r == predicate.Invalid {
+						err = predicate.WrapError(err,
 							"failed for value[%v]: %v",
 							i, prettyprint.FormatValue(v))
 						return r, err
 					}
-					if r == testpredicate.PredicatePassed {
-						err = utils.WrapError(err,
+					if r == predicate.Passed {
+						err = predicate.WrapError(err,
 							"passed for value[%v]: %v",
 							i, prettyprint.FormatValue(v))
 						return r, err
 					}
 				}
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 
 			default:
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a container",
 						prettyprint.FormatValue(value), value)
@@ -83,14 +82,14 @@ func Any(p testpredicate.Predicate) testpredicate.Predicate {
 }
 
 // AllKeys tests if a sub-predicate passes for all keys of a map
-func AllKeys(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func AllKeys(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "all of value.Keys()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			rmap := reflect.ValueOf(value)
 			if rmap.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -99,26 +98,26 @@ func AllKeys(p testpredicate.Predicate) testpredicate.Predicate {
 			for _, kv := range rmap.MapKeys() {
 				k := kv.Interface()
 				r, err := p.Evaluate(k)
-				if r != testpredicate.PredicatePassed {
-					err = utils.WrapError(err,
+				if r != predicate.Passed {
+					err = predicate.WrapError(err,
 						"failed for key %v", prettyprint.FormatValue(k))
 					return r, err
 				}
 			}
-			return testpredicate.PredicatePassed, nil
+			return predicate.Passed, nil
 
 		})
 }
 
 // AnyKey tests if a sub-predicate passes for any key of a map
-func AnyKey(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func AnyKey(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "any of value.Keys()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			rmap := reflect.ValueOf(value)
 			if rmap.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -128,33 +127,33 @@ func AnyKey(p testpredicate.Predicate) testpredicate.Predicate {
 				k := kv.Interface()
 				r, err := p.Evaluate(k)
 
-				if r == testpredicate.PredicateInvalid {
-					err = utils.WrapError(err,
+				if r == predicate.Invalid {
+					err = predicate.WrapError(err,
 						"failed for key: %v",
 						prettyprint.FormatValue(k))
 					return r, err
 				}
-				if r == testpredicate.PredicatePassed {
-					err = utils.WrapError(err,
+				if r == predicate.Passed {
+					err = predicate.WrapError(err,
 						"passed for key: %v",
 						prettyprint.FormatValue(k))
 					return r, err
 				}
 			}
-			return testpredicate.PredicateFailed, nil
+			return predicate.Failed, nil
 
 		})
 }
 
 // AllValues tests if a sub-predicate passes for all values of a map
-func AllValues(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func AllValues(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "all of value.Values()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			rmap := reflect.ValueOf(value)
 			if rmap.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -164,26 +163,26 @@ func AllValues(p testpredicate.Predicate) testpredicate.Predicate {
 				k := kv.Interface()
 				v := rmap.MapIndex(kv).Interface()
 				r, err := p.Evaluate(v)
-				if r != testpredicate.PredicatePassed {
-					err = utils.WrapError(err,
+				if r != predicate.Passed {
+					err = predicate.WrapError(err,
 						"failed for value[%v]: %v",
 						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
 			}
-			return testpredicate.PredicatePassed, nil
+			return predicate.Passed, nil
 		})
 }
 
 // AnyValue tests if a sub-predicate passes for any value of a map
-func AnyValue(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func AnyValue(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "any of value.Values()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			rmap := reflect.ValueOf(value)
 			if rmap.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -195,33 +194,33 @@ func AnyValue(p testpredicate.Predicate) testpredicate.Predicate {
 				v := rmap.MapIndex(kv).Interface()
 
 				r, err := p.Evaluate(v)
-				if r == testpredicate.PredicateInvalid {
-					err = utils.WrapError(err,
+				if r == predicate.Invalid {
+					err = predicate.WrapError(err,
 						"failed for value[%v]: %v",
 						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
-				if r == testpredicate.PredicatePassed {
-					err = utils.WrapError(err,
+				if r == predicate.Passed {
+					err = predicate.WrapError(err,
 						"passed for value[%v]: %v",
 						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
 			}
-			return testpredicate.PredicateFailed, nil
+			return predicate.Failed, nil
 		})
 }
 
 // MapKeys applies the sub-predicate to the keys of a map
-func MapKeys(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func MapKeys(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "value.Keys()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			v := reflect.ValueOf(value)
 			if v.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -232,21 +231,21 @@ func MapKeys(p testpredicate.Predicate) testpredicate.Predicate {
 			}
 
 			r, err := p.Evaluate(keys)
-			// err = utils.WrapError(err, "length: %v", value)
+			// err = predicate.WrapError(err, "length: %v", value)
 			return r, err
 		})
 }
 
 // MapValues applies the sub-predicate to the values of a map
-func MapValues(p testpredicate.Predicate) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func MapValues(p predicate.T) predicate.T {
+	return predicate.Make(
 		strings.Replace(p.String(), "value", "value.Values()", -1),
 
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			rmap := reflect.ValueOf(value)
 			if rmap.Kind() != reflect.Map {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
 						prettyprint.FormatValue(value), value)
@@ -258,7 +257,7 @@ func MapValues(p testpredicate.Predicate) testpredicate.Predicate {
 			}
 
 			r, err := p.Evaluate(values)
-			// err = utils.WrapError(err, "length: %v", value)
+			// err = predicate.WrapError(err, "length: %v", value)
 			return r, err
 		})
 }

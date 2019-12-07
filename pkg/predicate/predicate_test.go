@@ -2,6 +2,7 @@ package predicate_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/pkg/predicate"
@@ -70,6 +71,30 @@ func TestPredicateOther(t *testing.T) {
 	if actual != expected {
 		t.Errorf("\nexprected %v to print as '%v',\nactual: '%v'",
 			r, expected, actual)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// predicate.WrapError()
+// ---------------------------------------------------------------------------
+
+func TestWrapError(t *testing.T) {
+	err1 := fmt.Errorf("error1")
+	err2 := predicate.WrapError(err1, "error2: %v", 123)
+	if !strings.HasPrefix(err2.Error(), "error2: 123") {
+		t.Errorf("unexpected error: '%v'", err2)
+
+	}
+	if !strings.HasSuffix(err2.Error(), "error1") {
+		t.Errorf("unexpected error: '%v'", err2)
+	}
+}
+
+func TestWrapErrorWithNoBaseError(t *testing.T) {
+	err2 := predicate.WrapError(nil, "error2: %v", 123)
+	if !strings.HasPrefix(err2.Error(), "error2: 123") ||
+		strings.Contains(err2.Error(), "\n") {
+		t.Errorf("unexpected error: '%v'", err2)
 	}
 }
 

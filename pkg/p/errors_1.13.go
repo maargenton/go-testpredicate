@@ -1,33 +1,33 @@
 // +build go1.13
 
-package pred
+package p
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // IsError tests if an error value matches a specific error,
 // using errros.Is() to support go v1.13 error wrapping
-func IsError(expectedErr error) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsError(expectedErr error) predicate.T {
+	return predicate.Make(
 		fmt.Sprintf("value is an error matching %v", expectedErr),
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			if value == nil {
 				if expectedErr == nil {
-					return testpredicate.PredicatePassed, nil
+					return predicate.Passed, nil
 				}
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 			} else if err, ok := value.(error); ok {
 				if errors.Is(err, expectedErr) {
-					return testpredicate.PredicatePassed, nil
+					return predicate.Passed, nil
 				}
-				return testpredicate.PredicateFailed,
+				return predicate.Failed,
 					fmt.Errorf("detailed error: %v", err)
 			} else {
-				return testpredicate.PredicateInvalid,
+				return predicate.Invalid,
 					fmt.Errorf("value of type '%T' is not an error", value)
 			}
 		})

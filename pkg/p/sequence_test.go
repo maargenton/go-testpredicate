@@ -1,292 +1,292 @@
-package pred_test
+package p_test
 
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.IsEmpty()
+// p.IsEmpty()
 // ---------------------------------------------------------------------------
 
 func TestStringIsEmpty(t *testing.T) {
-	p := pred.IsEmpty()
+	pred := p.IsEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       []int{1, 2, 3, 4, 5},
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{"length: 5"},
 	})
 }
 
 func TestSliceIsEmpty(t *testing.T) {
-	p := pred.IsEmpty()
+	pred := p.IsEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "Hello world!",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{"length: 12"},
 	})
 }
 
 func TestMapIsEmpty(t *testing.T) {
-	p := pred.IsEmpty()
+	pred := p.IsEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        map[string]int{},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value: map[string]int{
 			"aaa":    2,
 			"bbbccc": 4,
 		},
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{"length: 2"},
 	})
 }
 
 func TestIntIsEmpty(t *testing.T) {
-	p := pred.IsEmpty()
+	pred := p.IsEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        uint64(123),
-		result:       testpredicate.PredicateInvalid,
+		result:       predicate.Invalid,
 		descMatchers: []string{"value is empty"},
 		errMatchers:  []string{"value of type uint64 cannot be tested for emptiness"},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsNotEmpty()
+// p.IsNotEmpty()
 // ---------------------------------------------------------------------------
 
 func TestStringIsNotEmpty(t *testing.T) {
-	p := pred.IsNotEmpty()
+	pred := p.IsNotEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{1, 2, 3, 4, 5},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is not empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  []int{},
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 }
 
 func TestSliceIsNotEmpty(t *testing.T) {
-	p := pred.IsNotEmpty()
+	pred := p.IsNotEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Hello world!",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is not empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 }
 
 func TestMapIsNotEmpty(t *testing.T) {
-	p := pred.IsNotEmpty()
+	pred := p.IsNotEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value: map[string]int{
 			"aaa":    2,
 			"bbbccc": 4,
 		},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is not empty"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  map[string]int{},
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 }
 
 func TestIntIsNotEmpty(t *testing.T) {
-	p := pred.IsNotEmpty()
+	pred := p.IsNotEmpty()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        uint64(123),
-		result:       testpredicate.PredicateInvalid,
+		result:       predicate.Invalid,
 		descMatchers: []string{"value is not empty"},
 		errMatchers:  []string{`/value .* of type .* cannot be tested for emptiness/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.StartsWith()
+// p.StartsWith()
 // ---------------------------------------------------------------------------
 func TestStringStartsWith(t *testing.T) {
-	p := pred.StartsWith("Hello")
+	pred := p.StartsWith("Hello")
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Hello world!",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value starts with \"Hello\""},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "Hey",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/sequence .* too small/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "Hey world",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{`/value .* of type .* is not a sequence/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.Contains()
+// p.Contains()
 // ---------------------------------------------------------------------------
 
 func TestStringContains(t *testing.T) {
-	p := pred.Contains("worl")
+	pred := p.Contains("worl")
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Hello world!",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value contains \"worl\""},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "Hey",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/sequence .* too small/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "Hey universe",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{`/value .* of type .* is not a sequence/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.StartsWith()
+// p.StartsWith()
 // ---------------------------------------------------------------------------
 func TestStringEndsWith(t *testing.T) {
-	p := pred.EndsWith("world!")
+	pred := p.EndsWith("world!")
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Hello world!",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value ends with \"world!\""},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "Hey",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/sequence .* too small/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "Hey world",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{`/value .* of type .* is not a sequence/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.Length()
+// p.Length()
 // ---------------------------------------------------------------------------
 
 func TestSliceLength(t *testing.T) {
-	p := pred.Length(pred.Lt(3))
+	pred := p.Length(p.Lt(3))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{1, 2},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"length(value) < 3"},
 		errMatchers:  []string{"length: 2"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{1, 2, 3, 4, 5},
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"length(value) < 3"},
 		errMatchers:  []string{"length: 5"},
 	})
 }
 
 func TestStringLength(t *testing.T) {
-	p := pred.Length(pred.Lt(3))
+	pred := p.Length(p.Lt(3))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Yo",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"length(value) < 3"},
 		errMatchers:  []string{"length: 2"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Hello world!",
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"length(value) < 3"},
 		errMatchers:  []string{"length: 12"},
 	})
 }
 
 func TestIntLength(t *testing.T) {
-	p := pred.Length(pred.LessThan(3))
-	validatePredicate(t, p, &predicateExpectation{
+	pred := p.Length(p.LessThan(3))
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        uint64(123),
-		result:       testpredicate.PredicateInvalid,
+		result:       predicate.Invalid,
 		descMatchers: []string{"length(value) < 3"},
 		errMatchers:  []string{"value of type uint64 does not have a length"},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.Capacity()
+// p.Capacity()
 // ---------------------------------------------------------------------------
 
 func TestSliceCapacity(t *testing.T) {
-	p := pred.Capacity(pred.Lt(3))
+	pred := p.Capacity(p.Lt(3))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{1, 2},
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"capacity(value) < 3"},
 		errMatchers:  []string{"capacity: 2"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        []int{1, 2, 3, 4, 5},
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"capacity(value) < 3"},
 		errMatchers:  []string{"capacity: 5"},
 	})
 }
 
 func TestStringCapacity(t *testing.T) {
-	p := pred.Capacity(pred.Lt(3))
+	pred := p.Capacity(p.Lt(3))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "Yo",
-		result:       testpredicate.PredicateInvalid,
+		result:       predicate.Invalid,
 		descMatchers: []string{"capacity(value) < 3"},
 		errMatchers:  []string{"value of type string does not have a capacity"},
 	})

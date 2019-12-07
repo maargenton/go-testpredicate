@@ -1,4 +1,4 @@
-package pred_test
+package p_test
 
 import (
 	"fmt"
@@ -6,17 +6,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 type predicateExpectation struct {
 	value        interface{}
-	result       testpredicate.PredicateResult
+	result       predicate.Result
 	descMatchers []string
 	errMatchers  []string
 }
 
-func validatePredicate(t *testing.T, p testpredicate.Predicate, exp *predicateExpectation) {
+func validatePredicate(t *testing.T, p predicate.T, exp *predicateExpectation) {
 	t.Helper()
 	if p == nil {
 		t.Errorf("\npredicate should not be nil")

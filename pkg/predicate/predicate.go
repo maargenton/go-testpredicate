@@ -45,7 +45,16 @@ func (r Result) String() string {
 	return fmt.Sprintf("Result(%v)", int8(r))
 }
 
-//
+// WrapError appends the nested error after the formated message, on a new line
+func WrapError(nestedErr error, format string, a ...interface{}) error {
+	if nestedErr != nil {
+		msg := fmt.Sprintf(format, a...)
+		return fmt.Errorf("%v\n%v", msg, nestedErr)
+	}
+
+	return fmt.Errorf(format, a...)
+}
+
 // ---------------------------------------------------------------------------
 //
 // ---------------------------------------------------------------------------

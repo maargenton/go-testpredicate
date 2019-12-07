@@ -1,39 +1,39 @@
-package pred_test
+package p_test
 
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.StartsWith()
+// p.StartsWith()
 // ---------------------------------------------------------------------------
 func TestMatch(t *testing.T) {
-	p := pred.Matches(`aaa \d+ bbb`)
+	pred := p.Matches(`aaa \d+ bbb`)
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "aaa 123 bbb!",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value matches /aaa \\d+ bbb/"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  123,
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			"value of type int cannot be matched against a regexp",
 		},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  "aaa 0x1f3 bbb!",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 
-	p1 := pred.Matches(`aaa (\d+ bbb`)
+	p1 := p.Matches(`aaa (\d+ bbb`)
 	validatePredicate(t, p1, &predicateExpectation{
 		value:  "aaa 123 bbb!",
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			"failed to compile regexp",
 		},
@@ -41,75 +41,75 @@ func TestMatch(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.ToUpper()
+// p.ToUpper()
 // ---------------------------------------------------------------------------
 
 func TestToUpper(t *testing.T) {
-	p := pred.ToUpper(pred.StartsWith("ABC"))
+	pred := p.ToUpper(p.StartsWith("ABC"))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "AbCdEf",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"ToUpper(value) starts with"},
 		errMatchers:  []string{`/.*/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  123,
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			"value of type int cannot be transformed to uppercase",
 		},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "aaa 0x1f3 bbb!",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/.*/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.ToLower()
+// p.ToLower()
 // ---------------------------------------------------------------------------
 
 func TestToLower(t *testing.T) {
-	p := pred.ToLower(pred.StartsWith("abc"))
+	pred := p.ToLower(p.StartsWith("abc"))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        "AbCdEf",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"ToLower(value) starts with"},
 		errMatchers:  []string{`/.*/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:  123,
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			"value of type int cannot be transformed to uppercase",
 		},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       "aaa 0x1f3 bbb!",
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/.*/`},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.ToString()
+// p.ToString()
 // ---------------------------------------------------------------------------
 
 func TestToString(t *testing.T) {
-	p := pred.ToString(pred.StartsWith("123"))
+	pred := p.ToString(p.StartsWith("123"))
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        12345,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"ToString(value) starts with"},
 		errMatchers:  []string{`/.*/`},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       54321,
-		result:      testpredicate.PredicateFailed,
+		result:      predicate.Failed,
 		errMatchers: []string{`/.*/`},
 	})
 }

@@ -1,34 +1,34 @@
-package pred_test
+package p_test
 
 import (
 	"io"
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.IsNoError()
+// p.IsNoError()
 // ---------------------------------------------------------------------------
 
 func TestIsNoError(t *testing.T) {
-	p := pred.IsNoError()
+	pred := p.IsNoError()
 
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        nil,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is not an error"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:        io.EOF,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is not an error"},
 		errMatchers:  []string{"detailed error:"},
 	})
-	validatePredicate(t, p, &predicateExpectation{
+	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"/value of type .* is not an error/"},
 	})
 }

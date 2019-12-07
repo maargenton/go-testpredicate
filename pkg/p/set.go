@@ -1,114 +1,114 @@
-package pred
+package p
 
 import (
 	"fmt"
 	"reflect"
 
-	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // IsSubsetOf returns a predicate that checks
-func IsSubsetOf(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsSubsetOf(rhs interface{}) predicate.T {
+	return predicate.Make(
 		fmt.Sprintf("value is subset of %v", prettyprint.FormatValue(rhs)),
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			lhsSet, err := reflectSet(value)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			rhsSet, err := reflectSet(rhs)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			diff := diffSet(lhsSet, rhsSet)
 			if len(diff) == 0 {
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 			}
 
-			return testpredicate.PredicateFailed, fmt.Errorf(
+			return predicate.Failed, fmt.Errorf(
 				"extra values: %v", formatSetValues(diff))
 		})
 }
 
 // IsSupersetOf returns a predicate that checks
-func IsSupersetOf(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsSupersetOf(rhs interface{}) predicate.T {
+	return predicate.Make(
 		fmt.Sprintf("value is superset of %v", prettyprint.FormatValue(rhs)),
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			lhsSet, err := reflectSet(value)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			rhsSet, err := reflectSet(rhs)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			diff := diffSet(rhsSet, lhsSet)
 			if len(diff) == 0 {
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 			}
 
-			return testpredicate.PredicateFailed, fmt.Errorf(
+			return predicate.Failed, fmt.Errorf(
 				"missing values: %v", formatSetValues(diff))
 		})
 }
 
 // IsDisjointSetFrom returns a predicate that checks
-func IsDisjointSetFrom(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsDisjointSetFrom(rhs interface{}) predicate.T {
+	return predicate.Make(
 		fmt.Sprintf("value is disjoint from %v", prettyprint.FormatValue(rhs)),
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			lhsSet, err := reflectSet(value)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			rhsSet, err := reflectSet(rhs)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			inter := intersectSet(lhsSet, rhsSet)
 			if len(inter) == 0 {
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 			}
 
-			return testpredicate.PredicateFailed, fmt.Errorf(
+			return predicate.Failed, fmt.Errorf(
 				"common values: %v", formatSetValues(inter))
 		})
 }
 
 // IsEqualSet returns a predicate that checks
-func IsEqualSet(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsEqualSet(rhs interface{}) predicate.T {
+	return predicate.Make(
 		fmt.Sprintf("value is equal set as %v", prettyprint.FormatValue(rhs)),
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			lhsSet, err := reflectSet(value)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			rhsSet, err := reflectSet(rhs)
 			if err != nil {
-				return testpredicate.PredicateInvalid, err
+				return predicate.Invalid, err
 			}
 
 			extra := diffSet(lhsSet, rhsSet)
 			missing := diffSet(rhsSet, lhsSet)
 			if len(extra) == 0 && len(missing) == 0 {
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 			}
 
-			return testpredicate.PredicateFailed, fmt.Errorf(
+			return predicate.Failed, fmt.Errorf(
 				"extra values: %v\nmissing values: %v",
 				formatSetValues(extra), formatSetValues(missing))
 		})

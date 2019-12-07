@@ -1,21 +1,21 @@
-package pred
+package p
 
 import (
 	"fmt"
 	"reflect"
 
-	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
 // IsNil tests if a value is nil
-func IsNil() testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsNil() predicate.T {
+	return predicate.Make(
 		"value is nil",
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			if value == nil {
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 			}
 
 			var vv = reflect.ValueOf(value)
@@ -24,12 +24,12 @@ func IsNil() testpredicate.Predicate {
 				reflect.UnsafePointer, reflect.Interface, reflect.Slice:
 
 				if vv.IsNil() {
-					return testpredicate.PredicatePassed, nil
+					return predicate.Passed, nil
 				}
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 
 			default:
-				return testpredicate.PredicateInvalid, fmt.Errorf(
+				return predicate.Invalid, fmt.Errorf(
 					"value of type '%v' is never nil",
 					vv.Type())
 			}
@@ -37,12 +37,12 @@ func IsNil() testpredicate.Predicate {
 }
 
 // IsNotNil tests if a value is not nil
-func IsNotNil() testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsNotNil() predicate.T {
+	return predicate.Make(
 		"value is not nil",
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 			if value == nil {
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 			}
 
 			var vv = reflect.ValueOf(value)
@@ -51,12 +51,12 @@ func IsNotNil() testpredicate.Predicate {
 				reflect.UnsafePointer, reflect.Interface, reflect.Slice:
 
 				if vv.IsNil() {
-					return testpredicate.PredicateFailed, nil
+					return predicate.Failed, nil
 				}
-				return testpredicate.PredicatePassed, nil
+				return predicate.Passed, nil
 
 			default:
-				return testpredicate.PredicateInvalid, fmt.Errorf(
+				return predicate.Invalid, fmt.Errorf(
 					"value of type '%v' is never nil",
 					vv.Type())
 			}
@@ -64,13 +64,13 @@ func IsNotNil() testpredicate.Predicate {
 }
 
 // Eq is a shorter alias for IsEqualTo
-func Eq(rhs interface{}) testpredicate.Predicate {
+func Eq(rhs interface{}) predicate.T {
 	return IsEqualTo(rhs)
 }
 
 // IsEqualTo tests if a value is comparable and equal to the reference value
-func IsEqualTo(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakeBoolPredicate(
+func IsEqualTo(rhs interface{}) predicate.T {
+	return predicate.MakeBool(
 		fmt.Sprintf("value == %v", prettyprint.FormatValue(rhs)),
 		func(v interface{}) (bool, error) {
 			r, err := value.CompareUnordered(v, rhs)
@@ -82,13 +82,13 @@ func IsEqualTo(rhs interface{}) testpredicate.Predicate {
 }
 
 // Ne is a shorter alias for IsNotEqualTo
-func Ne(rhs interface{}) testpredicate.Predicate {
+func Ne(rhs interface{}) predicate.T {
 	return IsNotEqualTo(rhs)
 }
 
 // IsNotEqualTo tests if a value is comparable but different than the reference value
-func IsNotEqualTo(rhs interface{}) testpredicate.Predicate {
-	return testpredicate.MakeBoolPredicate(
+func IsNotEqualTo(rhs interface{}) predicate.T {
+	return predicate.MakeBool(
 		fmt.Sprintf("value != %v", prettyprint.FormatValue(rhs)),
 		func(v interface{}) (bool, error) {
 			r, err := value.CompareUnordered(v, rhs)
@@ -100,38 +100,38 @@ func IsNotEqualTo(rhs interface{}) testpredicate.Predicate {
 }
 
 // IsTrue tests if a value is true
-func IsTrue() testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsTrue() predicate.T {
+	return predicate.Make(
 		"value is true",
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			if b, ok := value.(bool); ok {
 				if b == true {
-					return testpredicate.PredicatePassed, nil
+					return predicate.Passed, nil
 				}
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 			}
 
-			return testpredicate.PredicateInvalid, fmt.Errorf(
+			return predicate.Invalid, fmt.Errorf(
 				"value of type '%v' is never true",
 				reflect.TypeOf(value))
 		})
 }
 
 // IsFalse tests if a value is false
-func IsFalse() testpredicate.Predicate {
-	return testpredicate.MakePredicate(
+func IsFalse() predicate.T {
+	return predicate.Make(
 		"value is false",
-		func(value interface{}) (testpredicate.PredicateResult, error) {
+		func(value interface{}) (predicate.Result, error) {
 
 			if b, ok := value.(bool); ok {
 				if b == false {
-					return testpredicate.PredicatePassed, nil
+					return predicate.Passed, nil
 				}
-				return testpredicate.PredicateFailed, nil
+				return predicate.Failed, nil
 			}
 
-			return testpredicate.PredicateInvalid, fmt.Errorf(
+			return predicate.Invalid, fmt.Errorf(
 				"value of type '%v' is never false",
 				reflect.TypeOf(value))
 		})

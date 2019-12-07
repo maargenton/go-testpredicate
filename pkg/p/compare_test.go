@@ -1,121 +1,121 @@
-package pred_test
+package p_test
 
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/pred"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/predicate"
 )
 
 // ---------------------------------------------------------------------------
-// pred.IsNil()
+// p.IsNil()
 // ---------------------------------------------------------------------------
 
 func TestIsNil(t *testing.T) {
-	p := pred.IsNil()
+	p := p.IsNil()
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        nil,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is nil"},
 	})
 
 	var ptr *int
 	validatePredicate(t, p, &predicateExpectation{
 		value:  ptr,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  &ptr,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 
 	var slice []int
 	validatePredicate(t, p, &predicateExpectation{
 		value:  slice,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  &slice,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'int' is never nil"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:       "abc",
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'string' is never nil"},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsNotNil()
+// p.IsNotNil()
 // ---------------------------------------------------------------------------
 
 func TestIsNotNil(t *testing.T) {
-	p := pred.IsNotNil()
+	p := p.IsNotNil()
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        nil,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is not nil"},
 	})
 
 	var ptr *int
 	validatePredicate(t, p, &predicateExpectation{
 		value:  ptr,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  &ptr,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 
 	var slice []int
 	validatePredicate(t, p, &predicateExpectation{
 		value:  slice,
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  &slice,
-		result: testpredicate.PredicatePassed,
+		result: predicate.Passed,
 	})
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'int' is never nil"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:       "abc",
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'string' is never nil"},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsEqualTo()
+// p.IsEqualTo()
 // ---------------------------------------------------------------------------
 
 func TestIsEqualTo(t *testing.T) {
-	p := pred.Eq("123")
+	p := p.Eq("123")
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        "123",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{`value == "123"`},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  "124",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  124,
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are never equal/`,
 		},
@@ -123,24 +123,24 @@ func TestIsEqualTo(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsNotEqualTo()
+// p.IsNotEqualTo()
 // ---------------------------------------------------------------------------
 
 func TestNotIsEqualTo(t *testing.T) {
-	p := pred.Ne("123")
+	p := p.Ne("123")
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        "124",
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{`value != "123"`},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  "123",
-		result: testpredicate.PredicateFailed,
+		result: predicate.Failed,
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:  124,
-		result: testpredicate.PredicateInvalid,
+		result: predicate.Invalid,
 		errMatchers: []string{
 			`/values of type .* and .* are never equal/`,
 		},
@@ -148,61 +148,61 @@ func TestNotIsEqualTo(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsTrue()
+// p.IsTrue()
 // ---------------------------------------------------------------------------
 
 func TestIsTrue(t *testing.T) {
-	p := pred.IsTrue()
+	p := p.IsTrue()
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        true,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is true"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:        false,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is true"},
 	})
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'int' is never true"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:       "abc",
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'string' is never true"},
 	})
 }
 
 // ---------------------------------------------------------------------------
-// pred.IsFalse()
+// p.IsFalse()
 // ---------------------------------------------------------------------------
 
 func TestIsFalse(t *testing.T) {
-	p := pred.IsFalse()
+	p := p.IsFalse()
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:        false,
-		result:       testpredicate.PredicatePassed,
+		result:       predicate.Passed,
 		descMatchers: []string{"value is false"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:        true,
-		result:       testpredicate.PredicateFailed,
+		result:       predicate.Failed,
 		descMatchers: []string{"value is false"},
 	})
 
 	validatePredicate(t, p, &predicateExpectation{
 		value:       123,
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'int' is never false"},
 	})
 	validatePredicate(t, p, &predicateExpectation{
 		value:       "abc",
-		result:      testpredicate.PredicateInvalid,
+		result:      predicate.Invalid,
 		errMatchers: []string{"value of type 'string' is never false"},
 	})
 }

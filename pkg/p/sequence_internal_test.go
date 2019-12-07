@@ -1,4 +1,4 @@
-package pred
+package p
 
 import (
 	"reflect"
