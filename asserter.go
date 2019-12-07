@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/utils"
 )
 
@@ -51,7 +52,7 @@ func (assert *testingAsserter) That(value interface{}, predicate Predicate, deta
 		if err != nil {
 			s += fmt.Sprintf("\n%v,", err)
 		}
-		s += fmt.Sprintf("\nvalue: %v", utils.FormatValue(value))
+		s += fmt.Sprintf("\nvalue: %v", prettyprint.FormatValue(value))
 
 		assert.t.Errorf(s)
 	}

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/utils"
 )
 
@@ -50,7 +51,7 @@ func ToUpper(p testpredicate.Predicate) testpredicate.Predicate {
 
 			s = strings.ToUpper(s)
 			r, err := p.Evaluate(s)
-			err = utils.WrapError(err, "uppercase: %v", utils.FormatValue(s))
+			err = utils.WrapError(err, "uppercase: %v", prettyprint.FormatValue(s))
 			return r, err
 		})
 }
@@ -70,7 +71,7 @@ func ToLower(p testpredicate.Predicate) testpredicate.Predicate {
 
 			s = strings.ToLower(s)
 			r, err := p.Evaluate(s)
-			err = utils.WrapError(err, "lowercase: %v", utils.FormatValue(s))
+			err = utils.WrapError(err, "lowercase: %v", prettyprint.FormatValue(s))
 			return r, err
 		})
 }
@@ -84,7 +85,7 @@ func ToString(p testpredicate.Predicate) testpredicate.Predicate {
 
 			s := fmt.Sprintf("%v", value)
 			r, err := p.Evaluate(s)
-			err = utils.WrapError(err, "string: %v", utils.FormatValue(s))
+			err = utils.WrapError(err, "string: %v", prettyprint.FormatValue(s))
 			return r, err
 		})
 }

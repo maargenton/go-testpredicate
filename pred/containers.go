@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/utils"
 )
 
@@ -27,7 +28,7 @@ func All(p testpredicate.Predicate) testpredicate.Predicate {
 					if r != testpredicate.PredicatePassed {
 						err = utils.WrapError(err,
 							"failed for value[%v]: %v",
-							i, utils.FormatValue(v))
+							i, prettyprint.FormatValue(v))
 						return r, err
 					}
 				}
@@ -37,7 +38,7 @@ func All(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a container",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 		})
 }
@@ -60,13 +61,13 @@ func Any(p testpredicate.Predicate) testpredicate.Predicate {
 					if r == testpredicate.PredicateInvalid {
 						err = utils.WrapError(err,
 							"failed for value[%v]: %v",
-							i, utils.FormatValue(v))
+							i, prettyprint.FormatValue(v))
 						return r, err
 					}
 					if r == testpredicate.PredicatePassed {
 						err = utils.WrapError(err,
 							"passed for value[%v]: %v",
-							i, utils.FormatValue(v))
+							i, prettyprint.FormatValue(v))
 						return r, err
 					}
 				}
@@ -76,7 +77,7 @@ func Any(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a container",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 		})
 }
@@ -92,7 +93,7 @@ func AllKeys(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -100,7 +101,7 @@ func AllKeys(p testpredicate.Predicate) testpredicate.Predicate {
 				r, err := p.Evaluate(k)
 				if r != testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
-						"failed for key %v", utils.FormatValue(k))
+						"failed for key %v", prettyprint.FormatValue(k))
 					return r, err
 				}
 			}
@@ -120,7 +121,7 @@ func AnyKey(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -130,13 +131,13 @@ func AnyKey(p testpredicate.Predicate) testpredicate.Predicate {
 				if r == testpredicate.PredicateInvalid {
 					err = utils.WrapError(err,
 						"failed for key: %v",
-						utils.FormatValue(k))
+						prettyprint.FormatValue(k))
 					return r, err
 				}
 				if r == testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
 						"passed for key: %v",
-						utils.FormatValue(k))
+						prettyprint.FormatValue(k))
 					return r, err
 				}
 			}
@@ -156,7 +157,7 @@ func AllValues(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -166,7 +167,7 @@ func AllValues(p testpredicate.Predicate) testpredicate.Predicate {
 				if r != testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
 						"failed for value[%v]: %v",
-						utils.FormatValue(k), utils.FormatValue(v))
+						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
 			}
@@ -185,7 +186,7 @@ func AnyValue(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -197,13 +198,13 @@ func AnyValue(p testpredicate.Predicate) testpredicate.Predicate {
 				if r == testpredicate.PredicateInvalid {
 					err = utils.WrapError(err,
 						"failed for value[%v]: %v",
-						utils.FormatValue(k), utils.FormatValue(v))
+						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
 				if r == testpredicate.PredicatePassed {
 					err = utils.WrapError(err,
 						"passed for value[%v]: %v",
-						utils.FormatValue(k), utils.FormatValue(v))
+						prettyprint.FormatValue(k), prettyprint.FormatValue(v))
 					return r, err
 				}
 			}
@@ -223,7 +224,7 @@ func MapKeys(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 			keys := make([]interface{}, 0, v.Len())
 			for _, k := range v.MapKeys() {
@@ -248,7 +249,7 @@ func MapValues(p testpredicate.Predicate) testpredicate.Predicate {
 				return testpredicate.PredicateInvalid,
 					fmt.Errorf(
 						"value %v of type %T is not a map",
-						utils.FormatValue(value), value)
+						prettyprint.FormatValue(value), value)
 			}
 			values := make([]interface{}, 0, rmap.Len())
 			for _, k := range rmap.MapKeys() {

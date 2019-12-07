@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/maargenton/go-testpredicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/utils"
 )
 
@@ -53,7 +54,7 @@ func PanicsAndResult(p testpredicate.Predicate) testpredicate.Predicate {
 					"failure: call to fct() did not panic")
 			}
 			r, err := p.Evaluate(result)
-			err = utils.WrapError(err, "panic: %v", utils.FormatValue(result))
+			err = utils.WrapError(err, "panic: %v", prettyprint.FormatValue(result))
 			return r, err
 		})
 }

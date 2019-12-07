@@ -5,13 +5,13 @@ import (
 	"reflect"
 
 	"github.com/maargenton/go-testpredicate"
-	"github.com/maargenton/go-testpredicate/utils"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // IsSubsetOf returns a predicate that checks
 func IsSubsetOf(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value is subset of %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value is subset of %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			lhsSet, err := reflectSet(value)
@@ -37,7 +37,7 @@ func IsSubsetOf(rhs interface{}) testpredicate.Predicate {
 // IsSupersetOf returns a predicate that checks
 func IsSupersetOf(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value is superset of %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value is superset of %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			lhsSet, err := reflectSet(value)
@@ -63,7 +63,7 @@ func IsSupersetOf(rhs interface{}) testpredicate.Predicate {
 // IsDisjointSetFrom returns a predicate that checks
 func IsDisjointSetFrom(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value is disjoint from %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value is disjoint from %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			lhsSet, err := reflectSet(value)
@@ -89,7 +89,7 @@ func IsDisjointSetFrom(rhs interface{}) testpredicate.Predicate {
 // IsEqualSet returns a predicate that checks
 func IsEqualSet(rhs interface{}) testpredicate.Predicate {
 	return testpredicate.MakePredicate(
-		fmt.Sprintf("value is equal set as %v", utils.FormatValue(rhs)),
+		fmt.Sprintf("value is equal set as %v", prettyprint.FormatValue(rhs)),
 		func(value interface{}) (testpredicate.PredicateResult, error) {
 
 			lhsSet, err := reflectSet(value)
@@ -133,7 +133,7 @@ func reflectSet(value interface{}) (set, error) {
 
 	if !isIndexable(v.Kind()) {
 		return set{}, fmt.Errorf(
-			"value %v of type %T is not a indexable collection", utils.FormatValue(value), value)
+			"value %v of type %T is not a indexable collection", prettyprint.FormatValue(value), value)
 	}
 
 	s := make(set, v.Len())
@@ -184,7 +184,7 @@ func formatSetValues(s set) string {
 			if len(values) > 0 {
 				values += ", "
 			}
-			values += utils.FormatValue(v)
+			values += prettyprint.FormatValue(v)
 		} else {
 			values += ", ..."
 			break

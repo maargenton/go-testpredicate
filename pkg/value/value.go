@@ -1,3 +1,6 @@
+// Package value defines helper functions to go from generic interface{} to
+// specific numeric types, and compare them as either ordered or unordered
+// values.
 package value
 
 import (
