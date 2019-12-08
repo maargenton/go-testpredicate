@@ -2,6 +2,8 @@ package asserter
 
 import (
 	"fmt"
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/pkg/predicate"
@@ -21,7 +23,7 @@ type T interface {
 // New return an implementation of the T interface wrapping a
 // testing.T context
 func New(t ctx, option ...Option) T {
-	var a = &assert{t: t, opts: opts{abortOnError: true}}
+	var a = &assert{t: t}
 	for _, opt := range option {
 		opt(&a.opts)
 	}
@@ -36,9 +38,9 @@ type opts struct {
 type Option func(*opts)
 
 // AbortOnError tells teh asserter wether or not to fail
-func AbortOnError(b bool) Option {
+func AbortOnError() Option {
 	return func(o *opts) {
-		o.abortOnError = b
+		o.abortOnError = true
 	}
 }
 
@@ -67,17 +69,15 @@ func (assert *assert) That(v interface{}, p predicate.T, details ...interface{})
 		return
 	}
 
-	s := ""
-	if len(details) != 0 {
-		s += "\n" + formatDetails(details...)
-	}
-	s += fmt.Sprintf("\nexpected: %v,", p)
-	if err != nil {
-		s += fmt.Sprintf("\n%v,", err)
-	}
-	s += fmt.Sprintf("\nvalue: %v", prettyprint.FormatValue(v))
+	var buf strings.Builder
 
-	assert.fail(s)
+	fmt.Fprintf(&buf, "\nexpected: %v,", p)
+	if err != nil {
+		fmt.Fprintf(&buf, "\n%v,", err)
+	}
+	fmt.Fprintf(&buf, "\nvalue: %v", prettyprint.FormatValue(v))
+	writeDetails(&buf, details)
+	assert.fail(buf.String())
 }
 
 func (assert *assert) fail(s string, args ...interface{}) {
@@ -90,12 +90,13 @@ func (assert *assert) fail(s string, args ...interface{}) {
 
 // formatDetails formats a list of assertion details either as a format string
 // with a list of arguments, or just a list of values
-func formatDetails(details ...interface{}) string {
-	if len(details) == 0 {
-		return ""
+func writeDetails(w io.Writer, details []interface{}) {
+	for i := 0; i < len(details); i += 2 {
+		if i+1 < len(details) {
+			fmt.Fprintf(w, "\n%v: %v",
+				details[i], prettyprint.FormatValue(details[i+1]))
+		} else {
+			fmt.Fprintf(w, "\n%v", details[i])
+		}
 	}
-	if s, ok := details[0].(string); ok {
-		return fmt.Sprintf(s, details[1:]...)
-	}
-	return fmt.Sprint(details...)
 }
