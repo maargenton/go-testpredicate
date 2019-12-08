@@ -3,7 +3,7 @@ package usage_test
 import (
 	"testing"
 
-	"github.com/maargenton/go-testpredicate/pkg/assert"
+	"github.com/maargenton/go-testpredicate/pkg/asserter"
 	"github.com/maargenton/go-testpredicate/pkg/p"
 )
 
@@ -13,7 +13,7 @@ func TestEmpty(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := assert.New(t)
+	assert := asserter.New(t)
 	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3}
@@ -24,7 +24,7 @@ func TestContains(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := assert.New(t)
+	assert := asserter.New(t)
 	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
@@ -36,7 +36,7 @@ func TestContainsWrongType(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := assert.New(t)
+	assert := asserter.New(t)
 	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
@@ -48,7 +48,7 @@ func TestLength(t *testing.T) {
 	if skip {
 		t.Skip()
 	}
-	assert := assert.New(t)
+	assert := asserter.New(t)
 	assert.That(nil, p.IsNil())
 
 	v := []int{1, 2, 3, 4, 5, 6, 7, 8}
