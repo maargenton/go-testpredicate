@@ -1,3 +1,5 @@
+// Package predicate defines the interface between the asserter and specific
+// predicates implementation
 package predicate
 
 import "fmt"

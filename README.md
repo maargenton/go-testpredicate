@@ -31,7 +31,7 @@ package examples_test
 import (
     "testing"
 
-    "github.com/maargenton/go-testpredicate/pkg/assert"
+    "github.com/maargenton/go-testpredicate/pkg/asserter"
     "github.com/maargenton/go-testpredicate/pkg/p"
 )
 

@@ -1,12 +1,14 @@
+// Package prettyprint formats any go value in a way that is similar to the
+// equivalent literal in a go source file. However, for the purpose of
+// displaying intelligible values during testing, some details are elided, long
+// string are line-wrapped with wrap delimiters, and long sequences are
+// potentially truncated in the middle.
 package prettyprint
 
 import (
 	"fmt"
 	"strings"
 )
-
-// Option ...
-// type Option func(o *opts)
 
 // Formatter contains the configuration
 type Formatter struct {

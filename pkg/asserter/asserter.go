@@ -1,3 +1,5 @@
+// Package asserter defines the default interface between the testing package
+// and the evaluation of predicates during testing
 package asserter
 
 import (
