@@ -24,7 +24,7 @@ func TestIsNoError(t *testing.T) {
 		value:        io.EOF,
 		result:       predicate.Failed,
 		descMatchers: []string{"value is not an error"},
-		errMatchers:  []string{"detailed error:"},
+		errMatchers:  []string{"message:"},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
