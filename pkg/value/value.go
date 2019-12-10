@@ -350,7 +350,7 @@ func compareUnorderedSlices(lhs, rhs interface{}) (bool, error) {
 		result, err := CompareUnordered(va, vb)
 		if err != nil {
 			return false, fmt.Errorf(
-				"comparison of values at index %v failed, %w", i, err)
+				"comparison of values at index %v failed, %v", i, err)
 		}
 		if !result {
 			return false, nil
