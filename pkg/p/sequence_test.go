@@ -66,7 +66,7 @@ func TestIntIsEmpty(t *testing.T) {
 		value:        uint64(123),
 		result:       predicate.Invalid,
 		descMatchers: []string{"value is empty"},
-		errMatchers:  []string{"value of type uint64 cannot be tested for emptiness"},
+		errMatchers:  []string{"value of type 'uint64' cannot be tested for emptiness"},
 	})
 }
 
@@ -126,7 +126,7 @@ func TestIntIsNotEmpty(t *testing.T) {
 		value:        uint64(123),
 		result:       predicate.Invalid,
 		descMatchers: []string{"value is not empty"},
-		errMatchers:  []string{`/value .* of type .* cannot be tested for emptiness/`},
+		errMatchers:  []string{`/value of type .* cannot be tested for emptiness/`},
 	})
 }
 
@@ -153,7 +153,7 @@ func TestStringStartsWith(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a sequence/`},
+		errMatchers: []string{`/value of type .* is not a sequence/`},
 	})
 }
 
@@ -181,7 +181,7 @@ func TestStringContains(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a sequence/`},
+		errMatchers: []string{`/value of type .* is not a sequence/`},
 	})
 }
 
@@ -208,7 +208,7 @@ func TestStringEndsWith(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       123,
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a sequence/`},
+		errMatchers: []string{`/value of type .* is not a sequence/`},
 	})
 }
 
@@ -256,7 +256,7 @@ func TestIntLength(t *testing.T) {
 		value:        uint64(123),
 		result:       predicate.Invalid,
 		descMatchers: []string{"length(value) < 3"},
-		errMatchers:  []string{"value of type uint64 does not have a length"},
+		errMatchers:  []string{"value of type 'uint64' does not have a length"},
 	})
 }
 
@@ -288,6 +288,6 @@ func TestStringCapacity(t *testing.T) {
 		value:        "Yo",
 		result:       predicate.Invalid,
 		descMatchers: []string{"capacity(value) < 3"},
-		errMatchers:  []string{"value of type string does not have a capacity"},
+		errMatchers:  []string{"value of type 'string' does not have a capacity"},
 	})
 }

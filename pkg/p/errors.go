@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/maargenton/go-testpredicate/pkg/predicate"
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // IsNoError tests if an error value is nil
@@ -15,7 +16,7 @@ func IsNoError() predicate.T {
 				return predicate.Passed, nil
 			} else if err, ok := value.(error); ok {
 				return predicate.Failed,
-					fmt.Errorf("detailed error: %v", err)
+					fmt.Errorf("message: %v", prettyprint.FormatValue(err.Error()))
 			} else {
 				return predicate.Invalid,
 					fmt.Errorf("value of type '%T' is not an error", value)

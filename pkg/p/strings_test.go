@@ -22,7 +22,7 @@ func TestMatch(t *testing.T) {
 		value:  123,
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"value of type int cannot be matched against a regexp",
+			"value of type 'int' cannot be matched against a regexp",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
@@ -57,7 +57,7 @@ func TestToUpper(t *testing.T) {
 		value:  123,
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"value of type int cannot be transformed to uppercase",
+			"value of type 'int' cannot be transformed to uppercase",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
@@ -84,7 +84,7 @@ func TestToLower(t *testing.T) {
 		value:  123,
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"value of type int cannot be transformed to uppercase",
+			"value of type 'int' cannot be transformed to uppercase",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{

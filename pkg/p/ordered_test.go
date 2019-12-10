@@ -136,7 +136,7 @@ func TestCloseTo(t *testing.T) {
 		value:  "abc",
 		result: predicate.Invalid,
 		errMatchers: []string{
-			`value "abc" of type string cannot be converted to float`,
+			`value of type 'string' cannot be converted to float`,
 		},
 	})
 }

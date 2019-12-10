@@ -133,7 +133,7 @@ func reflectSet(value interface{}) (set, error) {
 
 	if !isIndexable(v.Kind()) {
 		return set{}, fmt.Errorf(
-			"value %v of type %T is not a indexable collection", prettyprint.FormatValue(value), value)
+			"value of type '%T' is not a indexable collection", value)
 	}
 
 	s := make(set, v.Len())

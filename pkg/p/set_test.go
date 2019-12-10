@@ -26,7 +26,7 @@ func TestIsSubsetOf(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       map[int]bool{3: true, 4: false, 1: true},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a indexable collection/`},
+		errMatchers: []string{`/value of type .* is not a indexable collection/`},
 	})
 
 	p1 := p.IsSubsetOf("abc")
@@ -41,7 +41,7 @@ func TestIsSubsetOf(t *testing.T) {
 		value:        "ab",
 		result:       predicate.Invalid,
 		descMatchers: []string{`value is subset of 123`},
-		errMatchers:  []string{`value 123 of type int is not a indexable collection`},
+		errMatchers:  []string{`value of type 'int' is not a indexable collection`},
 	})
 
 	p3 := p.IsSubsetOf([]string{"bbb", "abc"})
@@ -85,7 +85,7 @@ func TestIsSupersetOf(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       map[int]bool{3: true, 4: false, 1: true},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a indexable collection/`},
+		errMatchers: []string{`/value of type .* is not a indexable collection/`},
 	})
 
 	p1 := p.IsSupersetOf("abc")
@@ -104,7 +104,7 @@ func TestIsSupersetOf(t *testing.T) {
 		value:        "ab",
 		result:       predicate.Invalid,
 		descMatchers: []string{`value is superset of 123`},
-		errMatchers:  []string{`value 123 of type int is not a indexable collection`},
+		errMatchers:  []string{`value of type 'int' is not a indexable collection`},
 	})
 
 	p3 := p.IsSupersetOf([]string{
@@ -148,7 +148,7 @@ func TestIsDisjointSetFrom(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       map[int]bool{3: true, 4: false, 1: true},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a indexable collection/`},
+		errMatchers: []string{`/value of type .* is not a indexable collection/`},
 	})
 
 	p2 := p.IsDisjointSetFrom(123)
@@ -156,7 +156,7 @@ func TestIsDisjointSetFrom(t *testing.T) {
 		value:        "ab",
 		result:       predicate.Invalid,
 		descMatchers: []string{`value is disjoint from 123`},
-		errMatchers:  []string{`value 123 of type int is not a indexable collection`},
+		errMatchers:  []string{`value of type 'int' is not a indexable collection`},
 	})
 }
 
@@ -182,7 +182,7 @@ func TestIsEqualSet(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       map[int]bool{3: true, 4: false, 1: true},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a indexable collection/`},
+		errMatchers: []string{`/value of type .* is not a indexable collection/`},
 	})
 
 	p2 := p.IsEqualSet(123)
@@ -190,6 +190,6 @@ func TestIsEqualSet(t *testing.T) {
 		value:        "ab",
 		result:       predicate.Invalid,
 		descMatchers: []string{`value is equal set as 123`},
-		errMatchers:  []string{`value 123 of type int is not a indexable collection`},
+		errMatchers:  []string{`value of type 'int' is not a indexable collection`},
 	})
 }

@@ -59,9 +59,9 @@ func TestTestingAsserter(t *testing.T) {
 	})
 	assert.That(123, p, "context", 456, "aaa", "bbb", "ccc", 123, "last detail")
 
-	if ctx.helperCount != 1 {
+	if ctx.helperCount < 1 {
 		t.Errorf(
-			"Expected assert.That() to call t.Helper() once, was called %v time(s)",
+			"Expected assert.That() to call t.Helper() at least once, was called %v time(s)",
 			ctx.helperCount)
 	}
 

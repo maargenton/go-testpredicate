@@ -19,8 +19,8 @@ func Matches(re string) predicate.T {
 
 			s, ok := value.(string)
 			if !ok {
-				return predicate.Invalid,
-					fmt.Errorf("value of type %T cannot be matched against a regexp", value)
+				return predicate.Invalid, fmt.Errorf(
+					"value of type '%T' cannot be matched against a regexp", value)
 			}
 			m, err := regexp.MatchString(re, s)
 			if err != nil {
@@ -44,8 +44,8 @@ func ToUpper(p predicate.T) predicate.T {
 
 			s, ok := value.(string)
 			if !ok {
-				return predicate.Invalid,
-					fmt.Errorf("value of type %T cannot be transformed to uppercase", value)
+				return predicate.Invalid, fmt.Errorf(
+					"value of type '%T' cannot be transformed to uppercase", value)
 			}
 
 			s = strings.ToUpper(s)
@@ -64,8 +64,8 @@ func ToLower(p predicate.T) predicate.T {
 
 			s, ok := value.(string)
 			if !ok {
-				return predicate.Invalid,
-					fmt.Errorf("value of type %T cannot be transformed to uppercase", value)
+				return predicate.Invalid, fmt.Errorf(
+					"value of type '%T' cannot be transformed to uppercase", value)
 			}
 
 			s = strings.ToLower(s)

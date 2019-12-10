@@ -27,7 +27,7 @@ func TestIsError(t *testing.T) {
 		value:        io.ErrClosedPipe,
 		result:       predicate.Failed,
 		descMatchers: []string{"value is an error matching"},
-		errMatchers:  []string{"detailed error:"},
+		errMatchers:  []string{"message:"},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
 		value:        io.EOF,
@@ -61,6 +61,6 @@ func TestIsErrorNil(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       io.EOF,
 		result:      predicate.Failed,
-		errMatchers: []string{"detailed error:"},
+		errMatchers: []string{"message:"},
 	})
 }
