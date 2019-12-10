@@ -9,8 +9,6 @@ import (
 	"math"
 	"reflect"
 	"strings"
-
-	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
 // Synopsis:
@@ -321,7 +319,7 @@ func CompareUnordered(lhs, rhs interface{}) (bool, error) {
 	v2 := reflect.ValueOf(rhs)
 	if v1.Type() != v2.Type() {
 		return false, fmt.Errorf(
-			"values of type %T and %T are never equal", lhs, rhs)
+			"values of type '%T' and '%T' are never equal", lhs, rhs)
 	}
 
 	return reflect.DeepEqual(lhs, rhs), nil
@@ -343,7 +341,8 @@ func compareUnorderedSlices(lhs, rhs interface{}) (bool, error) {
 
 		result, err := CompareUnordered(va, vb)
 		if err != nil {
-			return false, fmt.Errorf("comparison of values at index %v failed, %v", i, err)
+			return false, fmt.Errorf(
+				"comparison of values at index %v failed, %w", i, err)
 		}
 		if !result {
 			return false, nil
@@ -378,7 +377,8 @@ func MaxAbsoluteDifference(lhs, rhs interface{}) (float64, error) {
 			vb := b.Index(i).Interface()
 			d, err := MaxAbsoluteDifference(va, vb)
 			if err != nil {
-				return 0, fmt.Errorf("failed to compare values at index %v, %v", i, err)
+				return 0, fmt.Errorf(
+					"failed to compare values at index %v, %v", i, err)
 			}
 
 			if d > max {
@@ -394,10 +394,8 @@ func MaxAbsoluteDifference(lhs, rhs interface{}) (float64, error) {
 			return math.Abs(fa - fb), nil
 		}
 		return 0, fmt.Errorf(
-			"value %v of type %T cannot be converted to float",
-			prettyprint.FormatValue(rhs), rhs)
+			"value of type '%T' cannot be converted to float", rhs)
 	}
 	return 0, fmt.Errorf(
-		"value %v of type %T cannot be converted to float",
-		prettyprint.FormatValue(lhs), lhs)
+		"value of type '%T' cannot be converted to float", lhs)
 }

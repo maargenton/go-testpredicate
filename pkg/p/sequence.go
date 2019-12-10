@@ -30,7 +30,7 @@ func IsEmpty() predicate.T {
 			default:
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value of type %T cannot be tested for emptiness",
+						"value of type '%T' cannot be tested for emptiness",
 						value)
 			}
 		})
@@ -56,8 +56,8 @@ func IsNotEmpty() predicate.T {
 			default:
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T cannot be tested for emptiness",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' cannot be tested for emptiness",
+						value)
 			}
 		})
 }
@@ -75,12 +75,14 @@ func sequenceType(k reflect.Kind) bool {
 func preCheckSubsequence(v1, v2 reflect.Value) error {
 
 	if !sequenceType(v1.Kind()) {
-		return fmt.Errorf("value %v of type %T is not a sequence",
-			prettyprint.FormatValue(v1.Interface()), v1.Interface())
+		return fmt.Errorf(
+			"value of type '%T' is not a sequence",
+			v1.Interface())
 	}
 	if !sequenceType(v2.Kind()) {
-		return fmt.Errorf("value %v of type %T is not a sequence",
-			prettyprint.FormatValue(v2.Interface()), v2.Interface())
+		return fmt.Errorf(
+			"value of type '%T' is not a sequence",
+			v2.Interface())
 	}
 	return nil
 }
@@ -219,7 +221,7 @@ func Length(p predicate.T) predicate.T {
 
 			default:
 				return predicate.Invalid,
-					fmt.Errorf("value of type %T does not have a length", value)
+					fmt.Errorf("value of type '%T' does not have a length", value)
 			}
 		})
 }
@@ -242,7 +244,7 @@ func Capacity(p predicate.T) predicate.T {
 
 			default:
 				return predicate.Invalid,
-					fmt.Errorf("value of type %T does not have a capacity", value)
+					fmt.Errorf("value of type '%T' does not have a capacity", value)
 			}
 		})
 }

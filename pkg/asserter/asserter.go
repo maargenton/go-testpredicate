@@ -83,6 +83,7 @@ func (assert *assert) That(v interface{}, p predicate.T, details ...interface{})
 }
 
 func (assert *assert) fail(s string, args ...interface{}) {
+	assert.t.Helper()
 	if assert.abortOnError {
 		assert.t.Fatalf(s, args...)
 	} else {

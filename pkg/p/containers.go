@@ -36,8 +36,8 @@ func All(p predicate.T) predicate.T {
 			default:
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a container",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a container",
+						value)
 			}
 		})
 }
@@ -75,8 +75,8 @@ func Any(p predicate.T) predicate.T {
 			default:
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a container",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a container",
+						value)
 			}
 		})
 }
@@ -91,8 +91,8 @@ func AllKeys(p predicate.T) predicate.T {
 			if rmap.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -119,8 +119,8 @@ func AnyKey(p predicate.T) predicate.T {
 			if rmap.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -155,8 +155,8 @@ func AllValues(p predicate.T) predicate.T {
 			if rmap.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -184,8 +184,8 @@ func AnyValue(p predicate.T) predicate.T {
 			if rmap.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 
 			for _, kv := range rmap.MapKeys() {
@@ -222,8 +222,8 @@ func MapKeys(p predicate.T) predicate.T {
 			if v.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 			keys := make([]interface{}, 0, v.Len())
 			for _, k := range v.MapKeys() {
@@ -247,8 +247,8 @@ func MapValues(p predicate.T) predicate.T {
 			if rmap.Kind() != reflect.Map {
 				return predicate.Invalid,
 					fmt.Errorf(
-						"value %v of type %T is not a map",
-						prettyprint.FormatValue(value), value)
+						"value of type '%T' is not a map",
+						value)
 			}
 			values := make([]interface{}, 0, rmap.Len())
 			for _, k := range rmap.MapKeys() {

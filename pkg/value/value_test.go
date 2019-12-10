@@ -363,12 +363,12 @@ func TestMaxAbsoluteDifferenceErrors(t *testing.T) {
 		{
 			[]interface{}{1, 2, 3},
 			[]interface{}{1, "2", 3},
-			"failed to compare values at index 1, value \"2\" of type string cannot be converted to float",
+			"failed to compare values at index 1, value of type 'string' cannot be converted to float",
 		},
 		{
 			[]interface{}{"1", 2, 3},
 			[]interface{}{1, 2, 3},
-			"failed to compare values at index 0, value \"1\" of type string cannot be converted to float",
+			"failed to compare values at index 0, value of type 'string' cannot be converted to float",
 		},
 	}
 
@@ -376,13 +376,12 @@ func TestMaxAbsoluteDifferenceErrors(t *testing.T) {
 		_, err := value.MaxAbsoluteDifference(input.lhs, input.rhs)
 		if err == nil {
 			t.Errorf(
-				"expected error for MaxAbsoluteDifference( %#v, %#v)",
+				"\nexpected error for MaxAbsoluteDifference(%#v, %#v)",
 				input.lhs, input.rhs)
 		}
 		if err.Error() != input.err {
-			t.Errorf(
-				"unexpected error for MaxAbsoluteDifference( %#v, %#v):\n%v",
-				input.lhs, input.rhs, err)
+			t.Errorf("\nunexpected error for MaxAbsoluteDifference(...):\n%v",
+				err)
 		}
 	}
 }

@@ -10,12 +10,12 @@ func TestPreCheckSubsequence(t *testing.T) {
 	v2 := []int{123, 455}
 
 	err := preCheckSubsequence(reflect.ValueOf(uint64(1)), reflect.ValueOf(v1))
-	if err == nil || err.Error() != "value 0x1 of type uint64 is not a sequence" {
+	if err == nil || err.Error() != "value of type 'uint64' is not a sequence" {
 		t.Errorf("\nunexpected error: %v", err)
 	}
 
 	err = preCheckSubsequence(reflect.ValueOf(v1), reflect.ValueOf(uint64(1)))
-	if err == nil || err.Error() != "value 0x1 of type uint64 is not a sequence" {
+	if err == nil || err.Error() != "value of type 'uint64' is not a sequence" {
 		t.Errorf("\nunexpected error: %v", err)
 	}
 

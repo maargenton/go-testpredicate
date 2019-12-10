@@ -29,7 +29,7 @@ func TestAll(t *testing.T) {
 		value:  123,
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a container/",
+			"/value of type .* is not a container/",
 		},
 	})
 
@@ -66,7 +66,7 @@ func TestAny(t *testing.T) {
 		value:  123,
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a container/",
+			"/value of type .* is not a container/",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
@@ -101,7 +101,7 @@ func TestAllKeys(t *testing.T) {
 		value:  []int{1, 2, 3},
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a map/",
+			"/value of type .* is not a map/",
 		},
 	})
 }
@@ -126,7 +126,7 @@ func TestAnyKey(t *testing.T) {
 		value:  []int{1, 2, 3},
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a map/",
+			"/value of type .* is not a map/",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
@@ -161,7 +161,7 @@ func TestAllValues(t *testing.T) {
 		value:  []int{1, 2, 3},
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a map/",
+			"/value of type .* is not a map/",
 		},
 	})
 }
@@ -186,7 +186,7 @@ func TestAnyValue(t *testing.T) {
 		value:  []int{1, 2, 3},
 		result: predicate.Invalid,
 		errMatchers: []string{
-			"/value .* of type .* is not a map/",
+			"/value of type .* is not a map/",
 		},
 	})
 	validatePredicate(t, pred, &predicateExpectation{
@@ -226,7 +226,7 @@ func TestMapKeys(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       []int{1, 4, 3},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a map/`},
+		errMatchers: []string{`/value of type .* is not a map/`},
 	})
 }
 
@@ -257,6 +257,6 @@ func TestMapValues(t *testing.T) {
 	validatePredicate(t, pred, &predicateExpectation{
 		value:       []int{1, 4, 3},
 		result:      predicate.Invalid,
-		errMatchers: []string{`/value .* of type .* is not a map/`},
+		errMatchers: []string{`/value of type .* is not a map/`},
 	})
 }
