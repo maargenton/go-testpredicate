@@ -74,7 +74,7 @@ func TestAny(t *testing.T) {
 		result: predicate.Invalid,
 		errMatchers: []string{
 			`failed for value[1]: "abc"`,
-			`/values of type string and int are not .* comparable/`,
+			`/values of type 'string' and 'int' are not .* comparable/`,
 		},
 	})
 }

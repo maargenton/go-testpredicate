@@ -3,7 +3,9 @@ package value_test
 import (
 	"math"
 	"testing"
+	"time"
 
+	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
@@ -206,6 +208,12 @@ func TestComapareOrdered(t *testing.T) {
 
 		{123, struct{ a int }{123}, 0, true},
 
+		{time.Unix(123, 0), time.Unix(124, 0), -1, false},
+		{time.Unix(124, 0), time.Unix(123, 0), 1, false},
+		{time.Unix(124, 0), time.Unix(124, 0), 0, false},
+		{time.Unix(124, 0), 124, 0, true},
+		{124, time.Unix(124, 0), 0, true},
+
 		{
 			[]int{123, 456, 789},
 			[]interface{}{123, struct{ a int }{456}, 789},
@@ -218,18 +226,31 @@ func TestComapareOrdered(t *testing.T) {
 		r, err := value.CompareOrdered(input.lhs, input.rhs)
 		if input.err && err == nil {
 			t.Errorf(
-				"\nexpected CompareOrdered(%#+v, %#+v) to return an error",
-				input.lhs, input.rhs)
+				"\nexpected CompareOrdered(a, b) to return an error"+
+					"\na: %v"+
+					"\nb: %v",
+				prettyprint.FormatValue(input.lhs),
+				prettyprint.FormatValue(input.rhs))
 		} else if !input.err && err != nil {
 			t.Errorf(
-				"\nCompareOrdered(%#+v, %#+v) returned error,\n%v",
-				input.lhs, input.rhs, err)
+				"\nCompareOrdered(a, b) returned an error"+
+					"\nerror: %v"+
+					"\na: %v"+
+					"\nb: %v",
+				err,
+				prettyprint.FormatValue(input.lhs),
+				prettyprint.FormatValue(input.rhs))
 		}
 
 		if r != input.result {
 			t.Errorf(
-				"\nexpected CompareOrdered(%#+v, %#+v) = %d,\nactual = %v",
-				input.lhs, input.rhs, input.result, r)
+				"\nexpected CompareOrdered(a, b) = %d, actual = %v"+
+					"\na: %v"+
+					"\nb: %v",
+				input.result, r,
+				prettyprint.FormatValue(input.lhs),
+				prettyprint.FormatValue(input.rhs),
+			)
 		}
 	}
 }

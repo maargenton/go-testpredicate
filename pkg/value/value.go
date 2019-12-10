@@ -9,6 +9,7 @@ import (
 	"math"
 	"reflect"
 	"strings"
+	"time"
 )
 
 // Synopsis:
@@ -206,6 +207,13 @@ func CompareOrdered(lhs, rhs interface{}) (int, error) {
 		}
 	}
 
+	if lhsTime, ok := lhs.(time.Time); ok {
+		if rhsTime, ok := rhs.(time.Time); ok {
+			dt := lhsTime.Sub(rhsTime)
+			return compareInt(int64(dt), 0), nil
+		}
+	}
+
 	if isSliceComparable(lhs) && isSliceComparable(rhs) {
 		return compareOrderedSlices(lhs, rhs)
 	}
@@ -213,9 +221,9 @@ func CompareOrdered(lhs, rhs interface{}) (int, error) {
 	ta := reflect.TypeOf(lhs)
 	tb := reflect.TypeOf(rhs)
 	if ta == tb {
-		return 0, fmt.Errorf("values of type %v are not order comparable", ta)
+		return 0, fmt.Errorf("values of type '%v' are not order comparable", ta)
 	}
-	return 0, fmt.Errorf("values of type %v and %v are not order comparable", ta, tb)
+	return 0, fmt.Errorf("values of type '%v' and '%v' are not order comparable", ta, tb)
 }
 
 func compareInt(lhs, rhs int64) int {
