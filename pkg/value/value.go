@@ -325,7 +325,7 @@ func CompareUnordered(lhs, rhs interface{}) (bool, error) {
 
 	v1 := reflect.ValueOf(lhs)
 	v2 := reflect.ValueOf(rhs)
-	if v1.Type() != v2.Type() {
+	if v1.IsValid() && v2.IsValid() && v1.Type() != v2.Type() {
 		return false, fmt.Errorf(
 			"values of type '%T' and '%T' are never equal", lhs, rhs)
 	}
