@@ -79,7 +79,7 @@ func (assert *assert) That(v interface{}, p predicate.T, details ...interface{})
 	}
 	fmt.Fprintf(&buf, "\nvalue: %v", prettyprint.FormatValue(v))
 	writeDetails(&buf, details)
-	assert.fail(buf.String())
+	assert.fail("%v", buf.String())
 }
 
 func (assert *assert) fail(s string, args ...interface{}) {
