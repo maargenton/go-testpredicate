@@ -73,31 +73,9 @@ Output:
 
 ## API changes and stability
 
-As of v0.5.0, a new and improved API is now available, intended to replace the original API in the long run. The original API remains available but should now be considered deprecated, and will be remove by v1.0.0.
-
-### Original API
-
-The original API was based on an `assert` object, capturing the test context
-`t`, with an option to either abort on any error or not. Complex predicate,
-applying transformation to the value under test were hard to read due to the
-layout of calling parentheses. BDD-style given/when/then structure was possible
-but required the redefinition of an `assert` object in every nested block. The
-reliance on package `p` as a short-hand for predicate was questionable at best.
-
-```go
-package example_test
-
-import (
-	"testing"
-	"github.com/maargenton/go-testpredicate/pkg/asserter"
-	"github.com/maargenton/go-testpredicate/pkg/p"
-)
-
-func TestExample(t *testing.T) {
-	assert := asserter.New(t, asserter.AbortOnError())
-	assert.That(123, p.ToString(p.Length(p.Eq(3))))
-}
-```
+As of v0.5.0, a new and improved API is now available, intended to replace the
+original API in the long run. The original API remains available but should now
+be considered deprecated, and will be remove by v1.0.0.
 
 ### New API
 
@@ -124,6 +102,31 @@ func TestExample(t *testing.T) {
     verify.That(t, 123).ToString().Length().Eq(4)
 }
 ```
+
+### Original API
+
+The original API was based on an `assert` object, capturing the test context
+`t`, with an option to either abort on any error or not. Complex predicate,
+applying transformation to the value under test were hard to read due to the
+layout of calling parentheses. BDD-style given/when/then structure was possible
+but required the redefinition of an `assert` object in every nested block. The
+reliance on package `p` as a short-hand for predicate was questionable at best.
+
+```go
+package example_test
+
+import (
+	"testing"
+	"github.com/maargenton/go-testpredicate/pkg/asserter"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+)
+
+func TestExample(t *testing.T) {
+	assert := asserter.New(t, asserter.AbortOnError())
+	assert.That(123, p.ToString(p.Length(p.Eq(3))))
+}
+```
+
 
 ## Built-in predicates
 
