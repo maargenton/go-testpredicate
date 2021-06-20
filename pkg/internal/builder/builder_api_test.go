@@ -1,6 +1,7 @@
 package builder_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/pkg/internal/predicate"
@@ -23,30 +24,35 @@ func TestCompareAPI(t *testing.T) {
 }
 
 func TestErrorAPI(t *testing.T) {
-	verify.That(t, nil).IsError(nil)
+	var sentinel = fmt.Errorf("sentinel")
+	var err = fmt.Errorf("error: %w", sentinel)
+	verify.That(t, err).IsError(sentinel)
 }
 
 func TestExtAPI(t *testing.T) {
+	var customPredicate = func() (desc string, f predicate.PredicateFunc) {
+		desc = "{} is custom"
+		f = func(
+			value interface{}) (
+			success bool, ctx []predicate.ContextValue, err error) {
+
+			return value == nil, nil, nil
+		}
+		return
+	}
 	verify.That(t, nil).Is(customPredicate())
+
+	var customTransform = func() (desc string, f predicate.TransformFunc) {
+		desc = "custom({})"
+		f = func(
+			value interface{}) (
+			r interface{}, ctx []predicate.ContextValue, err error) {
+
+			return value, nil, nil
+		}
+		return
+	}
 	verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
-}
-
-func customPredicate() (desc string, f predicate.PredicateFunc) {
-	desc = "{} is custom"
-	f = func(value interface{}) (success bool, ctx []predicate.ContextValue, err error) {
-		success = value == nil
-		return
-	}
-	return
-}
-
-func customTransform() (desc string, f predicate.TransformFunc) {
-	desc = "custom({})"
-	f = func(value interface{}) (result interface{}, ctx []predicate.ContextValue, err error) {
-		result = value
-		return
-	}
-	return
 }
 
 func TestMapAPI(t *testing.T) {
