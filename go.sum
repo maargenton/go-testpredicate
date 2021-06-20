@@ -1,6 +1,5 @@
-github.com/cavaliercoder/grab v2.0.0+incompatible/go.mod h1:tTBkfNqSBfuMmMBFaO2phgyhdYhiZQ/+iXCZDzcDsMI=
-github.com/maargenton/fileutil v0.4.0 h1:cCLyGXCOKrbj6IiGFmxQV2W2FSAjzt825t2woU/1SKg=
-github.com/maargenton/fileutil v0.4.0/go.mod h1:svC3NGIwnaHshvfMjDGLmtFyYTxdaxHdcsJeEKgX79c=
+github.com/maargenton/fileutil v0.4.1 h1:6ZPfXQPYS40VMneIS+ckzrt1Ln9dNBCPBeHiY4pyrFM=
+github.com/maargenton/fileutil v0.4.1/go.mod h1:+GxNHyNo3uqVv2QJPfmdzIByRSLf5qKKA6AUO+PoooY=
 github.com/maargenton/go-errors v0.0.0-20200720205202-f0b27f4dc001/go.mod h1:qw42L2So9gQZM8ZrnBoBc4deYTaL89dyE+2wuNGELMg=
 github.com/maargenton/go-testpredicate v0.4.4/go.mod h1:sn267JpJ65uvLQ7VtYzPLvXQiw0tHHw+KbCFzxRPOww=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
