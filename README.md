@@ -33,7 +33,6 @@ The library contains an extensive collection of built-in predicates covering:
 ```go
 package examples_test
 
-
 import (
 	"testing"
 
