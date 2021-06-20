@@ -1,3 +1,5 @@
+// package require starts a predicate chain that will fail the current test
+// if the assertions fails.
 package require
 
 import (

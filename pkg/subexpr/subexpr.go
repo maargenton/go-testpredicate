@@ -1,3 +1,6 @@
+// package subexpr starts an unevaluated predicate chain that is captured an
+// outer predicate responsible for evaluating the condition on one or more
+// values of a collection.
 package subexpr
 
 import "github.com/maargenton/go-testpredicate/pkg/internal/builder"
