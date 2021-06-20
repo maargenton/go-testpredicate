@@ -106,7 +106,7 @@ func IsTrue() predicate.T {
 		func(value interface{}) (predicate.Result, error) {
 
 			if b, ok := value.(bool); ok {
-				if b == true {
+				if b {
 					return predicate.Passed, nil
 				}
 				return predicate.Failed, nil
@@ -125,7 +125,7 @@ func IsFalse() predicate.T {
 		func(value interface{}) (predicate.Result, error) {
 
 			if b, ok := value.(bool); ok {
-				if b == false {
+				if !b {
 					return predicate.Passed, nil
 				}
 				return predicate.Failed, nil

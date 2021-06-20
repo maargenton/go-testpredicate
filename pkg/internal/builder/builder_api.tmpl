@@ -1,0 +1,34 @@
+// GENERATE CODE -- DO NOT EDIT
+
+package builder
+
+import (
+	"github.com/maargenton/go-testpredicate/pkg/internal/predicate"
+	"github.com/maargenton/go-testpredicate/pkg/internal/predicate/impl"
+)
+
+{{range .}}
+// ---------------------------------------------------------------------------
+// From {{.Name}}
+{{range .Funcs}}
+{{- if .Transformer}}
+{{.Comment -}}
+func (b *Builder) {{.Name}}({{.Args}}) *Builder {
+    b.p.RegisterTransformation({{.Pkg}}.{{.Name}}({{.Args.Fwd}}))
+    return b
+}
+{{- else}}
+{{.Comment -}}
+func (b *Builder) {{.Name}}({{.Args}}) *predicate.Predicate {
+	b.p.RegisterPredicate({{.Pkg}}.{{.Name}}({{.Args.Fwd}}))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+{{- end}}
+{{end}}
+// From {{.Name}}
+// ---------------------------------------------------------------------------
+{{end}}
