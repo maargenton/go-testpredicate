@@ -33,6 +33,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Check version
         run: go version
+      - run: echo "" > coverage.txt
       - name: Run tests
         # run: go test ./...
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
