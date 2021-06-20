@@ -1,22 +1,28 @@
 # go-testpredicate
 
-Unit-testing predicates for Go.
+Predicate-base test assertions library for Go
 
 [![GoDoc](https://godoc.org/github.com/maargenton/go-testpredicate?status.svg)](https://godoc.org/github.com/maargenton/go-testpredicate)
 [![Build Status](https://travis-ci.org/maargenton/go-testpredicate.svg?branch=master)](https://travis-ci.org/maargenton/go-testpredicate)
-[![codecov](https://codecov.io/gh/maargenton/go-testpredicate/branch/master/graph/badge.svg)](https://codecov.io/gh/maargenton/go-testpredicate)
+[![codecov](https://codecov.io/gh/maargenton/go-testpredicate/branch/master/graph/badge.svg?token=fVZ3ZMAgfo)](https://codecov.io/gh/maargenton/go-testpredicate)
 [![Go Report Card](https://goreportcard.com/badge/github.com/maargenton/go-testpredicate)](https://goreportcard.com/report/github.com/maargenton/go-testpredicate)
 
-Package `go-testpredicate` complements the built-in go testing package with a
-way to define expectations in a concise and self describing way. When a test
-fails, the default error message should provide enough context information
-to understand the reason for the failure without having to resort to
-debugging, at least most of the time.
+---------------------------
 
-A collection of built-in predicates are defined in the pred sub-package.
-Additional predicates can easily be defined to support custom types and custom
-validation needs, either locally within your test packages, or globally as
-standalone predicate packages.
+Package `go-testpredicate` is a test assertions library exposing a
+predicate-like syntax that works with Go testing support to provide extensive
+diagnostics output and reduces the need to use a debugger on every failing test.
+
+The library contains an extensive collection of built-in predicates covering:
+
+- basic tests for nil, true, false
+- equality between any type of value
+- ordered comparison on numeric, string and sequence values
+- regexp match on strings
+- sub-sequences match on strings and sequences
+- set conditions on unordered collections
+- panic conditions on code fragment execution
+
 
 ## Installation
 
@@ -27,96 +33,183 @@ standalone predicate packages.
 ```go
 package examples_test
 
-
 import (
-    "testing"
+	"testing"
 
-    "github.com/maargenton/go-testpredicate/pkg/asserter"
-    "github.com/maargenton/go-testpredicate/pkg/p"
+	"github.com/maargenton/go-testpredicate/pkg/require"
+	"github.com/maargenton/go-testpredicate/pkg/verify"
 )
 
 func TestExample(t *testing.T) {
-    assert := testpredicate.NewAsserter(t)
-    assert.That(123, p.Lt(123))
+	t.Run("Given ", func(t *testing.T) {
+        require.That(t, 123).ToString().Length().Eq(3)
+
+		t.Run("when ", func(t *testing.T) {
+			t.Run("then ", func(t *testing.T) {
+                verify.That(t, "123").Eq(123)
+                verify.That(t, 123).ToString().Length().Eq(4)
+			})
+		})
+	})
 }
 ```
 
 Output:
-```go
---- FAIL: TestExample (0.00s)
-/go/src/github.com/maargenton/go-testpred/examples/example_test.go:12:
-    expected: value < 123,
-    value: 123
 ```
+--- FAIL: TestExample (0.00s)
+    --- FAIL: TestFoo/Given_ (0.00s)
+        --- FAIL: TestFoo/Given_/when_ (0.00s)
+            --- FAIL: TestFoo/Given_/when_/then_ (0.00s)
+                usage_test.go:16:
+                    expected: value == 123
+                    error:    values of type 'string' and 'int' are never equal
+                    value:    "123"
+                usage_test.go:17:
+                    expected: length(value.String()) == 4
+                    value:    123
+                    string:   "123"
+                    length:   3
+```
+
+## API changes and stability
+
+As of v0.5.0, a new and improved API is now available, intended to replace the
+original API in the long run. The original API remains available but should now
+be considered deprecated, and will be remove by v1.0.0.
+
+### New API
+
+In the new API, either `require.That()` or `verify.That()` is used to capture
+both the testing context and the value under test, and the test assertion is
+built through call chaining of optional transformations and a final condition.
+Both `require` and `verify` can be mixed and matched as needed.
+
+There is no more need to declare of an asserter object in every block, making
+DBB-style more streamlined. There is no more package `p` sitting on the global
+namespace, and the call-chaining syntax makes complex predicates more readable.
+
+```go
+package example_test
+
+import (
+	"testing"
+	"github.com/maargenton/go-testpredicate/pkg/require"
+	"github.com/maargenton/go-testpredicate/pkg/verify"
+)
+
+func TestExample(t *testing.T) {
+    require.That(t, 123).ToString().Length().Eq(3)
+    verify.That(t, 123).ToString().Length().Eq(4)
+}
+```
+
+### Original API
+
+The original API was based on an `assert` object, capturing the test context
+`t`, with an option to either abort on any error or not. Complex predicate,
+applying transformation to the value under test were hard to read due to the
+layout of calling parentheses. BDD-style given/when/then structure was possible
+but required the redefinition of an `assert` object in every nested block. The
+reliance on package `p` as a short-hand for predicate was questionable at best.
+
+```go
+package example_test
+
+import (
+	"testing"
+	"github.com/maargenton/go-testpredicate/pkg/asserter"
+	"github.com/maargenton/go-testpredicate/pkg/p"
+)
+
+func TestExample(t *testing.T) {
+	assert := asserter.New(t, asserter.AbortOnError())
+	assert.That(123, p.ToString(p.Length(p.Eq(3))))
+}
+```
+
 
 ## Built-in predicates
 
-### Nil and equality
+All predicates are built through call chaining on the builder object returned by
+`require.That()` or `verify.That()`. For an up-to-date full list of supported
+predicates and their use, take a look at
+`pkg/internal/builder/builder_api_test.go`
 
-- `IsNil()`
-- `IsNotNil()`
-- `IsTrue()`
-- `IsFalse()`
-- `IsEqualTo( value )` / `Eq( value )`
-- `IsNotEqualTo( value )` / `Ne( value )`
-- `IsNoError()`, preferred to IsNil() for testing errors
-- `IsError( error )`, preferred to IsEqualTo() for testing errors
+```go
+func TestCompareAPI(t *testing.T) {
+	verify.That(t, true).IsTrue()
+	verify.That(t, false).IsFalse()
+	verify.That(t, nil).IsNil()
+	verify.That(t, &struct{}{}).IsNotNil()
+	verify.That(t, 123).IsEqualTo(123)
+	verify.That(t, 123).IsNotEqualTo(124)
 
-### Order comparable values
+	verify.That(t, 123).Eq(123)
+	verify.That(t, 123).Ne(124)
+}
 
-- `LessThan( value )` / `Lt( value )`
-- `LessOrEqualTo( value )` / `Le( value )`
-- `GreaterThan( value )` / `Gt( value )`
-- `GreaterOrEqualTo( value )` / `Ge( value )`
-- `CloseTo( value, tolerance )`, for floating point values
+func TestErrorAPI(t *testing.T) {
+	var sentinel = fmt.Errorf("sentinel")
+	var err = fmt.Errorf("error: %w", sentinel)
 
-### String and sequence values
+	verify.That(t, err).IsError(sentinel)
+}
 
-- `IsEmpty()`
-- `IsNotEmpty()`
-- `StartsWith( value )`
-- `Contains( value )`
-- `EndsWith( value )`
-- `Matches( regexp )`, for string values
+func TestMapAPI(t *testing.T) {
+	var m = map[string]string{ "aaa": "bbb", "ccc": "ddd" }
 
-### Sets
+	verify.That(t, m).MapKeys().IsEqualSet([]string{"aaa", "ccc"})
+	verify.That(t, m).MapValues().IsEqualSet([]string{"bbb", "ddd"})
+}
 
-- `IsSubsetOf( collection )`
-- `IsSupersetOf( collection )`
-- `IsDisjointSetFrom( collection )`
-- `IsEqualSet( collection )`
+func TestOrderedAPI(t *testing.T) {
+	verify.That(t, 123).IsLessThan(124)
+	verify.That(t, 123).IsLessOrEqualTo(123)
+	verify.That(t, 123).IsGreaterThan(122)
+	verify.That(t, 123).IsGreaterOrEqualTo(123)
+	verify.That(t, 123).IsCloseTo(133, 10)
 
-## Composable predicates
+	verify.That(t, 123).Lt(124)
+	verify.That(t, 123).Le(123)
+	verify.That(t, 123).Gt(122)
+	verify.That(t, 123).Ge(123)
+}
 
-Some predicates are not directly testing against a specific value, but instead define how to transform the value before applying a nested predicate, or how to apply the nested predicate to the elements of a collection
+func TestPanicAPI(t *testing.T) {
+	verify.That(t, func() {
+		panic(123)
+	}).Panics()
 
-### Strings
+	verify.That(t, func() {
+		panic(123)
+	}).PanicsAndRecoveredValue().Eq(123)
+}
 
-- `ToUpper( predicate )`: apply predicate to the uppercase version of a string
-- `ToLower( predicate )`: apply predicate to the lowercase version of a string
-- `ToString( predicate )`: apply predicate to the stringified version of a value
+func TestSequenceAPI(t *testing.T) {
+	verify.That(t, make([]int, 3, 5)).Length().Eq(3)
+	verify.That(t, make([]int, 3, 5)).Capacity().Eq(5)
 
-### Collections attributes
+	verify.That(t, []int{}).IsEmpty()
+	verify.That(t, []int{1, 2, 3, 4, 5}).IsNotEmpty()
+	verify.That(t, []int{1, 2, 3, 4, 5}).StartsWith([]int{1, 2})
+	verify.That(t, []int{1, 2, 3, 4, 5}).Contains([]int{2, 3, 4})
+	verify.That(t, []int{1, 2, 3, 4, 5}).EndsWith([]int{4, 5})
 
-- `Length( predicate )`: apply predicate to the length of a collection or string
-- `Capacity( predicate )`: apply predicate to the capacity of a collection
-- `MapKeys( predicate )`: apply predicate to a collection made of the keys of a map
-- `MapValues( predicate )`: apply predicate to a collection made of the values of a map
+	verify.That(t, []int{1, 2, 3, 4, 5}).HasPrefix([]int{1, 2})
+	verify.That(t, []int{1, 2, 3, 4, 5}).HasSuffix([]int{4, 5})
+}
 
-### Collections elements
+func TestSetAPI(t *testing.T) {
+	verify.That(t, []int{1, 2, 3, 4, 5}).IsEqualSet([]int{1, 4, 3, 2, 5})
+	verify.That(t, []int{1, 2, 3, 4, 5}).IsDisjointSetFrom([]int{6, 9, 8, 7})
+	verify.That(t, []int{1, 2, 3, 4, 5}).IsSubsetOf([]int{1, 4, 3, 2, 5, 6})
+	verify.That(t, []int{1, 2, 3, 4, 5}).IsSupersetOf([]int{1, 4, 5})
+}
 
-- `All( predicate )`: all elements must match the predicate
-- `Any( predicate )`: at least one element must match the predicate
-- `AllKeys( predicate )`: all keys of a map must match the predicate
-- `AnyKey( predicate )`: at least one key of a map must match the predicate
-- `AllValues( predicate )`: all values of a map must match the predicate
-- `AnyValue( predicate )`: at least one value of a map must match the predicate
-
-## Special predicates
-
-### Panic
-
-- `Panics()`: evaluates value as a callable function and expect it to panic
-- `PanicsAndResult( predicate )`: evaluates value as a callable function,
-  expects it to panic, and evaluates the panic value against the nested
-  predicate
+func TestStringAPI(t *testing.T) {
+	verify.That(t, "123").Matches(`\d+`)
+	verify.That(t, 123).ToString().Eq("123")
+	verify.That(t, "aBc").ToLower().Eq("abc")
+	verify.That(t, "aBc").ToUpper().Eq("ABC")
+}
+```

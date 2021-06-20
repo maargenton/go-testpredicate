@@ -17,21 +17,19 @@ type Formatter struct {
 	WrapSuffix string
 	MaxWrapped int
 
-	IndentWidth int
-	IndentStr   string
-	NewlineStr  string
+	IndentStr  string
+	NewlineStr string
 }
 
 // New return a new pretty-printer that can be customized and used locally
 func New() *Formatter {
 	return &Formatter{
-		Width:       80,
-		WrapPrefix:  "↩",
-		WrapSuffix:  "↪",
-		MaxWrapped:  10,
-		IndentWidth: 4,
-		IndentStr:   "\t",
-		NewlineStr:  "\n",
+		Width:      80,
+		WrapPrefix: "↩",
+		WrapSuffix: "↪",
+		MaxWrapped: 10,
+		IndentStr:  "\t",
+		NewlineStr: "\n",
 	}
 }
 
@@ -67,7 +65,7 @@ func trimTrailingNewlines(s, newline string) string {
 }
 
 // collapseLeaves either folds leaf sub-tokens into the parent or group them
-// into lines that lines that fir into the prescribed width.
+// into lines that fit into the prescribed width.
 func (f *Formatter) collapseLeaves(tokens []token) {
 	for i := range tokens {
 		if tokens[i].isCollapsable() {
