@@ -33,10 +33,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Check version
         run: go version
-      - name: Run tests
+      - name: Run tests with coverage
         if: matrix.os != 'windows-latest'
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-      - name: Run tests
+      - name: Run tests without coverage (windows)
         if: matrix.os == 'windows-latest'
         run: go test -race ./...
 
