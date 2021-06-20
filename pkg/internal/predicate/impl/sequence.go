@@ -103,7 +103,7 @@ func StartsWith(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("{} starts with %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
 		v1, v2 := reflect.ValueOf(v), reflect.ValueOf(rhs)
-		if err := preCheckSubsequence(v1, v2); err != nil {
+		if err := value.PreCheckSubsequence(v1, v2); err != nil {
 			return false, nil, err
 		}
 		l1, l2 := v1.Len(), v2.Len()
@@ -112,7 +112,7 @@ func StartsWith(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 				"sequence of length %v is too short to contain a subsequence of length %v",
 				l1, l2)
 		}
-		i := indexOfSubsequence(v1.Slice(0, l2), v2)
+		i := value.IndexOfSubsequence(v1.Slice(0, l2), v2)
 		return i == 0, nil, nil
 	}
 	return
@@ -124,7 +124,7 @@ func Contains(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("{} contains %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
 		v1, v2 := reflect.ValueOf(v), reflect.ValueOf(rhs)
-		if err := preCheckSubsequence(v1, v2); err != nil {
+		if err := value.PreCheckSubsequence(v1, v2); err != nil {
 			return false, nil, err
 		}
 		l1, l2 := v1.Len(), v2.Len()
@@ -133,7 +133,7 @@ func Contains(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 				"sequence of length %v is too short to contain a subsequence of length %v",
 				l1, l2)
 		}
-		i := indexOfSubsequence(v1, v2)
+		i := value.IndexOfSubsequence(v1, v2)
 		return i > 0, nil, nil
 	}
 	return
@@ -145,7 +145,7 @@ func EndsWith(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("{} ends with %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
 		v1, v2 := reflect.ValueOf(v), reflect.ValueOf(rhs)
-		if err := preCheckSubsequence(v1, v2); err != nil {
+		if err := value.PreCheckSubsequence(v1, v2); err != nil {
 			return false, nil, err
 		}
 		l1, l2 := v1.Len(), v2.Len()
@@ -154,7 +154,7 @@ func EndsWith(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 				"sequence of length %v is too short to contain a subsequence of length %v",
 				l1, l2)
 		}
-		i := indexOfSubsequence(v1.Slice(l1-l2, l1), v2)
+		i := value.IndexOfSubsequence(v1.Slice(l1-l2, l1), v2)
 		return i == 0, nil, nil
 	}
 	return
@@ -179,48 +179,4 @@ func HasSuffix(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 }
 
 // Aliases
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Sequence helpers
-
-func isSequenceType(v reflect.Value) bool {
-	var k = v.Kind()
-	return k == reflect.Array || k == reflect.Slice || k == reflect.String
-}
-
-func preCheckSubsequence(v1, v2 reflect.Value) error {
-
-	if !isSequenceType(v1) {
-		return fmt.Errorf("value of type '%T' is not a sequence",
-			v1.Interface())
-	}
-	if !isSequenceType(v2) {
-		return fmt.Errorf("value of type '%T' is not a sequence",
-			v2.Interface())
-	}
-	return nil
-}
-
-func indexOfSubsequence(seq, sub reflect.Value) int {
-	l1, l2 := seq.Len(), sub.Len()
-	for i := 0; i <= l1-l2; i++ {
-		allEq := true
-		for j := 0; j < l2; j++ {
-			v1, v2 := seq.Index(i+j), sub.Index(j)
-			eq, _ := value.CompareUnordered(v1.Interface(), v2.Interface())
-			if !eq {
-				allEq = false
-				break
-			}
-		}
-		if allEq {
-			return i
-		}
-	}
-
-	return -1
-}
-
-// Sequence helpers
 // ---------------------------------------------------------------------------

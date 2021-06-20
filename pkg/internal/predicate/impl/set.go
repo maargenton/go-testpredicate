@@ -2,11 +2,10 @@ package impl
 
 import (
 	"fmt"
-	"reflect"
-	"strings"
 
 	"github.com/maargenton/go-testpredicate/pkg/internal/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
+	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
 // IsEqualSet tests if two containers contain the same set of values,
@@ -14,11 +13,11 @@ import (
 func IsEqualSet(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("set({}) == %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		lhsSet, err := ReflectSet(v)
+		lhsSet, err := value.ReflectSet(v)
 		if err != nil {
 			return
 		}
-		rhsSet, err := ReflectSet(rhs)
+		rhsSet, err := value.ReflectSet(rhs)
 		if err != nil {
 			return
 		}
@@ -28,8 +27,8 @@ func IsEqualSet(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 		r = len(extra) == 0 && len(missing) == 0
 		if !r {
 			ctx = []predicate.ContextValue{
-				{Name: "extra values", Value: FormatSetValues(extra), Pre: true},
-				{Name: "missing values", Value: FormatSetValues(missing), Pre: true},
+				{Name: "extra values", Value: value.FormatSetValues(extra), Pre: true},
+				{Name: "missing values", Value: value.FormatSetValues(missing), Pre: true},
 			}
 		}
 		return
@@ -41,11 +40,11 @@ func IsEqualSet(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 func IsDisjointSetFrom(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("set({}) ∩ %v == ∅", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		lhsSet, err := ReflectSet(v)
+		lhsSet, err := value.ReflectSet(v)
 		if err != nil {
 			return
 		}
-		rhsSet, err := ReflectSet(rhs)
+		rhsSet, err := value.ReflectSet(rhs)
 		if err != nil {
 			return
 		}
@@ -54,7 +53,7 @@ func IsDisjointSetFrom(rhs interface{}) (desc string, f predicate.PredicateFunc)
 		r = len(intersection) == 0
 		if !r {
 			ctx = []predicate.ContextValue{
-				{Name: "common values", Value: FormatSetValues(intersection), Pre: true},
+				{Name: "common values", Value: value.FormatSetValues(intersection), Pre: true},
 			}
 		}
 		return
@@ -67,11 +66,11 @@ func IsDisjointSetFrom(rhs interface{}) (desc string, f predicate.PredicateFunc)
 func IsSubsetOf(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("set({}) ⊂ %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		lhsSet, err := ReflectSet(v)
+		lhsSet, err := value.ReflectSet(v)
 		if err != nil {
 			return
 		}
-		rhsSet, err := ReflectSet(rhs)
+		rhsSet, err := value.ReflectSet(rhs)
 		if err != nil {
 			return
 		}
@@ -80,7 +79,7 @@ func IsSubsetOf(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 		r = len(diff) == 0
 		if !r {
 			ctx = []predicate.ContextValue{
-				{Name: "extra values", Value: FormatSetValues(diff), Pre: true},
+				{Name: "extra values", Value: value.FormatSetValues(diff), Pre: true},
 			}
 		}
 		return
@@ -93,11 +92,11 @@ func IsSubsetOf(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 func IsSupersetOf(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 	desc = fmt.Sprintf("set({}) ⊃ %v", prettyprint.FormatValue(rhs))
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		lhsSet, err := ReflectSet(v)
+		lhsSet, err := value.ReflectSet(v)
 		if err != nil {
 			return
 		}
-		rhsSet, err := ReflectSet(rhs)
+		rhsSet, err := value.ReflectSet(rhs)
 		if err != nil {
 			return
 		}
@@ -106,80 +105,10 @@ func IsSupersetOf(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 		r = len(diff) == 0
 		if !r {
 			ctx = []predicate.ContextValue{
-				{Name: "missing values", Value: FormatSetValues(diff), Pre: true},
+				{Name: "missing values", Value: value.FormatSetValues(diff), Pre: true},
 			}
 		}
 		return
 	}
 	return
 }
-
-// ---------------------------------------------------------------------------
-// Helper functions to manipulate collections as unordered sets
-
-type Set map[interface{}]struct{}
-
-func ReflectSet(value interface{}) (s Set, err error) {
-	s = Set{}
-	v := reflect.ValueOf(value)
-	k := v.Kind()
-	if !(k == reflect.Slice || k == reflect.Array || k == reflect.String) {
-		err = fmt.Errorf(
-			"value of type '%T' is not an indexable collection", value)
-		return
-	}
-	for i, n := 0, v.Len(); i < n; i++ {
-		s[v.Index(i).Interface()] = struct{}{}
-	}
-	return
-}
-
-// func (lhs Set) Union(rhs Set) (r Set) {
-// 	r = Set{}
-// 	for v := range lhs {
-// 		r[v] = struct{}{}
-// 	}
-// 	for v := range rhs {
-// 		r[v] = struct{}{}
-// 	}
-// 	return
-// }
-
-func (lhs Set) Minus(rhs Set) (r Set) {
-	r = Set{}
-	for v := range lhs {
-		if _, ok := rhs[v]; !ok {
-			r[v] = struct{}{}
-		}
-	}
-	return
-}
-
-func (lhs Set) Intersect(rhs Set) (r Set) {
-	r = Set{}
-	for v := range lhs {
-		if _, ok := rhs[v]; ok {
-			r[v] = struct{}{}
-		}
-	}
-	return
-}
-
-func FormatSetValues(s Set) string {
-	var buf strings.Builder
-	for v := range s {
-		if buf.Len() < 50 {
-			if buf.Len() > 0 {
-				buf.WriteString(", ")
-			}
-			buf.WriteString(prettyprint.FormatValue(v))
-		} else {
-			buf.WriteString(", ...")
-			break
-		}
-	}
-	return buf.String()
-}
-
-// Helper functions to manipulate collections as unordered sets
-// ---------------------------------------------------------------------------
