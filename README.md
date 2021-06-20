@@ -4,7 +4,7 @@ Predicate-base test assertions library for Go
 
 [![GoDoc](https://godoc.org/github.com/maargenton/go-testpredicate?status.svg)](https://godoc.org/github.com/maargenton/go-testpredicate)
 [![Build Status](https://travis-ci.org/maargenton/go-testpredicate.svg?branch=master)](https://travis-ci.org/maargenton/go-testpredicate)
-[![codecov](https://codecov.io/gh/maargenton/go-testpredicate/branch/master/graph/badge.svg)](https://codecov.io/gh/maargenton/go-testpredicate)
+[![codecov](https://codecov.io/gh/maargenton/go-testpredicate/branch/master/graph/badge.svg?token=fVZ3ZMAgfo)](https://codecov.io/gh/maargenton/go-testpredicate)
 [![Go Report Card](https://goreportcard.com/badge/github.com/maargenton/go-testpredicate)](https://goreportcard.com/report/github.com/maargenton/go-testpredicate)
 
 ---------------------------
