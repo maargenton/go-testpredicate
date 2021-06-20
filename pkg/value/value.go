@@ -1,6 +1,6 @@
-// Package value defines helper functions to go from generic interface{} to
-// specific numeric types, and compare them as either ordered or unordered
-// values.
+// Package value defines helper functions to compare numeric and other value
+// types as either ordered or unordered. It also contains helpers to perform set
+// operations on collections, and find sub-sequences in sequences.
 package value
 
 import (
