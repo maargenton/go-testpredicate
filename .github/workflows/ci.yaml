@@ -34,8 +34,10 @@ jobs:
       - name: Check version
         run: go version
       - name: Run tests
-        run: go test ./...
-      # - name: Upload coverage
-      #   uses: codecov/codecov-action@v1
-      #   with:
-          # file: coverage.txt
+        # run: go test ./...
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: coverage.txt
