@@ -1,10 +1,11 @@
 package value_test
 
 import (
-	"field/pkg/value"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/maargenton/go-testpredicate/pkg/value"
 )
 
 type TestCase struct {

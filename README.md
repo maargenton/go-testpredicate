@@ -137,6 +137,13 @@ predicates and their use, take a look at
 `pkg/internal/builder/builder_api_test.go`
 
 ```go
+func TestCollectionAPI(t *testing.T) {
+	verify.That(t, []string{"a", "bb", "ccc"}).All(
+		subexpr.Value().Length().Lt(5))
+	verify.That(t, []string{"a", "bb", "ccc"}).Any(
+		subexpr.Value().Length().Ge(3))
+}
+
 func TestCompareAPI(t *testing.T) {
 	verify.That(t, true).IsTrue()
 	verify.That(t, false).IsFalse()

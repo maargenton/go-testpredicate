@@ -8,6 +8,32 @@ import (
 )
 
 // ---------------------------------------------------------------------------
+// From pkg/internal/predicate/impl/collection.go
+
+// All tests if all values of a collection match the given predicate
+func (b *Builder) All(p *predicate.Predicate) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.All(p))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
+// Any tests if at least one values of a collection match the given predicate
+func (b *Builder) Any(p *predicate.Predicate) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.Any(p))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
+// From pkg/internal/predicate/impl/collection.go
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 // From pkg/internal/predicate/impl/compare.go
 
 // IsTrue tests if a value is true
@@ -94,12 +120,6 @@ func (b *Builder) Ne(rhs interface{}) *predicate.Predicate {
 }
 
 // From pkg/internal/predicate/impl/compare.go
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/container.go
-
-// From pkg/internal/predicate/impl/container.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
