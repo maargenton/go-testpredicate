@@ -488,3 +488,17 @@ func (b *Builder) ToUpper() *Builder {
 
 // From pkg/internal/predicate/impl/string.go
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// From pkg/internal/predicate/impl/struct.go
+
+// Field is a transformation predicate that extract a field from a struct or a
+// value from a map, identified by the given `keypath`. See value.Field() for
+// more details.
+func (b *Builder) Field(keypath string) *Builder {
+	b.p.RegisterTransformation(impl.Field(keypath))
+	return b
+}
+
+// From pkg/internal/predicate/impl/struct.go
+// ---------------------------------------------------------------------------

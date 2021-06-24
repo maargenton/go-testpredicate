@@ -124,3 +124,14 @@ func TestStringAPI(t *testing.T) {
 	verify.That(t, "aBc").ToLower().Eq("abc")
 	verify.That(t, "aBc").ToUpper().Eq("ABC")
 }
+
+func TestStructAPI(t *testing.T) {
+	var v = struct {
+		Name  string
+		Value string
+	}{
+		Name:  "name",
+		Value: "value",
+	}
+	verify.That(t, v).Field("Name").Eq("namee")
+}
