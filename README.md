@@ -55,8 +55,8 @@ func TestExample(t *testing.T) {
 
 		t.Run("when ", func(t *testing.T) {
 			t.Run("then ", func(t *testing.T) {
-                verify.That(t, "123").Eq(123)
-                verify.That(t, 123).ToString().Length().Eq(4)
+				verify.That(t, "123").Eq(123)
+				verify.That(t, 123).ToString().Length().Eq(4)
 			})
 		})
 	})
