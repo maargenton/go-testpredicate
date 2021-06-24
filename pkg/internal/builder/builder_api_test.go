@@ -133,5 +133,5 @@ func TestStructAPI(t *testing.T) {
 		Name:  "name",
 		Value: "value",
 	}
-	verify.That(t, v).Field("Name").Eq("namee")
+	verify.That(t, v).Field("Name").Eq("name")
 }
