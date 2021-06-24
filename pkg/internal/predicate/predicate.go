@@ -22,7 +22,7 @@ type Predicate struct {
 	Func            PredicateFunc
 }
 
-// `PredicateFunc` is the function type for use in a `Predicate`.
+// PredicateFunc is the function type for use in a `Predicate`.
 type PredicateFunc func(
 	value interface{}) (
 	success bool, ctx []ContextValue, err error)
