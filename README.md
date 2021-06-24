@@ -2,11 +2,19 @@
 
 Predicate-base test assertions library for Go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/maargenton/go-testpredicate.svg)](https://pkg.go.dev/github.com/maargenton/go-testpredicate)
-[![BuildStatus](https://github.com/maargenton/go-testpredicate/workflows/build/badge.svg?branch=master)](https://github.com/maargenton/go-testpredicate/actions?query=branch%3Amaster)
-[![codecov](https://codecov.io/gh/maargenton/go-testpredicate/branch/master/graph/badge.svg?token=fVZ3ZMAgfo)](https://codecov.io/gh/maargenton/go-testpredicate)
-[![Go Report Card](https://goreportcard.com/badge/github.com/maargenton/go-testpredicate)](https://goreportcard.com/report/github.com/maargenton/go-testpredicate)
-[![GitHub](https://img.shields.io/github/license/maargenton/go-testpredicate?color=blue)](https://github.com/maargenton/go-testpredicate)
+[![Latest](
+  https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
+  https://pkg.go.dev/github.com/maargenton/go-testpredicate)
+[![Build](
+  https://img.shields.io/github/workflow/status/maargenton/go-testpredicate/build?label=build&logo=github&logoColor=aaaaaa)](
+  https://github.com/maargenton/go-testpredicate/actions?query=branch%3Amaster)
+[![Codecov](
+  https://img.shields.io/codecov/c/github/maargenton/go-testpredicate?label=codecov&logo=codecov&logoColor=aaaaaa&token=fVZ3ZMAgfo)](
+  https://codecov.io/gh/maargenton/go-testpredicate)
+[![Go Report Card](
+  https://goreportcard.com/badge/github.com/maargenton/go-testpredicate)](
+  https://goreportcard.com/report/github.com/maargenton/go-testpredicate)
+
 
 ---------------------------
 
