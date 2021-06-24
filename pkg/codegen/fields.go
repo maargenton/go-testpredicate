@@ -18,6 +18,8 @@ type Field struct {
 // argument list, return list or receiver list
 type Fields []Field
 
+// FieldsFromAST capture the textual components of an ast.FieldList and returns
+// the corresponding codegen.Fields.
 func FieldsFromAST(fset *token.FileSet, l *ast.FieldList) (fields Fields) {
 	if l == nil {
 		return nil

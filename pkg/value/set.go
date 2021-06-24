@@ -8,8 +8,12 @@ import (
 	"github.com/maargenton/go-testpredicate/pkg/prettyprint"
 )
 
+// Set represents a unique set of values of any kind, and provides methods to
+// performat standard set operation.
 type Set map[interface{}]struct{}
 
+// ReflectSet returns a newly constructed set from a collection type, or an
+// error if the value is not a collection.
 func ReflectSet(value interface{}) (s Set, err error) {
 	s = Set{}
 	v := reflect.ValueOf(value)
@@ -25,6 +29,7 @@ func ReflectSet(value interface{}) (s Set, err error) {
 	return
 }
 
+// Union returns a new set that is the union of the receiver with another set.
 func (lhs Set) Union(rhs Set) (r Set) {
 	r = Set{}
 	for v := range lhs {
@@ -36,6 +41,8 @@ func (lhs Set) Union(rhs Set) (r Set) {
 	return
 }
 
+// Minus returns a new set that is the result of subtracting another set from the
+// receiver.
 func (lhs Set) Minus(rhs Set) (r Set) {
 	r = Set{}
 	for v := range lhs {
@@ -46,6 +53,8 @@ func (lhs Set) Minus(rhs Set) (r Set) {
 	return
 }
 
+// Intersect returns a new set that is the intersection between the receiver and
+// another set.
 func (lhs Set) Intersect(rhs Set) (r Set) {
 	r = Set{}
 	for v := range lhs {
@@ -56,6 +65,9 @@ func (lhs Set) Intersect(rhs Set) (r Set) {
 	return
 }
 
+// FormatSetValues returns a textual representation of the receiving set,
+// potentially abbreviated, for the purpose of reporting discrepancies during
+// unit-test.
 func FormatSetValues(s Set) string {
 	var buf strings.Builder
 	for v := range s {

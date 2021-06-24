@@ -1,4 +1,4 @@
-// package verify starts a predicate chain that will let the current test
+// Package verify starts a predicate chain that will let the current test
 // continue even if the assertions fails.
 package verify
 

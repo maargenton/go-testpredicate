@@ -9,6 +9,7 @@ type Transformation struct {
 	Func        TransformFunc
 }
 
+// TransformFunc is the function type for use in a `Transformation`.
 type TransformFunc func(
 	value interface{}) (
 	result interface{}, ctx []ContextValue, err error)
@@ -21,6 +22,7 @@ type Predicate struct {
 	Func            PredicateFunc
 }
 
+// `PredicateFunc` is the function type for use in a `Predicate`.
 type PredicateFunc func(
 	value interface{}) (
 	success bool, ctx []ContextValue, err error)

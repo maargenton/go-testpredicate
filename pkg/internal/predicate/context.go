@@ -19,6 +19,8 @@ type ContextValue struct {
 	Pre   bool
 }
 
+// FormatContextValues returns a string containing the formated print-out of the
+// context values.
 func FormatContextValues(values []ContextValue) string {
 	width := 0
 	for _, c := range values {
