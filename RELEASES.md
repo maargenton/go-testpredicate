@@ -9,9 +9,11 @@
 
 ## Improvements
 
-- Documentation and code cleanup
-- CI cleanup
+- Update readme badges and fix comment typos
+- Add / cleanup documentation comments
 - Add release history
+- Add workflow to create release on version tags (using rakefile task to precess
+  release notes)
 
 # v0.5.0
 
