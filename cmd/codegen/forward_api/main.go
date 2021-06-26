@@ -11,11 +11,14 @@ import (
 	"github.com/maargenton/go-testpredicate/pkg/codegen"
 )
 
+// FileDecl captures the relevant function declarations for one source file of
+// the package.
 type FileDecl struct {
 	Name  string
 	Funcs []FuncDecl
 }
 
+// FuncDecl captures the details of one relevant function declaration.
 type FuncDecl struct {
 	Pkg         string
 	Name        string

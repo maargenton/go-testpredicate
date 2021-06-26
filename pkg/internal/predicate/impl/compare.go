@@ -59,7 +59,7 @@ func IsNil() (desc string, f predicate.PredicateFunc) {
 	return
 }
 
-// IsNil tests if a value is neither a nil literal nor a nillable type set to
+// IsNotNil tests if a value is neither a nil literal nor a nillable type set to
 // nil
 func IsNotNil() (desc string, f predicate.PredicateFunc) {
 	desc = "{} is not nil"

@@ -8,6 +8,32 @@ import (
 )
 
 // ---------------------------------------------------------------------------
+// From pkg/internal/predicate/impl/collection.go
+
+// All tests if all values of a collection match the given predicate
+func (b *Builder) All(p *predicate.Predicate) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.All(p))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
+// Any tests if at least one values of a collection match the given predicate
+func (b *Builder) Any(p *predicate.Predicate) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.Any(p))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
+// From pkg/internal/predicate/impl/collection.go
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 // From pkg/internal/predicate/impl/compare.go
 
 // IsTrue tests if a value is true
@@ -40,7 +66,7 @@ func (b *Builder) IsNil() *predicate.Predicate {
 	return &b.p
 }
 
-// IsNil tests if a value is neither a nil literal nor a nillable type set to
+// IsNotNil tests if a value is neither a nil literal nor a nillable type set to
 // nil
 func (b *Builder) IsNotNil() *predicate.Predicate {
 	b.p.RegisterPredicate(impl.IsNotNil())
@@ -94,12 +120,6 @@ func (b *Builder) Ne(rhs interface{}) *predicate.Predicate {
 }
 
 // From pkg/internal/predicate/impl/compare.go
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/container.go
-
-// From pkg/internal/predicate/impl/container.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
@@ -467,4 +487,18 @@ func (b *Builder) ToUpper() *Builder {
 }
 
 // From pkg/internal/predicate/impl/string.go
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// From pkg/internal/predicate/impl/struct.go
+
+// Field is a transformation predicate that extract a field from a struct or a
+// value from a map, identified by the given `keypath`. See value.Field() for
+// more details.
+func (b *Builder) Field(keypath string) *Builder {
+	b.p.RegisterTransformation(impl.Field(keypath))
+	return b
+}
+
+// From pkg/internal/predicate/impl/struct.go
 // ---------------------------------------------------------------------------

@@ -39,7 +39,7 @@ type opts struct {
 // Option is passed to New() to configure assertion handling
 type Option func(*opts)
 
-// AbortOnError tells teh asserter wether or not to fail
+// AbortOnError tells the asserter wether or not to fail
 func AbortOnError() Option {
 	return func(o *opts) {
 		o.abortOnError = true
