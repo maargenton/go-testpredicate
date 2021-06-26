@@ -25,17 +25,21 @@ jobs:
           - macos-latest
           - windows-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
-      - name: Checkout repository
-        uses: actions/checkout@v2
+
       - name: Check version
         run: go version
+
       - name: Run tests with coverage
         if: matrix.os != 'windows-latest'
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
       - name: Run tests without coverage (windows)
         if: matrix.os == 'windows-latest'
         run: go test -race ./...
