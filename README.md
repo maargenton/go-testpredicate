@@ -1,6 +1,7 @@
 # go-testpredicate
 
-Predicate-base test assertions library for Go
+Test assertions library using predicate-like syntax, producing extensive
+diagnostics output
 
 [![Latest](
   https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
