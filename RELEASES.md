@@ -1,3 +1,10 @@
+# v0.6.1
+
+## Bug fixes
+
+- Fix issue with `.Contains(...)` failing to match sub-sequence at the very
+  beginning of the value.
+
 # v0.6.0
 
 ## Main Features
