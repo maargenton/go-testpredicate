@@ -85,6 +85,8 @@ func TestStartsWith(t *testing.T) {
 
 func TestContains(t *testing.T) {
 	verifyPredicate(t, pr(impl.Contains("bcd")), expectation{value: "abcdef", pass: true})
+	verifyPredicate(t, pr(impl.Contains("abcd")), expectation{value: "abcdef", pass: true})
+	verifyPredicate(t, pr(impl.Contains("bcdef")), expectation{value: "abcdef", pass: true})
 	verifyPredicate(t, pr(impl.Contains("bcd")), expectation{value: "azcdef", pass: false})
 	verifyPredicate(t, pr(impl.Contains([]int{2, 3, 4})), expectation{value: []int{1, 2, 3, 4, 5}, pass: true})
 	verifyPredicate(t, pr(impl.Contains([]int{2, 3, 4})), expectation{value: []int{1, 6, 3, 4, 5}, pass: false})

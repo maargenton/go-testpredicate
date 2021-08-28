@@ -1,3 +1,10 @@
+# v0.6.1
+
+## Bug fixes
+
+- Fix issue with `.Contains(...)` failing to match sub-sequence at the very
+  beginning of the value.
+
 # v0.6.0
 
 ## Main Features
@@ -90,7 +97,6 @@ Significant API change, now using `asserter.New()` to create asserter and
 - Fix collection predicate to only look at PredicateResult to determine success
 
 # v0.3.0
-
 
 - Fix `IsNil()` and `IsNotNil()` predicates (were only testing for literal nil,
   not nil pointers and such)

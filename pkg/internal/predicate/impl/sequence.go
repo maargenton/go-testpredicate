@@ -134,7 +134,7 @@ func Contains(rhs interface{}) (desc string, f predicate.PredicateFunc) {
 				l1, l2)
 		}
 		i := value.IndexOfSubsequence(v1, v2)
-		return i > 0, nil, nil
+		return i >= 0, nil, nil
 	}
 	return
 }
