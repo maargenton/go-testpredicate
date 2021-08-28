@@ -5,6 +5,11 @@
 - Fix issue with `.Contains(...)` failing to match sub-sequence at the very
   beginning of the value.
 
+## Improvements
+
+- Cleanup documentation
+- Improve `rake info`, intermediate version number generation
+
 # v0.6.0
 
 ## Main Features
