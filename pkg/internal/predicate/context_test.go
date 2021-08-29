@@ -16,8 +16,11 @@ func TestFormatContextValue(t *testing.T) {
 	}
 
 	var s = predicate.FormatContextValues(ctx)
-	var expected = "expected: value is nil\n" +
-		"error:    custom error\n" +
+	var expected = "" +
+		"expected: value is nil\n" +
+		"error:    &errors.errorString{\n" +
+		"          \ts: \"custom error\",\n" +
+		"          }\n" +
 		"actual:   <nil>\n"
 
 	if s != expected {

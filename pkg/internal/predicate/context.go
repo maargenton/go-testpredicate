@@ -69,12 +69,8 @@ func formatContextValue(w io.Writer, c ContextValue, width int) {
 	if c.Pre {
 		fmt.Fprintf(w, "%v\n", c.Value)
 	} else {
-		if _, ok := c.Value.(error); ok {
-			fmt.Fprintf(w, "%v\n", c.Value)
-		} else {
-			var formatter = defaultFormatter
-			formatter.NewlineStr = "\n" + strings.Repeat(" ", width+2)
-			fmt.Fprintf(w, "%v\n", formatter.FormatValue(c.Value))
-		}
+		var formatter = defaultFormatter
+		formatter.NewlineStr = "\n" + strings.Repeat(" ", width+2)
+		fmt.Fprintf(w, "%v\n", formatter.FormatValue(c.Value))
 	}
 }
