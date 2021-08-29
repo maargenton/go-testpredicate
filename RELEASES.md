@@ -1,3 +1,12 @@
+# v0.6.2
+
+## Changes
+
+- Remove special case for error formatting. Error values in test context used to
+  be handled as a special case and formatted with a simple `%v`; they are now
+  formatted just like any other value.
+
+
 # v0.6.1
 
 ## Bug fixes
