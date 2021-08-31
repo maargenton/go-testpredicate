@@ -114,11 +114,22 @@ func nextToken(is string) (t token, os string) {
 			os = is[j+1:]
 			if isStruct(ts) {
 				var next token
-				next, os = nextToken(skipStruct(os))
-				if next.str == "{" {
-					ts += "...} {"
+				oss, empty := skipStruct(os)
+				next, os = nextToken(oss)
+				if empty {
+					ts += "} " + next.str
 				} else {
-					ts += "...}" + next.str
+					ts += "...} " + next.str
+				}
+			} else if isInterface(ts) {
+				var next token
+				oss, empty := skipStruct(os)
+				next, os = nextToken(oss)
+				if empty {
+					t = next
+					return
+				} else {
+					ts += "...} " + next.str
 				}
 			}
 			t = makeToken(ts)
@@ -151,19 +162,28 @@ func isAlnum(b byte) bool {
 		b >= 'a' && b <= 'z'
 }
 
-func isStruct(s string) bool {
-	i := strings.Index(s, "struct")
+func containsWord(s, word string) bool {
+	l := len(word)
+	i := strings.Index(s, word)
 	if i < 0 ||
 		i > 0 && isAlnum(s[i-1]) ||
-		i+6 < len(s) && isAlnum(s[i+6]) {
+		i+l < len(s) && isAlnum(s[i+l]) {
 		return false
 	}
 	return true
 }
+func isStruct(s string) bool {
+	return containsWord(s, "struct")
+}
 
-func skipStruct(s string) string {
+func isInterface(s string) bool {
+	return containsWord(s, "interface")
+}
+
+func skipStruct(s string) (string, bool) {
 	var l = len(s)
 	var nested = 1
+	var count = 0
 
 	for i := 0; i < l; i++ {
 		if s[i] == '{' {
@@ -172,11 +192,14 @@ func skipStruct(s string) string {
 		if s[i] == '}' {
 			nested--
 			if nested == 0 {
-				return s[i+1:]
+				return s[i+1:], count == 0
 			}
 		}
+		if s[i] != ' ' && s[i] != '\t' {
+			count++
+		}
 	}
-	return ""
+	return "", count == 0
 }
 
 func scanSkipSpaces(s string, i int) int {
@@ -221,99 +244,20 @@ func buildTokenTree(tokens []token) []token {
 }
 
 func buildTokenBranch(tokens []token) (token, []token) {
-	for {
-		var t token
-		t, tokens = tokens[0], tokens[1:]
-		if !t.isOpening() {
-			return t, tokens
-		}
-
-		t0 := t
-		for len(tokens) > 0 {
-			t, tokens = buildTokenBranch(tokens)
-			if t.isClosing() {
-				t0.trailing = t.str
-				return t0, tokens
-			}
-			t0.sub = append(t0.sub, t)
-		}
-		return t0, tokens
+	var t token
+	t, tokens = tokens[0], tokens[1:]
+	if !t.isOpening() {
+		return t, tokens
 	}
+
+	t0 := t
+	for len(tokens) > 0 {
+		t, tokens = buildTokenBranch(tokens)
+		if t.isClosing() {
+			t0.trailing = t.str
+			return t0, tokens
+		}
+		t0.sub = append(t0.sub, t)
+	}
+	return t0, tokens
 }
-
-// ---------------------------------------------------------------------------
-// tokenWriter
-
-// type tokenWriter struct {
-// 	indent  []byte
-// 	newline []byte
-// 	w       io.Writer
-// }
-
-// func makeTokenWriter(w io.Writer) tokenWriter {
-// 	return tokenWriter{
-// 		indent:  []byte{'\t'},
-// 		newline: []byte{'\n'},
-// 		w:       w,
-// 	}
-// }
-
-// func (w *tokenWriter) writeTokens(tokens []token) {
-// 	for _, t := range tokens {
-// 		w.writeToken(&t)
-// 	}
-// }
-
-// func (w *tokenWriter) writeToken(t *token) {
-// 	w.writeIndent(t.level)
-// 	w.w.Write([]byte(t.str))
-// 	w.w.Write(w.newline)
-
-// 	for _, s := range t.sub {
-// 		w.writeToken(&s)
-// 	}
-
-// 	if len(t.trailing) > 0 {
-// 		w.writeIndent(t.level)
-// 		w.w.Write([]byte(t.trailing))
-// 		w.w.Write(w.newline)
-// 	}
-// }
-
-// func (w *tokenWriter) writeIndent(n int) {
-// 	for i := 0; i < n; i++ {
-// 		w.w.Write(w.indent)
-// 	}
-// }
-
-// tokenWriter
-// ---------------------------------------------------------------------------
-
-// var indent = []byte{'\t'}
-// var newline = []byte{'\n'}
-
-// func (t *token) dump(w io.Writer) {
-// 	for i := 0; i < t.level; i++ {
-// 		w.Write(indent)
-// 	}
-// 	w.Write([]byte(t.str))
-// 	w.Write(newline)
-
-// 	for _, s := range t.sub {
-// 		s.dump(w)
-// 	}
-
-// 	if len(t.trailing) > 0 {
-// 		for i := 0; i < t.level; i++ {
-// 			w.Write(indent)
-// 		}
-// 		w.Write([]byte(t.trailing))
-// 		w.Write(newline)
-// 	}
-// }
-
-// func dumpTokens(tokens []token, w io.Writer) {
-// 	for _, t := range tokens {
-// 		t.dump(w)
-// 	}
-// }

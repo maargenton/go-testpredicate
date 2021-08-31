@@ -207,7 +207,44 @@ func TestTokenizeWithTruncatedStruct(t *testing.T) {
 	if l := len(tokens); l != 1 {
 		t.Fatalf("\nexpected 1 token, got: '%v'", l)
 	}
-	if str := tokens[0].str; str != "struct {...}" {
+	if str := tokens[0].str; str != "struct {...} " {
+		t.Fatalf("\nunexpected token[0]: '%v'", str)
+	}
+}
+
+func TestTokenizeWithEmptyStruct(t *testing.T) {
+	var s = `struct { } `
+	var tokens = tokenize(s)
+
+	if l := len(tokens); l != 1 {
+		t.Fatalf("\nexpected 1 token, got: '%v'", l)
+	}
+	if str := tokens[0].str; str != "struct {} " {
+		t.Fatalf("\nunexpected token[0]: '%v'", str)
+	}
+}
+
+func TestTokenizeWithArrayOfEmptyInterface(t *testing.T) {
+	var s = `[]interface{} {1,2,3}`
+	var tokens = tokenize(s)
+
+	if l := len(tokens); l != 5 {
+		t.Fatalf("\nexpected 5 token, got: '%v'", l)
+	}
+	if str := tokens[0].str; str != "{" {
+		t.Fatalf("\nunexpected token[0]: '%v'", str)
+	}
+}
+
+func TestTokenizeWithArrayOfInterface(t *testing.T) {
+	var v = []interface{ Foo() }{nil, nil, nil}
+	var s = fmt.Sprintf("%#v", v)
+	var tokens = tokenize(s)
+
+	if l := len(tokens); l != 5 {
+		t.Fatalf("\nexpected 5 token, got: '%v'", l)
+	}
+	if str := tokens[0].str; str != "[]interface {...} {" {
 		t.Fatalf("\nunexpected token[0]: '%v'", str)
 	}
 }

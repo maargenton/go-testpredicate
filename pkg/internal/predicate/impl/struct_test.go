@@ -23,4 +23,15 @@ func TestField(t *testing.T) {
 		value:  v,
 		result: nil,
 	})
+
+	var desc, f = impl.Field("Value")
+	if desc != "{}.Value" {
+		t.Errorf("\nUnexpected description: %v", desc)
+	}
+	_, ctx, _ := f(v)
+	if len(ctx) != 1 || ctx[0].Name != "$.Value" {
+		t.Errorf("\nUnexpected ctx: %+v", ctx)
+
+	}
+
 }
