@@ -1,3 +1,10 @@
+# v0.6.3
+
+## Changes
+
+- Fix name of `.Field(...)` predicate, and include keypath as name in context.
+- Improve formatting of `[]interface{}` values.
+
 # v0.6.2
 
 ## Changes
