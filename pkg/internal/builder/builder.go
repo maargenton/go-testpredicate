@@ -19,6 +19,8 @@ type Builder struct {
 	line     int
 	p        predicate.Predicate
 	required bool
+
+	Ctx []predicate.ContextValue
 }
 
 // New returns a new predicate builder capture the given test context, value and
@@ -51,6 +53,7 @@ func Evaluate(b *Builder) {
 
 	success, ctx := b.p.Evaluate(b.value)
 	if !success {
+		ctx = append(ctx, b.Ctx...)
 		b.t.Errorf("\n%v", predicate.FormatContextValues(ctx))
 		if b.required {
 			b.t.FailNow()
