@@ -2,8 +2,14 @@
 
 ## Changes
 
-- Add ability to record context key-value pairs in `verify.That()` /
-  `require.That()`.
+- Add ability to record context key-value pairs with additional arguments to
+  `verify.That()` / `require.That()`.
+  ```go
+  require.That(t, re.MatchString(tc.match),
+    require.Context{Name: "re", Value: re.String()},
+    require.Context{Name: "match", Value: tc.match},
+  ).IsTrue()
+  ```
 
 # v0.6.3
 
