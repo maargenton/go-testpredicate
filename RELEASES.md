@@ -1,3 +1,10 @@
+# v0.6.4
+
+## Changes
+
+- Add ability to record context key-value pairs in `verify.That()` /
+  `require.That()`.
+
 # v0.6.3
 
 ## Changes
