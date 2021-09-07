@@ -14,7 +14,7 @@ import (
 	"html/template"
 	"io"
 
-	"github.com/maargenton/fileutil"
+	"github.com/maargenton/go-fileutils"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/imports"
 )
@@ -70,10 +70,10 @@ func ApplyTemplate(templateFn string, data interface{}) error {
 		return fmt.Errorf("failed to format generate code: %w", err)
 	}
 
-	outputFn := fileutil.RewriteFilename(templateFn, &fileutil.RewriteOpts{
+	outputFn := fileutils.RewriteFilename(templateFn, &fileutils.RewriteOpts{
 		Extname: ".go",
 	})
-	err = fileutil.WriteFile(outputFn, func(w io.Writer) error {
+	err = fileutils.WriteFile(outputFn, func(w io.Writer) error {
 		_, err := w.Write(output)
 		return err
 	})
