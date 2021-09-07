@@ -12,9 +12,9 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io"
+	"os"
+	"strings"
 
-	"github.com/maargenton/go-fileutils"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/imports"
 )
@@ -70,12 +70,7 @@ func ApplyTemplate(templateFn string, data interface{}) error {
 		return fmt.Errorf("failed to format generate code: %w", err)
 	}
 
-	outputFn := fileutils.RewriteFilename(templateFn, &fileutils.RewriteOpts{
-		Extname: ".go",
-	})
-	err = fileutils.WriteFile(outputFn, func(w io.Writer) error {
-		_, err := w.Write(output)
-		return err
-	})
+	outputFn := strings.ReplaceAll(templateFn, ".tmpl", ".go")
+	err = os.WriteFile(outputFn, output, 0644)
 	return err
 }
