@@ -12,7 +12,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"os"
+	"io/ioutil"
 	"strings"
 
 	"golang.org/x/tools/go/packages"
@@ -71,6 +71,6 @@ func ApplyTemplate(templateFn string, data interface{}) error {
 	}
 
 	outputFn := strings.ReplaceAll(templateFn, ".tmpl", ".go")
-	err = os.WriteFile(outputFn, output, 0644)
+	err = ioutil.WriteFile(outputFn, output, 0644)
 	return err
 }
