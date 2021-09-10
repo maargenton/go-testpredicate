@@ -1,3 +1,11 @@
+# v1.0.0
+
+## Major Changes
+
+- Remove old deprecated API. Use `verify.That()` / `require.That()`.
+- Reduce external dependencies to preserve go 1.14 compatibility
+
+
 # v0.6.4
 
 ## Changes

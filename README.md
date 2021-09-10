@@ -83,20 +83,17 @@ Output:
 
 ## API changes and stability
 
-As of v0.5.0, a new and improved API is now available, intended to replace the
-original API in the long run. The original API remains available but should now
-be considered deprecated, and will be remove by v1.0.0.
+Older version of this package where exposing a different API that has since been
+deprecated, and has now been remove for the v1.0.0 release. The latest version
+supporting the legacy API is v0.6.4.
 
-### New API
+Predicates are constructed starting with either `require.That(t, <value>)` or
+`verify.That(t, <value>)`, where _require_ will abort the test on error, while
+_verify_ will keep going. Both variants take the testing context `t`, and the
+value to test.
 
-In the new API, either `require.That()` or `verify.That()` is used to capture
-both the testing context and the value under test, and the test assertion is
-built through call chaining of optional transformations and a final condition.
-Both `require` and `verify` can be mixed and matched as needed.
-
-There is no more need to declare of an asserter object in every block, making
-DBB-style more streamlined. There is no more package `p` sitting on the global
-namespace, and the call-chaining syntax makes complex predicates more readable.
+Additional diagnostic context can be added to either functions with
+`require.Context{}` / `verify.Context{}` passed as additional arguments.
 
 ```go
 package example_test
@@ -108,35 +105,14 @@ import (
 )
 
 func TestExample(t *testing.T) {
-    require.That(t, 123).ToString().Length().Eq(3)
-    verify.That(t, 123).ToString().Length().Eq(4)
+    v := 123
+    require.That(t, v).ToString().Length().Eq(3)
+    verify.That(t, v).ToString().Length().Eq(3)
+    verify.That(t, v,
+        verify.Context{Name: "double", Value: v * 2},
+    ).ToString().Length().Eq(3)
 }
 ```
-
-### Original API
-
-The original API was based on an `assert` object, capturing the test context
-`t`, with an option to either abort on any error or not. Complex predicate,
-applying transformation to the value under test were hard to read due to the
-layout of calling parentheses. BDD-style given/when/then structure was possible
-but required the redefinition of an `assert` object in every nested block. The
-reliance on package `p` as a short-hand for predicate was questionable at best.
-
-```go
-package example_test
-
-import (
-    "testing"
-    "github.com/maargenton/go-testpredicate/pkg/asserter"
-    "github.com/maargenton/go-testpredicate/pkg/p"
-)
-
-func TestExample(t *testing.T) {
-    assert := asserter.New(t, asserter.AbortOnError())
-    assert.That(123, p.ToString(p.Length(p.Eq(3))))
-}
-```
-
 
 ## Built-in predicates
 
