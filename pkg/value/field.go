@@ -6,7 +6,7 @@ import (
 )
 
 // Field takes a root value or an array of root values, navigates through the
-// data tree according to a keypath, and returns the targetted values. `keypath`
+// data tree according to a keypath, and returns the targeted values. `keypath`
 // is a dot-separated list of keys, each used as either field name in a struct,
 // a key in a map, or a niladic method name. Any error during key evalation
 // results in a nil value. If a method invocation yields multiple return values,
@@ -21,7 +21,7 @@ import (
 //
 // Because the implementation is using the reflect package and is mostly type
 // agnostic, the resulting arrays are always of type []interface{}, even if the
-// field types are consistent accross values.
+// field types are consistent across values.
 func Field(value interface{}, keypath string) interface{} {
 	var keys = strings.Split(keypath, ".")
 	return field(value, keys)

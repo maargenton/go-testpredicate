@@ -7,6 +7,7 @@ import (
 	"github.com/maargenton/go-testpredicate/pkg/internal/predicate"
 )
 
+// Context captures an additional context value to be displayed upon failure.
 type Context = predicate.ContextValue
 
 // That captrues the test context and a value for the purpose of building and
