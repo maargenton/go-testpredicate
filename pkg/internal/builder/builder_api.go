@@ -142,7 +142,7 @@ func (b *Builder) IsError(expected error) *predicate.Predicate {
 // ---------------------------------------------------------------------------
 // From pkg/internal/predicate/impl/ext.go
 
-// Is is an extention point allowing for the definition of a custom
+// Is is an extension point allowing for the definition of a custom
 // predicate function to evaluate a predicate chain
 func (b *Builder) Is(desc string, f predicate.PredicateFunc) *predicate.Predicate {
 	b.p.RegisterPredicate(impl.Is(desc, f))
@@ -153,7 +153,7 @@ func (b *Builder) Is(desc string, f predicate.PredicateFunc) *predicate.Predicat
 	return &b.p
 }
 
-// Eval is an extention point allowing for the definition of custom
+// Eval is an extension point allowing for the definition of custom
 // transformation functions in a predicate chain
 func (b *Builder) Eval(desc string, f predicate.TransformFunc) *Builder {
 	b.p.RegisterTransformation(impl.Eval(desc, f))

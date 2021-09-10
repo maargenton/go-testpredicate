@@ -128,9 +128,8 @@ func nextToken(is string) (t token, os string) {
 				if empty {
 					t = next
 					return
-				} else {
-					ts += "...} " + next.str
 				}
+				ts += "...} " + next.str
 			}
 			t = makeToken(ts)
 			return
