@@ -47,6 +47,10 @@ jobs:
 
       - name: Upload coverage
         if: matrix.os != 'windows-latest'
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          # fail_ci_if_error: true
+          verbose: true
+          flags: unittests
           file: coverage.txt
