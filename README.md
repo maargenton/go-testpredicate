@@ -206,3 +206,122 @@ func TestStringAPI(t *testing.T) {
     verify.That(t, "aBc").ToUpper().Eq("ABC")
 }
 ```
+
+## BDD-style bifurcated tests
+
+### Rationale
+
+First of all, the Go `testing` package is great and the fact that it is
+standard, built in and integration with the Go tooling infrastructure is
+awesome. This is why the `go-testpredicate` packages strives to enhance it
+instead of replacing it, like some other testing packages do.
+
+If you look at other unit-testing packages, in other languages, you will find
+either traditional xUnit style packages relying on classes to define test suites
+and fixtures and test cases, or more recent testing packages (like
+[Catch-2](https://github.com/catchorg/Catch2) for C++) that provide, through
+other means, ways to define setup and test cases than run independently. The
+common pattern is that setup code, that may be shared by multiple test cases, is
+usually re-evaluated for every test case so that test cases, despite their
+potentially mutating interactions with the setup, don't affect each other.
+
+Some great articles and blog posts explain how the leverage nested `t.Run()`
+calls to structure tests in ways that are closer to BDD-style given /when / then
+style. Unfortunately, when using thees approaches, and especially with shared
+setup sections, the test cases are no longer independent, as all branches are
+run sequentially, going up and down each branch and into the next branch,
+without resetting the setup.
+
+The `bdd` package in `go-testpredicate` provides a way to write tests with a
+BDD-style structure, using the built-in `testing.T`, but evaluating the test
+cases in a bifurcated fashion, repeating the evaluation of each entire branch
+for every leaf test-case, so that test-cases are independent from each other
+again.
+
+### Usage overview
+
+`bdd.Wrap()` or `bdd.Given()` are the root level function that setup and iterate
+through the bifurcated test evaluation context. They define blocks that receive
+a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
+`testing.T` and can be use with any third party library that expect either the
+`testing.TB` interface or a subset of it (including out own `verify.That()` /
+`require.That()`).
+
+Nested and sibling bifurcated branches are defined with `t.Run()` (on `bdd.T`)
+or `t.When()` / `t.Then()` for BDD style.
+
+> **IMPORTANT:** In a bifurcated evaluation context, as defined by `bdd.T`, test
+> scenarios are run repeatedly in order to evaluate each branch (from root to
+> leaf) independently of each other. When a particular branch is being
+> evaluated, all the other forks and sub-branches are skipped; the other
+> branches are run in separated independent iterations of the scenario.
+
+### Usage, traditional style
+
+```go
+package example_test
+
+import (
+    "testing"
+    "github.com/maargenton/go-testpredicate/pkg/bdd"
+)
+
+func TesTraditional(t *testing.T) {
+
+    // Global immutable setup code can go here
+
+    bdd.Wrap(t, "Given something", func(t *bdd.T) {
+
+        // Local mutable setup code goes here
+
+        t.Run("something happens", func(t *bdd.T) {
+
+            // When this code runs, the code in following `t.Run()` blocks
+            // will be skipped.
+        })
+        t.Run("something else happens", func(t *bdd.T) {
+
+            // When this code runs, all code in preceding `t.Run()` blocks
+            // has been skipped and did not affect the local setup.
+        })
+    })
+}
+```
+
+### Usage, BDD style
+
+```go
+package bdd_test
+
+import (
+	"testing"
+	"github.com/maargenton/go-testpredicate/pkg/bdd"
+)
+
+func TestBDDStyle(t *testing.T) {
+
+    // Global immutable setup code can go here
+
+    bdd.Given(t, "something", func(t *bdd.T) {
+
+        // Local mutable setup code goes here
+
+        t.When("doing something", func(t *bdd.T) {
+
+            // or here
+
+			t.Then("something happens", func(t *bdd.T) {
+
+                // When this code runs, the code in the following `t.Then()`
+                // blocks will be skipped.
+			})
+			t.Then("something else happens", func(t *bdd.T) {
+
+                // When this code runs, all code in preceding `t.Then()`
+                // blocks has been skipped and did not affect the local setup.
+            })
+		})
+	})
+}
+
+```
