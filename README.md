@@ -1,7 +1,7 @@
 # go-testpredicate
 
-Test assertions library using predicate-like syntax, producing extensive
-diagnostics output
+Test assertions library using a test predicate style syntax, and producing
+extensive diagnostics output
 
 [![Latest](
   https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
@@ -19,9 +19,10 @@ diagnostics output
 
 ---------------------------
 
-Package `go-testpredicate` is a test assertions library exposing a
-predicate-like syntax that works with Go testing support to provide extensive
-diagnostics output and reduces the need to use a debugger on every failing test.
+Package `go-testpredicate` is a test assertions library exposing a test
+predicate style syntax for use with the built-in Go `testing` package, producing
+extensive diagnostics output and reducing the need to use a debugger on every
+failing test.
 
 The library contains an extensive collection of built-in predicates covering:
 
@@ -32,6 +33,9 @@ The library contains an extensive collection of built-in predicates covering:
 - sub-sequences match on strings and sequences
 - set conditions on unordered collections
 - panic conditions on code fragment execution
+
+It also includes a BDD-style bifurcated evaluation context, where each test
+section is evaluated independently and repeatedly for every branch.
 
 
 ## Installation
