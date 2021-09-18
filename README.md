@@ -40,7 +40,13 @@ section is evaluated independently and repeatedly for every branch.
 
 ## Installation
 
-    go get github.com/maargenton/go-testpredicate
+```
+go get github.com/maargenton/go-testpredicate
+```
+
+Optionally, you can add predefined code snippets for your text editor or IDE to
+assist in writing  your test code. Snippets for VSCode are available
+[here](docs/snippets.md)
 
 ## Usage
 
