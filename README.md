@@ -35,7 +35,8 @@ The library contains an extensive collection of built-in predicates covering:
 - panic conditions on code fragment execution
 
 It also includes a BDD-style bifurcated evaluation context, where each test
-section is evaluated independently and repeatedly for every branch.
+section is potentially evaluated multiple times in order to evaluate each branch
+independently.
 
 
 ## Installation
@@ -222,9 +223,9 @@ func TestStringAPI(t *testing.T) {
 ### Rationale
 
 First of all, the Go `testing` package is great and the fact that it is
-standard, built in and integration with the Go tooling infrastructure is
-awesome. This is why the `go-testpredicate` packages strives to enhance it
-instead of replacing it, like some other testing packages do.
+standard, built in and integrated with the Go tooling infrastructure is awesome.
+This is why the `go-testpredicate` packages strives to enhance it instead of
+replacing it, unlike many other testing packages.
 
 If you look at other unit-testing packages, in other languages, you will find
 either traditional xUnit style packages relying on classes to define test suites
@@ -232,20 +233,20 @@ and fixtures and test cases, or more recent testing packages (like
 [Catch-2](https://github.com/catchorg/Catch2) for C++) that provide, through
 other means, ways to define setup and test cases than run independently. The
 common pattern is that setup code, that may be shared by multiple test cases, is
-usually re-evaluated for every test case so that test cases, despite their
-potentially mutating interactions with the setup, don't affect each other.
+usually re-evaluated for every test case so that, despite their potentially
+mutating interactions with the setup, test cases don't affect each other.
 
-Some great articles and blog posts explain how the leverage nested `t.Run()`
-calls to structure tests in ways that are closer to BDD-style given /when / then
-style. Unfortunately, when using thees approaches, and especially with shared
-setup sections, the test cases are no longer independent, as all branches are
-run sequentially, going up and down each branch and into the next branch,
-without resetting the setup.
+Some great articles and blog posts have explained how the leverage nested
+`t.Run()` calls to structure tests in way that is closer to BDD-style given /
+when / then paradigm. Unfortunately, when using thees approaches, and especially
+with shared setup sections, the test cases are no longer independent, as all
+branches are run sequentially, going up and down each branch and into the next
+branch, without resetting the setup.
 
 The `bdd` package in `go-testpredicate` provides a way to write tests with a
 BDD-style structure, using the built-in `testing.T`, but evaluating the test
 cases in a bifurcated fashion, repeating the evaluation of each entire branch
-for every leaf test-case, so that test-cases are independent from each other
+for every leaf test case, so that test cases are independent from each other
 again.
 
 ### Usage overview
@@ -253,7 +254,7 @@ again.
 `bdd.Wrap()` or `bdd.Given()` are the root level function that setup and iterate
 through the bifurcated test evaluation context. They define blocks that receive
 a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
-`testing.T` and can be use with any third party library that expect either the
+`testing.T` and can be used with any third party library that expect either the
 `testing.TB` interface or a subset of it (including out own `verify.That()` /
 `require.That()`).
 
@@ -333,5 +334,4 @@ func TestBDDStyle(t *testing.T) {
 		})
 	})
 }
-
 ```
