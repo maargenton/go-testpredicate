@@ -52,21 +52,22 @@ assist in writing  your test code. Snippets for VSCode are available
 ## Usage
 
 ```go
-package examples_test
+package example_test
 
 import (
     "testing"
 
+    "github.com/maargenton/go-testpredicate/pkg/bdd"
     "github.com/maargenton/go-testpredicate/pkg/require"
     "github.com/maargenton/go-testpredicate/pkg/verify"
 )
 
 func TestExample(t *testing.T) {
-    t.Run("Given ", func(t *testing.T) {
+    bdd.Given(t, "something", func(t *bdd.T) {
         require.That(t, 123).ToString().Length().Eq(3)
 
-        t.Run("when ", func(t *testing.T) {
-            t.Run("then ", func(t *testing.T) {
+        t.When("doing something", func(t *bdd.T) {
+            t.Then("something happens ", func(t *bdd.T) {
                 verify.That(t, "123").Eq(123)
                 verify.That(t, 123).ToString().Length().Eq(4)
             })
@@ -78,14 +79,14 @@ func TestExample(t *testing.T) {
 Output:
 ```
 --- FAIL: TestExample (0.00s)
-    --- FAIL: TestFoo/Given_ (0.00s)
-        --- FAIL: TestFoo/Given_/when_ (0.00s)
-            --- FAIL: TestFoo/Given_/when_/then_ (0.00s)
-                usage_test.go:16:
+    --- FAIL: TestExample/Given_something (0.00s)
+        --- FAIL: TestExample/Given_something/when_doing_something (0.00s)
+            --- FAIL: TestExample/Given_something/when_doing_something/then_something_happens_ (0.00s)
+                example_test.go:17:
                     expected: value == 123
                     error:    values of type 'string' and 'int' are never equal
                     value:    "123"
-                usage_test.go:17:
+                example_test.go:18:
                     expected: length(value.String()) == 4
                     value:    123
                     string:   "123"
