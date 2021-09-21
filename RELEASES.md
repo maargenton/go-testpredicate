@@ -1,3 +1,11 @@
+# v1.1.0
+
+## Major Changes
+
+- Add `bdd` sub-package to support BDD-style bifurcated execution of nested test
+  sections.
+
+
 # v1.0.0
 
 ## Major Changes

@@ -211,16 +211,3 @@ func (t TestStruct) FuncOther() (string, string) {
 func (t TestStruct) FuncArgs(i int) (string, error) {
 	return "FuncArgs", nil
 }
-
-func aaa() (int, int) {
-	return 1, 2
-}
-
-func bbb(v ...interface{}) {
-
-}
-
-func Test(t *testing.T) {
-	bbb(aaa())
-
-}
