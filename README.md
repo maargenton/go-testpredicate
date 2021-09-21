@@ -1,7 +1,7 @@
 # go-testpredicate
 
-Test assertions library using predicate-like syntax, producing extensive
-diagnostics output
+Test assertions library using a test predicate style syntax, and producing
+extensive diagnostics output
 
 [![Latest](
   https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
@@ -19,9 +19,10 @@ diagnostics output
 
 ---------------------------
 
-Package `go-testpredicate` is a test assertions library exposing a
-predicate-like syntax that works with Go testing support to provide extensive
-diagnostics output and reduces the need to use a debugger on every failing test.
+Package `go-testpredicate` is a test assertions library exposing a test
+predicate style syntax for use with the built-in Go `testing` package, producing
+extensive diagnostics output and reducing the need to use a debugger on every
+failing test.
 
 The library contains an extensive collection of built-in predicates covering:
 
@@ -33,29 +34,40 @@ The library contains an extensive collection of built-in predicates covering:
 - set conditions on unordered collections
 - panic conditions on code fragment execution
 
+It also includes a BDD-style bifurcated evaluation context, where each test
+section is potentially evaluated multiple times in order to evaluate each branch
+independently.
+
 
 ## Installation
 
-    go get github.com/maargenton/go-testpredicate
+```
+go get github.com/maargenton/go-testpredicate
+```
+
+Optionally, you can add predefined code snippets for your text editor or IDE to
+assist in writing  your test code. Snippets for VSCode are available
+[here](docs/snippets.md)
 
 ## Usage
 
 ```go
-package examples_test
+package example_test
 
 import (
     "testing"
 
+    "github.com/maargenton/go-testpredicate/pkg/bdd"
     "github.com/maargenton/go-testpredicate/pkg/require"
     "github.com/maargenton/go-testpredicate/pkg/verify"
 )
 
 func TestExample(t *testing.T) {
-    t.Run("Given ", func(t *testing.T) {
+    bdd.Given(t, "something", func(t *bdd.T) {
         require.That(t, 123).ToString().Length().Eq(3)
 
-        t.Run("when ", func(t *testing.T) {
-            t.Run("then ", func(t *testing.T) {
+        t.When("doing something", func(t *bdd.T) {
+            t.Then("something happens ", func(t *bdd.T) {
                 verify.That(t, "123").Eq(123)
                 verify.That(t, 123).ToString().Length().Eq(4)
             })
@@ -67,14 +79,14 @@ func TestExample(t *testing.T) {
 Output:
 ```
 --- FAIL: TestExample (0.00s)
-    --- FAIL: TestFoo/Given_ (0.00s)
-        --- FAIL: TestFoo/Given_/when_ (0.00s)
-            --- FAIL: TestFoo/Given_/when_/then_ (0.00s)
-                usage_test.go:16:
+    --- FAIL: TestExample/Given_something (0.00s)
+        --- FAIL: TestExample/Given_something/when_doing_something (0.00s)
+            --- FAIL: TestExample/Given_something/when_doing_something/then_something_happens_ (0.00s)
+                example_test.go:17:
                     expected: value == 123
                     error:    values of type 'string' and 'int' are never equal
                     value:    "123"
-                usage_test.go:17:
+                example_test.go:18:
                     expected: length(value.String()) == 4
                     value:    123
                     string:   "123"
@@ -204,5 +216,123 @@ func TestStringAPI(t *testing.T) {
     verify.That(t, 123).ToString().Eq("123")
     verify.That(t, "aBc").ToLower().Eq("abc")
     verify.That(t, "aBc").ToUpper().Eq("ABC")
+}
+```
+
+## BDD-style bifurcated tests
+
+### Rationale
+
+First of all, the Go `testing` package is great and the fact that it is
+standard, built in and integrated with the Go tooling infrastructure is awesome.
+This is why the `go-testpredicate` packages strives to enhance it instead of
+replacing it, unlike many other testing packages.
+
+If you look at other unit-testing packages, in other languages, you will find
+either traditional xUnit style packages relying on classes to define test suites
+and fixtures and test cases, or more recent testing packages (like
+[Catch-2](https://github.com/catchorg/Catch2) for C++) that provide, through
+other means, ways to define setup and test cases than run independently. The
+common pattern is that setup code, that may be shared by multiple test cases, is
+usually re-evaluated for every test case so that, despite their potentially
+mutating interactions with the setup, test cases don't affect each other.
+
+Some great articles and blog posts have explained how the leverage nested
+`t.Run()` calls to structure tests in way that is closer to BDD-style given /
+when / then paradigm. Unfortunately, when using thees approaches, and especially
+with shared setup sections, the test cases are no longer independent, as all
+branches are run sequentially, going up and down each branch and into the next
+branch, without resetting the setup.
+
+The `bdd` package in `go-testpredicate` provides a way to write tests with a
+BDD-style structure, using the built-in `testing.T`, but evaluating the test
+cases in a bifurcated fashion, repeating the evaluation of each entire branch
+for every leaf test case, so that test cases are independent from each other
+again.
+
+### Usage overview
+
+`bdd.Wrap()` or `bdd.Given()` are the root level function that setup and iterate
+through the bifurcated test evaluation context. They define blocks that receive
+a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
+`testing.T` and can be used with any third party library that expect either the
+`testing.TB` interface or a subset of it (including out own `verify.That()` /
+`require.That()`).
+
+Nested and sibling bifurcated branches are defined with `t.Run()` (on `bdd.T`)
+or `t.When()` / `t.Then()` for BDD style.
+
+> **IMPORTANT:** In a bifurcated evaluation context, as defined by `bdd.T`, test
+> scenarios are run repeatedly in order to evaluate each branch (from root to
+> leaf) independently of each other. When a particular branch is being
+> evaluated, all the other forks and sub-branches are skipped; the other
+> branches are run in separated independent iterations of the scenario.
+
+### Usage, traditional style
+
+```go
+package example_test
+
+import (
+    "testing"
+    "github.com/maargenton/go-testpredicate/pkg/bdd"
+)
+
+func TesTraditional(t *testing.T) {
+
+    // Global immutable setup code can go here
+
+    bdd.Wrap(t, "Given something", func(t *bdd.T) {
+
+        // Local mutable setup code goes here
+
+        t.Run("something happens", func(t *bdd.T) {
+
+            // When this code runs, the code in following `t.Run()` blocks
+            // will be skipped.
+        })
+        t.Run("something else happens", func(t *bdd.T) {
+
+            // When this code runs, all code in preceding `t.Run()` blocks
+            // has been skipped and did not affect the local setup.
+        })
+    })
+}
+```
+
+### Usage, BDD style
+
+```go
+package bdd_test
+
+import (
+    "testing"
+    "github.com/maargenton/go-testpredicate/pkg/bdd"
+)
+
+func TestBDDStyle(t *testing.T) {
+
+    // Global immutable setup code can go here
+
+    bdd.Given(t, "something", func(t *bdd.T) {
+
+        // Local mutable setup code goes here
+
+        t.When("doing something", func(t *bdd.T) {
+
+            // or here
+
+            t.Then("something happens", func(t *bdd.T) {
+
+                // When this code runs, the code in the following `t.Then()`
+                // blocks will be skipped.
+            })
+            t.Then("something else happens", func(t *bdd.T) {
+
+                // When this code runs, all code in preceding `t.Then()`
+                // blocks has been skipped and did not affect the local setup.
+            })
+        })
+    })
 }
 ```
