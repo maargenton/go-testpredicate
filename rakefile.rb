@@ -1,10 +1,10 @@
 # =============================================================================
 #
 # MODULE      : rakefile.rb
-# PROJECT     : crossgo
+# PROJECT     : go-testpredicate
 # DESCRIPTION :
 #
-# Copyright (c) 2016-2020, Marc-Antoine Argenton.  All rights reserved.
+# Copyright (c) 2016-2021, Marc-Antoine Argenton.  All rights reserved.
 # =============================================================================
 
 require 'fileutils'
