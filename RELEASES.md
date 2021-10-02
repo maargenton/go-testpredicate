@@ -1,3 +1,12 @@
+# v1.1.1
+
+## Improvements
+
+- Fix code completion hints to make `bdd.T` usage seamlessly equivalent to
+  `testing.T` -- testing functions prototype argument renamed to `t` instead of
+  `b`.
+
+
 # v1.1.0
 
 ## Major Changes
