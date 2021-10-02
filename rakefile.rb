@@ -1,22 +1,28 @@
 # =============================================================================
 #
 # MODULE      : rakefile.rb
-# PROJECT     : crossgo
+# PROJECT     : go-testpredicate
 # DESCRIPTION :
 #
-# Copyright (c) 2016-2020, Marc-Antoine Argenton.  All rights reserved.
+# Copyright (c) 2016-2021, Marc-Antoine Argenton.  All rights reserved.
 # =============================================================================
 
 require 'fileutils'
 
 task default: [:build]
 
-desc 'Display version and information that will be incldued in build'
+desc 'Display build information, including inferred verison number that uniquely identies the build product'
 task :info do
+    puts "Name:    #{BuildInfo.default.name}"
     puts "Version: #{BuildInfo.default.version}"
     puts "Remote:  #{BuildInfo.default.remote}"
     puts "Commit:  #{BuildInfo.default.commit}"
     puts "Dir:     #{BuildInfo.default.dir}"
+end
+
+desc 'Display inferred build version number'
+task :version do
+    puts BuildInfo.default.version
 end
 
 desc 'Build and publish both release archive and associated container image'
@@ -53,6 +59,7 @@ class BuildInfo
         end
     end
 
+    def name()      return @name    ||= _name()     end
     def version()   return @version ||= _version()  end
     def remote()    return @remote  ||= _remote()   end
     def commit()    return @commit  ||= _commit()   end
@@ -63,11 +70,18 @@ class BuildInfo
     def _commit()   return _git('rev-parse HEAD')               end
     def _dir()      return _git('rev-parse --show-toplevel')    end
 
+    def _name()
+        remote_basename = File.basename(remote() || "" )
+        return remote_basename if remote_basename != ""
+        return File.basename(File.expand_path("."))
+    end
+
     def _version()
-        v, b, n, g = _info()
-        m = _mtag()
-        v, b, n, g, m = _fix_up_patch(v, b, n, g, m)
-        return v if _is_default_branch(b, v) && n == 0 && m.nil?
+        v, b, n, g = _info()                    # Extract base info from git branch and tags
+        m = _mtag()                             # Detect locally modified files
+        v = _patch(v) if n > 0 || !m.nil?       # Increment patch if needed to to preserve semver orderring
+        b = 'rc' if _is_default_branch(b, v)    # Rename branch to 'rc' for default branch
+        return v if b == 'rc' && n == 0 && m.nil?
         return "#{v}-" + [b, n, g, m].compact().join('.')
     end
 
@@ -84,7 +98,7 @@ class BuildInfo
         return ['v0.0.0', "none", 0, 'g0000000']
     end
 
-    def _is_default_branch(b, v = nil)
+    def _is_default_branch(b, v)
         # Check branch name against common main branch names, and branch name
         # that matches the beginning of the version strings e.g. 'v1' is
         # considered a default branch for version 'v1.x.y'.
@@ -92,24 +106,23 @@ class BuildInfo
             (!v.nil? && v.start_with?(b))
     end
 
-    def _fix_up_patch(v, b, n, g, m)
-        # If the number of commits since the latest tag is greater than zero,
-        # increment the patch number by 1, so that the generated version string
-        # sorts between the last tag and the next tag according to semver.
+    def _patch(v)
+        # Increment the patch number by 1, so that intermediate version strings
+        # sort between the last tag and the next tag according to semver.
         #   v0.6.1
-        #       v0.6.1-maa-cleanup.1.g6ede8cd   <-- with _fix_up_patch()
+        #       v0.6.1-maa-cleanup.1.g6ede8cd   <-- with _patch()
         #   v0.6.0
-        #       v0.6.0-maa-cleanup.1.g6ede8cd   <-- without _fix_up_patch()
+        #       v0.6.0-maa-cleanup.1.g6ede8cd   <-- without _patch()
         #   v0.5.99
-        if n > 0 || !_is_default_branch(b, v)
-            vv = v[1..-1].split('.').map { |v| v.to_i }
-            vv[-1] += 1
-            v = "v" + vv.join(".")
-        end
-        return v, b, n, g, m
+        vv = v[1..-1].split('.').map { |v| v.to_i }
+        vv[-1] += 1
+        v = "v" + vv.join(".")
+        return v
     end
 
     def _mtag()
+        # Generate a `.mXXXXXXXX` fragment based on latest mtime of modified
+        # files in the index. Returns `nil` if no files are locally modified.
         status = _git("status --porcelain=2 --untracked-files=no")
         files = status.lines.map {|l| l.strip.split(/ +/).last }.map { |n| n.split(/\t/).first }
         t = files.map { |f| File.mtime(f).to_i rescue nil }.compact.max
