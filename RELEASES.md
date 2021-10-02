@@ -1,3 +1,11 @@
+# v1.1.1
+
+## Improvements
+
+- In `bdd` package, change test function argument name from `b` to `t` to
+  provide seamless equivalence with `testing.T` based on code completion.
+
+
 # v1.1.0
 
 ## Major Changes
