@@ -27,7 +27,7 @@ type T struct {
 }
 
 // Run defines a new fork in the current bifurcated evaluation context.
-func (b *T) Run(name string, f func(b *T)) bool {
+func (b *T) Run(name string, f func(t *T)) bool {
 	success := true
 	if b.tracker.Active() {
 		success = success && b.t.Run(name, func(t *testing.T) {
@@ -39,21 +39,21 @@ func (b *T) Run(name string, f func(b *T)) bool {
 
 // When adds syntactic sugar on top of `bdd.T.Run()` and prefixes the name
 // of the section with 'when ...'.
-func (b *T) When(name string, f func(b *T)) bool {
+func (b *T) When(name string, f func(t *T)) bool {
 	name = fmt.Sprintf("when %v", name)
 	return b.Run(name, f)
 }
 
 // Then adds syntactic sugar on top of `bdd.T.Run()` and prefixes the name
 // of the section with 'then ...'.
-func (b *T) Then(name string, f func(b *T)) bool {
+func (b *T) Then(name string, f func(t *T)) bool {
 	name = fmt.Sprintf("then %v", name)
 	return b.Run(name, f)
 }
 
 // Wrap is the root function that wraps the top level testing.T context and
 // starts a bifurcated bdd.T evaluation context.
-func Wrap(t *testing.T, name string, f func(b *T)) bool {
+func Wrap(t *testing.T, name string, f func(t *T)) bool {
 	tracker := &tracker{}
 	success := true
 	for tracker.Next() {
@@ -69,7 +69,7 @@ func Wrap(t *testing.T, name string, f func(b *T)) bool {
 
 // Given adds syntactic sugar on top of `bdd.Wrap()` and prefixes the name
 // of the section with 'Given ...'.
-func Given(t *testing.T, name string, f func(b *T)) bool {
+func Given(t *testing.T, name string, f func(t *T)) bool {
 	name = fmt.Sprintf("Given %v", name)
 	return Wrap(t, name, f)
 }
