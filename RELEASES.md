@@ -2,8 +2,9 @@
 
 ## Improvements
 
-- In `bdd` package, change test function argument name from `b` to `t` to
-  provide seamless equivalence with `testing.T` based on code completion.
+- Fix code completion hints to make `bdd.T` usage seamlessly equivalent to
+  `testing.T` -- testing functions prototype argument renamed to `t` instead of
+  `b`.
 
 
 # v1.1.0
