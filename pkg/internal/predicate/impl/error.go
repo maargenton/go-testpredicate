@@ -16,6 +16,10 @@ func IsError(expected error) (desc string, f predicate.PredicateFunc) {
 			r = expected == nil
 		} else if errValue, ok := v.(error); ok {
 			r = errors.Is(errValue, expected)
+			ctx = []predicate.ContextValue{
+				{Name: "error", Value: errValue.Error(), Pre: true},
+			}
+
 		} else {
 			err = fmt.Errorf("value of type '%T' is not an error", v)
 		}
