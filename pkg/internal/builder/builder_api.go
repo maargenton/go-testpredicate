@@ -160,6 +160,16 @@ func (b *Builder) Eval(desc string, f predicate.TransformFunc) *Builder {
 	return b
 }
 
+// Passes evaluates a sub-expression predicate against the value.
+func (b *Builder) Passes(p *predicate.Predicate) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.Passes(p))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
 // From pkg/internal/predicate/impl/ext.go
 // ---------------------------------------------------------------------------
 

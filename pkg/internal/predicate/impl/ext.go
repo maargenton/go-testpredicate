@@ -15,3 +15,13 @@ func Is(desc string, f predicate.PredicateFunc) (string, predicate.PredicateFunc
 func Eval(desc string, f predicate.TransformFunc) (string, predicate.TransformFunc) {
 	return desc, f
 }
+
+// Passes evaluates a sub-expression predicate against the value.
+func Passes(p *predicate.Predicate) (desc string, f predicate.PredicateFunc) {
+	desc = p.FormatDescription("{}")
+	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
+		r, ctx = p.Evaluate(v)
+		return
+	}
+	return
+}

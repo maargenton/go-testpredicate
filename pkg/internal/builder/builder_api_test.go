@@ -64,6 +64,8 @@ func TestExtAPI(t *testing.T) {
 		return
 	}
 	verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
+
+	verify.That(t, 9).Passes(subexpr.Value().Lt(10))
 }
 
 func TestMapAPI(t *testing.T) {

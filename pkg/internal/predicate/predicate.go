@@ -60,7 +60,13 @@ func (p *Predicate) Evaluate(value interface{}) (success bool, context []Context
 	}
 
 	success, ctx, err := p.Func(value)
-	context = append(context, ctx...)
+
+	for _, v := range ctx {
+		if v.Name != "expected" && v.Name != "value" {
+			context = append(context, v)
+		}
+	}
+
 	if err != nil {
 		context = append(context, ContextValue{"error", err, true})
 		success = false
