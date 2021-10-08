@@ -10,7 +10,11 @@ import (
 // IsError tests a value is an error matching or wrapping the expected error
 // (according to go 1.13 error.Is()).
 func IsError(expected error) (desc string, f predicate.PredicateFunc) {
-	desc = fmt.Sprintf("{} is error '%v'", expected)
+	if expected != nil {
+		desc = fmt.Sprintf("{} is error '%v'", expected)
+	} else {
+		desc = "{} is no error"
+	}
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
 		if v == nil {
 			r = expected == nil
