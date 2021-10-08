@@ -1,7 +1,6 @@
 # go-testpredicate
 
-Test assertions library using a test predicate style syntax, and producing
-extensive diagnostics output
+Test predicate style assertions library with extensive diagnostics output.
 
 [![Latest](
   https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
@@ -19,10 +18,9 @@ extensive diagnostics output
 
 ---------------------------
 
-Package `go-testpredicate` is a test assertions library exposing a test
-predicate style syntax for use with the built-in Go `testing` package, producing
-extensive diagnostics output and reducing the need to use a debugger on every
-failing test.
+Package `go-testpredicate` is an assertions library exposing a test predicate
+style syntax for use with the built-in Go `testing` package, producing extensive
+diagnostics output and reducing the need for debugging failing tests.
 
 The library contains an extensive collection of built-in predicates covering:
 
@@ -158,6 +156,20 @@ func TestErrorAPI(t *testing.T) {
     var err = fmt.Errorf("error: %w", sentinel)
 
     verify.That(t, err).IsError(sentinel)
+}
+
+func TestExtAPI(t *testing.T) {
+	var customPredicate = func() (desc string, f predicate.PredicateFunc) {
+        // ...
+	}
+	verify.That(t, nil).Is(customPredicate())
+
+	var customTransform = func() (desc string, f predicate.TransformFunc) {
+        // ...
+	}
+	verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
+
+	verify.That(t, 9).Passes(subexpr.Value().Lt(10))
 }
 
 func TestMapAPI(t *testing.T) {
