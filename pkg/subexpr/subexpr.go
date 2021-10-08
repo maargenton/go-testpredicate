@@ -3,7 +3,7 @@
 // values of a collection.
 package subexpr
 
-import "github.com/maargenton/go-testpredicate/pkg/internal/builder"
+import "github.com/maargenton/go-testpredicate/pkg/utils/builder"
 
 // Value starts a sub-expression predicate for use as part of collection
 // predicate (e.g. .All() or .Any()) that would evaluate it on multiple values

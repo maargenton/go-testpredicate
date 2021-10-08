@@ -3,8 +3,8 @@
 package require
 
 import (
-	"github.com/maargenton/go-testpredicate/pkg/internal/builder"
-	"github.com/maargenton/go-testpredicate/pkg/internal/predicate"
+	"github.com/maargenton/go-testpredicate/pkg/utils/builder"
+	"github.com/maargenton/go-testpredicate/pkg/utils/predicate"
 )
 
 // Context captures an additional context value to be displayed upon failure.

@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/tools/go/packages"
 
-	"github.com/maargenton/go-testpredicate/pkg/codegen"
+	"github.com/maargenton/go-testpredicate/pkg/utils/codegen"
 )
 
 // FileDecl captures the relevant function declarations for one source file of
