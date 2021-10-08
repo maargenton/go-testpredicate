@@ -74,3 +74,21 @@ func TestEvaluateWithTransform(t *testing.T) {
 		}
 	}
 }
+
+func TestEvaluateContext(t *testing.T) {
+
+	var p = predicate.Predicate{}
+	p.RegisterPredicate("{}", func(value interface{}) (success bool, ctx []predicate.ContextValue, err error) {
+		ctx = []predicate.ContextValue{
+			{Name: "expected", Value: "nested-expected", Pre: true},
+			{Name: "value", Value: "nested-value", Pre: true},
+			{Name: "other", Value: "nested-other", Pre: true},
+		}
+		return
+	})
+
+	_, ctx := p.Evaluate("123")
+	if len(ctx) != 3 {
+		t.Errorf("\nunexpected context values:\n%v", predicate.FormatContextValues(ctx))
+	}
+}

@@ -158,6 +158,20 @@ func TestErrorAPI(t *testing.T) {
     verify.That(t, err).IsError(sentinel)
 }
 
+func TestExtAPI(t *testing.T) {
+	var customPredicate = func() (desc string, f predicate.PredicateFunc) {
+        // ...
+	}
+	verify.That(t, nil).Is(customPredicate())
+
+	var customTransform = func() (desc string, f predicate.TransformFunc) {
+        // ...
+	}
+	verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
+
+	verify.That(t, 9).Passes(subexpr.Value().Lt(10))
+}
+
 func TestMapAPI(t *testing.T) {
     var m = map[string]string{ "aaa": "bbb", "ccc": "ddd" }
 

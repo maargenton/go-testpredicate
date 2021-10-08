@@ -1,3 +1,18 @@
+# v1.2.0
+
+## Major Changes
+
+- Add support for recording un-evaluated predicates in table driven tests.
+- Reorganize packages hierarchy, removing internal and keeping only API-level
+  packages at the top level under pkg.
+- Add `.Passes()` to evaluate sub-expression predicate on single value.
+
+## Improvements
+
+- `.IsError()` prints out string version of the error for readability.
+- `.IsError(nil)` provides better description when testing for no error.
+
+
 # v1.1.1
 
 ## Improvements

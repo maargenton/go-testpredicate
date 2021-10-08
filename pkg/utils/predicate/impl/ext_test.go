@@ -37,3 +37,14 @@ func customTransform() (desc string, f predicate.TransformFunc) {
 	}
 	return
 }
+
+func TestPasses(t *testing.T) {
+	desc, f := impl.Eq(3)
+	var p = &predicate.Predicate{
+		Description: desc,
+		Func:        f,
+	}
+
+	verifyPredicate(t, pr(impl.Passes(p)), expectation{value: 3, pass: true})
+	verifyPredicate(t, pr(impl.Passes(p)), expectation{value: 2, pass: false})
+}
