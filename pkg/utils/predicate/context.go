@@ -54,8 +54,8 @@ values_loop:
 }
 
 var defaultFormatter = prettyprint.Formatter{
-	Width:      80,
-	MinWidth:   20,
+	Width:      120,
+	MinWidth:   40,
 	WrapPrefix: "↩",
 	WrapSuffix: "↪",
 	MaxWrapped: 10,
