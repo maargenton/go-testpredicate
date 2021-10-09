@@ -13,6 +13,7 @@ import (
 // Formatter contains the configuration
 type Formatter struct {
 	Width      int
+	MinWidth   int
 	WrapPrefix string
 	WrapSuffix string
 	MaxWrapped int
@@ -25,6 +26,7 @@ type Formatter struct {
 func New() *Formatter {
 	return &Formatter{
 		Width:      80,
+		MinWidth:   20,
 		WrapPrefix: "↩",
 		WrapSuffix: "↪",
 		MaxWrapped: 10,
@@ -74,6 +76,13 @@ func (f *Formatter) collapseLeaves(tokens []token) {
 			f.collapseLeaves(tokens[i].sub)
 		}
 	}
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
 }
 
 func max(x, y int) int {
@@ -236,7 +245,7 @@ func (f *Formatter) applyToTokens(tokens []token, op func(t *token)) {
 // markers
 func (f *Formatter) wrapToken() func(t *token) {
 	return func(t *token) {
-		w := f.Width - 4*t.level
+		w := max(f.Width-4*t.level, f.MinWidth)
 		if len(t.str) > w {
 			lines := wrapString(t.str, w)
 			t.str = lines[0] + f.WrapPrefix
@@ -267,14 +276,14 @@ func wrapString(s string, w int) []string {
 			j = k
 		} else {
 			if j-i < w/2 || k-j > w/2 {
-				j = i + w - 1
+				j = max(i+1, min(i+w-1, l))
 			}
 			result = append(result, s[i:j])
 			i = j
 		}
 		if firstLine && len(result) > 0 {
 			firstLine = false
-			w -= 4
+			w = max(w-4, 1)
 		}
 	}
 	if i != j {
