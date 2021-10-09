@@ -159,17 +159,17 @@ func TestErrorAPI(t *testing.T) {
 }
 
 func TestExtAPI(t *testing.T) {
-	var customPredicate = func() (desc string, f predicate.PredicateFunc) {
+    var customPredicate = func() (desc string, f predicate.PredicateFunc) {
         // ...
-	}
-	verify.That(t, nil).Is(customPredicate())
+    }
+    verify.That(t, nil).Is(customPredicate())
 
-	var customTransform = func() (desc string, f predicate.TransformFunc) {
+    var customTransform = func() (desc string, f predicate.TransformFunc) {
         // ...
-	}
-	verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
+    }
+    verify.That(t, nil).Eval(customTransform()).Is(customPredicate())
 
-	verify.That(t, 9).Passes(subexpr.Value().Lt(10))
+    verify.That(t, 9).Passes(subexpr.Value().Lt(10))
 }
 
 func TestMapAPI(t *testing.T) {
