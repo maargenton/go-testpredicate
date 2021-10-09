@@ -1,3 +1,17 @@
+# v1.2.1
+
+## Bug fix
+
+- Fix crash in output formatting code caused by string wrapping logic in deeply
+  nested cases where target width decreases to 0 or below.
+
+## Improvements
+
+- Add `MinWidth` formatting option to preserve reasonable formatting even with
+  deeply indented values, default to 40 for test output
+- Fix indentation in README code samples
+
+
 # v1.2.0
 
 ## Major Changes
