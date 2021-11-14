@@ -8,7 +8,7 @@ import (
 )
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/collection.go
+// From pkg/utils/predicate/impl/collection.go
 
 // All tests if all values of a collection match the given predicate
 func (b *Builder) All(p *predicate.Predicate) *predicate.Predicate {
@@ -30,11 +30,11 @@ func (b *Builder) Any(p *predicate.Predicate) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/collection.go
+// From pkg/utils/predicate/impl/collection.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/compare.go
+// From pkg/utils/predicate/impl/compare.go
 
 // IsTrue tests if a value is true
 func (b *Builder) IsTrue() *predicate.Predicate {
@@ -119,13 +119,13 @@ func (b *Builder) Ne(rhs interface{}) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/compare.go
+// From pkg/utils/predicate/impl/compare.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/error.go
+// From pkg/utils/predicate/impl/error.go
 
-// IsError tests a value is an error matching or wrapping the expected error
+// IsError tests if a value is an error matching or wrapping the expected error
 // (according to go 1.13 error.Is()).
 func (b *Builder) IsError(expected error) *predicate.Predicate {
 	b.p.RegisterPredicate(impl.IsError(expected))
@@ -136,11 +136,19 @@ func (b *Builder) IsError(expected error) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/error.go
+// AsError tests if a value is an error matching or wrapping the expected error
+// (according to go 1.13 error.As()) and returns the unwrapped error for further
+// evaluation.
+func (b *Builder) AsError(target interface{}) *Builder {
+	b.p.RegisterTransformation(impl.AsError(target))
+	return b
+}
+
+// From pkg/utils/predicate/impl/error.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/ext.go
+// From pkg/utils/predicate/impl/ext.go
 
 // Is is an extension point allowing for the definition of a custom
 // predicate function to evaluate a predicate chain
@@ -170,11 +178,11 @@ func (b *Builder) Passes(p *predicate.Predicate) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/ext.go
+// From pkg/utils/predicate/impl/ext.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/map.go
+// From pkg/utils/predicate/impl/map.go
 
 // MapKeys is a transformation predicate that applies only to map values and
 // extract its keys into an sequence for further evaluation. Note that the keys
@@ -192,11 +200,11 @@ func (b *Builder) MapValues() *Builder {
 	return b
 }
 
-// From pkg/internal/predicate/impl/map.go
+// From pkg/utils/predicate/impl/map.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/ordered.go
+// From pkg/utils/predicate/impl/ordered.go
 
 // IsLessThan tests if a value is strictly less than a reference value
 func (b *Builder) IsLessThan(rhs interface{}) *predicate.Predicate {
@@ -288,11 +296,11 @@ func (b *Builder) Ge(rhs interface{}) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/ordered.go
+// From pkg/utils/predicate/impl/ordered.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/panic.go
+// From pkg/utils/predicate/impl/panic.go
 
 // Panics verifies that the value under test is a callable function that panics.
 // Special case using panic(nil) is considered an error because common recover()
@@ -313,11 +321,11 @@ func (b *Builder) PanicsAndRecoveredValue() *Builder {
 	return b
 }
 
-// From pkg/internal/predicate/impl/panic.go
+// From pkg/utils/predicate/impl/panic.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/sequence.go
+// From pkg/utils/predicate/impl/sequence.go
 
 // Length is a transformation predicate that extract the length of a value for
 // further evaluation. It applies to values of type String, Array, Slice, Map,
@@ -410,11 +418,11 @@ func (b *Builder) HasSuffix(rhs interface{}) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/sequence.go
+// From pkg/utils/predicate/impl/sequence.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/set.go
+// From pkg/utils/predicate/impl/set.go
 
 // IsEqualSet tests if two containers contain the same set of values,
 // independently of order.
@@ -459,11 +467,11 @@ func (b *Builder) IsSupersetOf(rhs interface{}) *predicate.Predicate {
 	return &b.p
 }
 
-// From pkg/internal/predicate/impl/set.go
+// From pkg/utils/predicate/impl/set.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/string.go
+// From pkg/utils/predicate/impl/string.go
 
 // Matches tests if a string matches a regular expression
 func (b *Builder) Matches(re string) *predicate.Predicate {
@@ -496,11 +504,11 @@ func (b *Builder) ToUpper() *Builder {
 	return b
 }
 
-// From pkg/internal/predicate/impl/string.go
+// From pkg/utils/predicate/impl/string.go
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// From pkg/internal/predicate/impl/struct.go
+// From pkg/utils/predicate/impl/struct.go
 
 // Field is a transformation predicate that extract a field from a struct or a
 // value from a map, identified by the given `keypath`. See value.Field() for
@@ -510,5 +518,5 @@ func (b *Builder) Field(keypath string) *Builder {
 	return b
 }
 
-// From pkg/internal/predicate/impl/struct.go
+// From pkg/utils/predicate/impl/struct.go
 // ---------------------------------------------------------------------------

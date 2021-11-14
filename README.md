@@ -154,8 +154,11 @@ func TestCompareAPI(t *testing.T) {
 func TestErrorAPI(t *testing.T) {
     var sentinel = fmt.Errorf("sentinel")
     var err = fmt.Errorf("error: %w", sentinel)
-
     verify.That(t, err).IsError(sentinel)
+
+    var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
+	var myError *MyError
+	verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
 }
 
 func TestExtAPI(t *testing.T) {

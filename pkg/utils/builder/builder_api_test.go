@@ -34,10 +34,22 @@ func TestCompareAPI(t *testing.T) {
 	verify.That(t, 123).Ne(124)
 }
 
+type MyError struct {
+	Code int
+}
+
+func (err *MyError) Error() string {
+	return fmt.Sprintf("MyError(%v)", err.Code)
+}
+
 func TestErrorAPI(t *testing.T) {
 	var sentinel = fmt.Errorf("sentinel")
 	var err = fmt.Errorf("error: %w", sentinel)
 	verify.That(t, err).IsError(sentinel)
+
+	var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
+	var myError *MyError
+	verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
 }
 
 func TestExtAPI(t *testing.T) {
