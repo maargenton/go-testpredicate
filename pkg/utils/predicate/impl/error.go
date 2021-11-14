@@ -22,7 +22,7 @@ func IsError(expected error) (desc string, f predicate.PredicateFunc) {
 		} else if errValue, ok := v.(error); ok {
 			r = errors.Is(errValue, expected)
 			ctx = []predicate.ContextValue{
-				{Name: "error", Value: errValue.Error(), Pre: true},
+				{Name: "message", Value: errValue.Error()},
 			}
 
 		} else {
@@ -54,10 +54,14 @@ func AsError(target interface{}) (desc string, f predicate.TransformFunc) {
 		if errValue, ok := v.(error); ok {
 			if !errors.As(errValue, target) {
 				err = fmt.Errorf("value of type '%T' is not a '%v'", v, tv.Elem().Type())
+				ctx = []predicate.ContextValue{
+					{Name: "message", Value: errValue.Error()},
+				}
 			} else {
 				r = tv.Elem().Interface()
 				ctx = []predicate.ContextValue{
-					{Name: "target error", Value: r},
+					{Name: "target", Value: r},
+					{Name: "message", Value: errValue.Error()},
 				}
 			}
 		} else {
