@@ -1,3 +1,12 @@
+# v1.3.0
+
+## Improvements
+
+- Add `.AsError()` as a transformation for testing against a specific error
+  types and accessing specific fields in the target type.
+- Add `message:` output for errors, printing out the formatted error message.
+
+
 # v1.2.1
 
 ## Bug fix
