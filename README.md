@@ -157,8 +157,8 @@ func TestErrorAPI(t *testing.T) {
     verify.That(t, err).IsError(sentinel)
 
     var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
-	var myError *MyError
-	verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
+    var myError *MyError
+    verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
 }
 
 func TestExtAPI(t *testing.T) {
