@@ -154,7 +154,11 @@ func TestCompareAPI(t *testing.T) {
 func TestErrorAPI(t *testing.T) {
     var sentinel = fmt.Errorf("sentinel")
     var err = fmt.Errorf("error: %w", sentinel)
-    verify.That(t, err).IsError(sentinel)
+    verify.That(t, err).IsError(nil) // No error
+    verify.That(t, err).IsError() // Any error
+    verify.That(t, err).IsError(sentinel) // Specific error or nested error
+    verify.That(t, err).IsError("<string>") // Message contains string
+    verify.That(t, err).IsError(regexp.MustCompile("<regexp>")) // Message matches regexp
 
     var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
     var myError *MyError

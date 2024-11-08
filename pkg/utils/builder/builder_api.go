@@ -136,6 +136,17 @@ func (b *Builder) IsError(expected error) *predicate.Predicate {
 	return &b.p
 }
 
+// IsError2 tests if a value is an error matching or wrapping the expected error
+// (according to go 1.13 error.Is()).
+func (b *Builder) IsError2(match ...interface{}) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.IsError2(match))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
 // AsError tests if a value is an error matching or wrapping the expected error
 // (according to go 1.13 error.As()) and returns the unwrapped error for further
 // evaluation.

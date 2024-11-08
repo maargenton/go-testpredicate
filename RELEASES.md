@@ -1,3 +1,22 @@
+# v1.4.0-rc
+
+## Improvements
+
+- Add flexibility to `IsError()` to support:
+  - `IsError()` matching any error
+  - `IsError(nil)` matching no error
+  - `IsError(err)` matching with `errors.Is()`,
+  - `IsError(<string>)` matching errors whose message contains the string
+  - `IsError(<regexp>)` matching errors whose message match the regular expression
+- Relax `IsNotNil()` to accept values of non-nillable types as not nil.
+- Add `t.With()` as an option to further qualify the test conditions
+- Extend `.Field()` to support map keys containing `.` character with a
+  double-dot (`..`) as an escaped dot.
+- Add `slogtest` package with recorder and support functions to allow capture
+  and verification of `slog` package structured logs output in tests.
+
+
+
 # v1.3.0
 
 ## Improvements
