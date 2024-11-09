@@ -11,34 +11,73 @@ require 'fileutils'
 
 task default: [:build]
 
-desc 'Display build information, including inferred verison number that uniquely identies the build product'
+
+desc 'Display build information'
 task :info do
-    puts "Name:    #{BuildInfo.default.name}"
-    puts "Version: #{BuildInfo.default.version}"
-    puts "Remote:  #{BuildInfo.default.remote}"
-    puts "Commit:  #{BuildInfo.default.commit}"
-    puts "Dir:     #{BuildInfo.default.dir}"
+    summary = {
+        "Module" =>  GoBuild.default.gomod,
+        "Version" => GoBuild.default.version,
+        "Source" =>  File.join(BuildInfo.default.remote, "tree", BuildInfo.default.commit[0,10]),
+    }
+
+    if GoBuild.default.targets.count > 0 then
+        summary["Main target"] = GoBuild.default.main_target
+
+        if GoBuild.default.targets.count > 1 then
+            targets = (GoBuild.default.targets.keys - [GoBuild.default.main_target])
+            summary["Additional targets"] = targets
+        end
+    end
+
+    # record_summary("## Build summary\n\n#{format_summary_table(summary)}\n")
+
+    print_summary(summary)
+    export_summary("## Build summary\n\n#{format_summary_table(summary)}\n")
+    export_env("VERSION=#{GoBuild.default.version}")
 end
 
-desc 'Display inferred build version number'
+
+desc 'Display inferred build version string'
 task :version do
-    puts BuildInfo.default.version
+    puts GoBuild.default.version
+end
+
+
+desc 'Run all tests and capture results'
+task :test => [:info] do
+    FileUtils.makedirs( ['./build/artifacts'] )
+    success = go_test()
+    go_testreport('build/go-test-result.json',
+        '--md-shift-headers=1',
+        '-oyaml=build/artifacts/test-report.yaml',
+        '-omd=build/artifacts/test-report.md',
+        '-omdsf=build/go-test-summary.md',
+        '-omdsfd=build/go-test-details.md',
+    )
+
+    puts File.read('build/go-test-summary.md')
+    export_summary(File.read('build/go-test-details.md'))
+
+    exit(1) if !success
 end
 
 desc 'Build and publish both release archive and associated container image'
-task :build do
-    FileUtils.makedirs( ['./build/artifacts'] )
-    version = BuildInfo.default.version
-    puts "Version: #{version}"
-    File.write( 'build/release_notes',  generate_release_notes(version,
-        # prefix: "go-testpredicate",
-        input:'RELEASES.md',
-    ))
+task :build => [:info, :test] do
+    # Nothing to do here
+    generate_release_notes()
 end
 
 desc 'Remove build artifacts'
 task :clean do
     FileUtils.rm_rf('./build')
+end
+
+def generate_release_notes()
+    version = BuildInfo.default.version
+    File.write( 'build/release_notes.md',  extract_release_notes(version,
+        # prefix: "go-testreport",
+        input:'RELEASES.md',
+    ))
 end
 
 
@@ -144,10 +183,202 @@ end
 
 
 # ----------------------------------------------------------------------------
+# GoBuild : Helper to build go projects
+# ----------------------------------------------------------------------------
+
+class GoBuild
+    class << self
+        def default() return @default ||= new end
+    end
+
+    def initialize( buildinfo = nil )
+        @buildinfo = buildinfo || BuildInfo.default
+    end
+
+    def gomod()         return @gomod       ||= _gomod()            end
+    def targets()       return @tagets      ||= _targets()          end
+    def main_target()   return @main_target ||= _main_target()      end
+    def version()       return @version     ||= @buildinfo.version  end
+    def ldflags()       return @ldflags     ||= _ldflags()          end
+
+    def commands(action = 'build')
+        flags = %Q{"#{ldflags}"}
+        Hash[targets.map do |name, input|
+            output = File.join( './build/bin', name )
+            cmd = [ "go #{action} -trimpath -ldflags #{flags}",
+                ("-o #{output}" if action == 'build'),
+                "#{input}"
+            ].compact.join(' ')
+            [name, cmd]
+        end]
+    end
+
+private
+    def _gomod()
+        return '' if !File.readable?('go.mod')
+        File.foreach('go.mod') do |l|
+            return l[7..-1].strip if l.start_with?( 'module ' )
+        end
+    end
+
+    def _targets()
+        targets = Hash[Dir["./cmd/**/main.go"].map do |f|
+            path = File.dirname(f)
+            [File.basename(path), File.join( path, "..." )]
+        end]
+        targets[File.basename(gomod)] = "." if File.exist?("./main.go")
+        targets
+    end
+
+    def _ldflags()
+        prefix = "#{gomod}/pkg/buildinfo"
+        {   Version: @buildinfo.version,
+            GitHash: @buildinfo.commit,
+            GitRepo: @buildinfo.remote,
+            BuildRoot: @buildinfo.dir
+        }.map { |k,v| "-X #{prefix}.#{k}=#{v}"}.join(' ')
+    end
+
+    def _main_target()
+        mod = File.basename(gomod)
+        targets.keys.min_by{ |v| _lev(v, mod)}
+    end
+
+    def _lev(a, b, memo={})
+        return b.size if a.empty?
+        return a.size if b.empty?
+        return memo[[a, b]] ||= [
+            _lev(a.chop, b, memo) + 1,
+            _lev(a, b.chop, memo) + 1,
+            _lev(a.chop, b.chop, memo) + (a[-1] == b[-1] ? 0 : 1)
+        ].min
+    end
+end
+
+def go_test()
+    FileUtils.makedirs( ['./build'] )
+    cmd = "go test -race " +
+        "-coverprofile=build/go-test-coverage.txt -covermode=atomic " +
+        "-json ./... > build/go-test-result.json"
+    puts cmd
+    system(cmd)
+end
+
+def go_testreport(*args)
+    cmd = %w{go run github.com/maargenton/go-testreport@v0.1.6}
+    cmd += args
+    puts cmd
+    system(*cmd)
+end
+
+
+
+# ----------------------------------------------------------------------------
+# DockerHelper : Helper to build go projects
+# ----------------------------------------------------------------------------
+
+def docker_registry_tags(base_tag)
+    return [github_registry_tag(base_tag)]
+end
+
+def github_registry_tag(base_tag)
+    return if ENV['GITHUB_ACTOR'].nil? || ENV['GITHUB_REPOSITORY'].nil?
+    if ENV['GITHUB_TOKEN'].nil? then
+        puts "Found GitHub Actiona context but no 'GITHUB_TOKEN'."
+        puts "Image will not be pushed to GitHub package registry."
+        puts "To resolve this issue, add the following to your workflow:"
+        puts "  env:"
+        puts "    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
+        return
+    end
+    # Authenticate
+    puts "Authenticating with docker.pkg.github.com..."
+    system("echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_ACTOR} --password-stdin")
+    puts "Failed to authenticate with docker.pkg.github.com" if $?.exitstatus != 0
+
+    return File.join('ghcr.io', ENV['GITHUB_REPOSITORY_OWNER'], base_tag)
+end
+
+
+
+# ----------------------------------------------------------------------------
+# Github Actions integration
+# ----------------------------------------------------------------------------
+
+def export_summary(content)
+    return if ENV['GITHUB_STEP_SUMMARY'].nil?
+    summary_filename = ENV['GITHUB_STEP_SUMMARY']
+    open(summary_filename, 'a') do |f|
+        f.puts content
+    end
+end
+
+def export_env(env)
+    return if ENV['GITHUB_ENV'].nil?
+    env_filename = ENV['GITHUB_ENV']
+    open(env_filename, 'a') do |f|
+        f.puts env
+    end
+end
+
+
+
+# ----------------------------------------------------------------------------
+# Build summary generator
+# ----------------------------------------------------------------------------
+
+# def record_summary(content)
+#     return if ENV['GITHUB_STEP_SUMMARY'].nil?
+#     summary_filename = ENV['GITHUB_STEP_SUMMARY']
+#     open(summary_filename, 'a') do |f|
+#         f.puts content
+#     end
+# end
+
+def print_summary(summary)
+    puts "---"
+    width = summary.select { |k,v| !_single_value(v).nil? }.map { |k,v| k.length }.max
+    summary.each do |k,v|
+        vv = _single_value(v)
+        if vv.nil?
+            puts "#{k}:"
+            puts v.map { |t| "  - #{t}" }.join(" \n")
+        else
+            puts "#{(k+':').ljust(width+1)} #{vv}"
+        end
+    end
+    puts "---"
+end
+
+def _single_value(value)
+    if value.respond_to?(:each) && value.respond_to?(:count)
+        return nil if value.count > 1
+        return value[0]
+    end
+    return value
+end
+
+def format_summary_table(summary)
+    o = "| | |\n|-|-|\n"
+    summary.each do |key, value|
+        if value.respond_to?('each')
+            value.each_with_index do |v, i|
+                o += (i == 0) ? "| #{key} | `#{v}`\n" : "| | `#{v}`\n"
+            end
+        else
+            o += "| #{key} | `#{value}`\n"
+        end
+    end
+    return o
+end
+
+
+
+# ----------------------------------------------------------------------------
 # Release notes generator
 # ----------------------------------------------------------------------------
 
-def generate_release_notes(version, prefix:nil, input:nil, checksums:nil)
+def extract_release_notes(version, prefix:nil, input:nil, checksums:nil)
     rn = ""
     rn += "#{prefix} #{version}\n\n" if prefix
     rn += load_release_notes(input, version) if input
