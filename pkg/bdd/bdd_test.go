@@ -14,13 +14,15 @@ func TestVariablesWithinGivenBlockAreResetForEveryBranch(t *testing.T) {
 		j := 0
 		t.When("doing something", func(t *bdd.T) {
 			j++
-			t.Then("something happens", func(t *bdd.T) {
-				verify.That(t, i).Eq(1)
-				verify.That(t, j).Eq(1)
-			})
-			t.Then("something else happens", func(t *bdd.T) {
-				verify.That(t, i).Eq(2)
-				verify.That(t, j).Eq(1)
+			t.With("something", func(t *bdd.T) {
+				t.Then("something happens", func(t *bdd.T) {
+					verify.That(t, i).Eq(1)
+					verify.That(t, j).Eq(1)
+				})
+				t.Then("something else happens", func(t *bdd.T) {
+					verify.That(t, i).Eq(2)
+					verify.That(t, j).Eq(1)
+				})
 			})
 		})
 		t.When("doing something else", func(t *bdd.T) {
