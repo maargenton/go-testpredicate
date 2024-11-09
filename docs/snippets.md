@@ -58,13 +58,43 @@ snippets:
     "body": [
         "verify.That(t, ${0:\"\"}).Eq(\"\")",
     ],
-    "description": "verifty.That()"
+    "description": "verify.That()"
 },
 "require": {
     "prefix": "require.That",
     "body": [
         "require.That(t, ${0:\"\"}).Eq(\"\")",
     ],
-    "description": "verifty.That()"
+    "description": "require.That()"
 },
+
+"given": {
+    "prefix": "given",
+    "body": [
+        "bdd.Given(t, \"$1\", func(t *bdd.T) {$0})",
+    ],
+    "description": "t.When(...)"
+},
+"when": {
+    "prefix": "when",
+    "body": [
+        "t.When(\"$1\", func(t *bdd.T) {$0})",
+    ],
+    "description": "t.When(...)"
+},
+"with": {
+    "prefix": "with",
+    "body": [
+        "t.With(\"$1\", func(t *bdd.T) {$0})",
+    ],
+    "description": "t.With(...)"
+},
+"then": {
+    "prefix": "then",
+    "body": [
+        "t.Then(\"$1\", func(t *bdd.T) {$0})",
+    ],
+    "description": "t.Then(...)"
+},
+
 ```

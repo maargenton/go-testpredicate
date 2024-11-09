@@ -44,6 +44,13 @@ func (b *T) When(name string, f func(t *T)) bool {
 	return b.Run(name, f)
 }
 
+// With adds syntactic sugar on top of `bdd.T.Run()` and prefixes the name
+// of the section with 'when ...'.
+func (b *T) With(name string, f func(t *T)) bool {
+	name = fmt.Sprintf("with %v", name)
+	return b.Run(name, f)
+}
+
 // Then adds syntactic sugar on top of `bdd.T.Run()` and prefixes the name
 // of the section with 'then ...'.
 func (b *T) Then(name string, f func(t *T)) bool {

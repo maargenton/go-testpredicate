@@ -275,7 +275,7 @@ a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
 `require.That()`).
 
 Nested and sibling bifurcated branches are defined with `t.Run()` (on `bdd.T`)
-or `t.When()` / `t.Then()` for BDD style.
+or `t.When()` / `t.With()` / `t.Then()` for BDD style.
 
 > **IMPORTANT:** In a bifurcated evaluation context, as defined by `bdd.T`, test
 > scenarios are run repeatedly in order to evaluate each branch (from root to
@@ -337,15 +337,20 @@ func TestBDDStyle(t *testing.T) {
 
             // or here
 
-            t.Then("something happens", func(t *bdd.T) {
+            t.With("something", func(t *bdd.T) {
 
-                // When this code runs, the code in the following `t.Then()`
-                // blocks will be skipped.
-            })
-            t.Then("something else happens", func(t *bdd.T) {
+                // or here
 
-                // When this code runs, all code in preceding `t.Then()`
-                // blocks has been skipped and did not affect the local setup.
+                t.Then("something happens", func(t *bdd.T) {
+
+                    // When this code runs, the code in the following `t.Then()`
+                    // blocks will be skipped.
+                })
+                t.Then("something else happens", func(t *bdd.T) {
+
+                    // When this code runs, all code in preceding `t.Then()`
+                    // blocks has been skipped and did not affect the local setup.
+                })
             })
         })
     })

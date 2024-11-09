@@ -369,7 +369,6 @@ def print_summary(summary, prefixes: {})
     puts "---"
 end
 
-
 def format_summary_table(summary)
     o = "| | |\n|-|-|\n"
     summary.each do |key, value|
