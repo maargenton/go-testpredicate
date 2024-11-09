@@ -31,7 +31,10 @@ task :info do
 
     # record_summary("## Build summary\n\n#{format_summary_table(summary)}\n")
 
-    print_summary(summary)
+    print_summary(summary, prefixes: {
+        "Main target" => "build/bin",
+        "Additional targets" => "build/bin",
+    })
     export_summary("## Build summary\n\n#{format_summary_table(summary)}\n")
     export_env("VERSION=#{GoBuild.default.version}")
 end
@@ -63,7 +66,15 @@ end
 
 desc 'Build and publish both release archive and associated container image'
 task :build => [:info, :test] do
-    # Nothing to do here
+    FileUtils.makedirs( './build/bin' )
+
+    GoBuild.default.commands.each do |name, cmd|
+        puts "Building #{name} ..."
+        puts cmd
+        system( cmd)
+        exit $?.exitstatus if $?.exitstatus != 0
+    end
+
     generate_release_notes()
 end
 
@@ -327,36 +338,35 @@ end
 # Build summary generator
 # ----------------------------------------------------------------------------
 
-# def record_summary(content)
-#     return if ENV['GITHUB_STEP_SUMMARY'].nil?
-#     summary_filename = ENV['GITHUB_STEP_SUMMARY']
-#     open(summary_filename, 'a') do |f|
-#         f.puts content
-#     end
-# end
+def print_summary(summary, prefixes: {})
+    def _single_value(value)
+        if value.respond_to?(:each) && value.respond_to?(:count)
+            return nil if value.count > 1
+            return value[0]
+        end
+        return value
+    end
 
-def print_summary(summary)
+    def _format_value(value, prefix)
+        return File.join(prefix, value) if prefix
+        return value
+    end
+
     puts "---"
     width = summary.select { |k,v| !_single_value(v).nil? }.map { |k,v| k.length }.max
     summary.each do |k,v|
+        prefix = prefixes[k]
         vv = _single_value(v)
         if vv.nil?
             puts "#{k}:"
-            puts v.map { |t| "  - #{t}" }.join(" \n")
+            puts v.map { |t| "  - #{_format_value(t, prefix)}" }.join(" \n")
         else
-            puts "#{(k+':').ljust(width+1)} #{vv}"
+            puts "#{(k+':').ljust(width+1)} #{_format_value(vv, prefix)}"
         end
     end
     puts "---"
 end
 
-def _single_value(value)
-    if value.respond_to?(:each) && value.respond_to?(:count)
-        return nil if value.count > 1
-        return value[0]
-    end
-    return value
-end
 
 def format_summary_table(summary)
     o = "| | |\n|-|-|\n"
