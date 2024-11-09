@@ -116,8 +116,8 @@ class BuildInfo
     def dir()       return @dir     ||= _dir()      end
 
     private
-    def _win32?()   return RUBY_PLATFORM =~ /win32|mingw|mswin/ end
-    def _dev_null() return _win32? ? "NUL" : "/dev/null"        end
+    def _windows?() return RUBY_PLATFORM =~ /win32|mingw|mswin/ end
+    def _dev_null() return _windows? ? "NUL" : "/dev/null"      end
     def _git( cmd ) return `git #{cmd} 2>#{_dev_null}`.strip()  end
     def _commit()   return _git('rev-parse HEAD')               end
     def _dir()      return _git('rev-parse --show-toplevel')    end
