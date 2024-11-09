@@ -6,7 +6,7 @@ Test predicate style assertions library with extensive diagnostics output.
   https://img.shields.io/github/v/tag/maargenton/go-testpredicate?color=blue&label=latest&logo=go&logoColor=white&sort=semver)](
   https://pkg.go.dev/github.com/maargenton/go-testpredicate)
 [![Build](
-  https://img.shields.io/github/workflow/status/maargenton/go-testpredicate/build?label=build&logo=github&logoColor=aaaaaa)](
+  https://img.shields.io/github/actions/workflow/status/maargenton/go-testpredicate/build.yaml?branch=master&label=build&logo=github&logoColor=aaaaaa)](
   https://github.com/maargenton/go-testpredicate/actions?query=branch%3Amaster)
 [![Codecov](
   https://img.shields.io/codecov/c/github/maargenton/go-testpredicate?label=codecov&logo=codecov&logoColor=aaaaaa&token=fVZ3ZMAgfo)](

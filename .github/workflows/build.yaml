@@ -1,56 +1,64 @@
 name: build
 
 on: [push, pull_request]
-# on:
-#   push:
-#     branches:
-#       - master
-#   pull_request:
-#     branches:
-#       - master
 
 jobs:
   test:
-    name: Tests
+    name: Test
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         go:
-          - "1.14.x"
-          - "1.15.x"
-          - "1.16.x"
-          - "1.17.x"
+          - "1.19.x"
+          - "1.20.x"
+          - "1.21.x"
+          - "1.22.x"
+          - "1.23.x"
+          - "stable"
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-13 # amd64
+          - macos-latest # arm64 for 14 onward
           - windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
 
       - name: Check version
         run: go version
 
-      - name: Run tests with coverage
-        if: matrix.os != 'windows-latest'
-        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Test and build
+        run: rake build
 
-      - name: Run tests without coverage (windows)
-        if: matrix.os == 'windows-latest'
-        run: go test -race ./...
+      # - name: Run tests with coverage
+      #   if: matrix.os != 'windows-latest'
+      #   run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      # - name: Run tests without coverage (windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: go test -race ./...
 
       - name: Upload coverage
         if: matrix.os != 'windows-latest'
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
-          # token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
           # fail_ci_if_error: true
           verbose: true
           flags: unittests
-          file: coverage.txt
+          file: build/go-test-coverage.txt
+
+      - name: Archive build artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{env.VERSION}}-${{ matrix.os }}-go${{ matrix.go }}
+          path: |
+            build/release_notes.md
+            build/artifacts/*

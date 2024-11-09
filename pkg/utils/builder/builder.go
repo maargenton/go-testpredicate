@@ -1,6 +1,6 @@
 package builder
 
-//go:generate go run github.com/maargenton/go-testpredicate/cmd/codegen/forward_api ../predicate/impl builder_api.tmpl
+//go:generate go run github.com/maargenton/go-testpredicate/pkg/utils/codegen/forward_api ../predicate/impl builder_api.tmpl
 
 import (
 	"fmt"
