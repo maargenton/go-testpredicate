@@ -17,20 +17,25 @@ jobs:
       fail-fast: false
       matrix:
         go:
-          - "1.14.x"
-          - "1.15.x"
-          - "1.16.x"
           - "1.17.x"
+          - "1.18.x"
+          - "1.19.x"
+          - "1.20.x"
+          - "1.21.x"
+          - "1.22.x"
+          - "1.23.x"
+          - "stable"
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-13 # amd64
+          - macos-latest # arm64 for 14 onward
           - windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
 
