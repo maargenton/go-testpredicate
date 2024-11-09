@@ -116,7 +116,9 @@ class BuildInfo
     def dir()       return @dir     ||= _dir()      end
 
     private
-    def _git( cmd ) return `git #{cmd} 2>/dev/null`.strip()     end
+    def _windows?() return RUBY_PLATFORM =~ /win32|mingw|mswin/ end
+    def _dev_null() return _windows? ? "NUL" : "/dev/null"      end
+    def _git( cmd ) return `git #{cmd} 2>#{_dev_null}`.strip()  end
     def _commit()   return _git('rev-parse HEAD')               end
     def _dir()      return _git('rev-parse --show-toplevel')    end
 
@@ -139,7 +141,7 @@ class BuildInfo
         # Note: Due to glob(7) limitations, the following pattern enforces
         # 3-part dot-separated sequences starting with a digit,
         # rather than 3 dot-separated numbers.
-        d = _git("describe --always --tags --long  --match 'v[0-9]*.[0-9]*.[0-9]*'").strip.split('-')
+        d = _git("describe --always --tags --long  --match \"v[0-9]*.[0-9]*.[0-9]*\"").strip.split('-')
         if d.count != 0
             b = _git("rev-parse --abbrev-ref HEAD").strip.gsub(/[^A-Za-z0-9\._-]+/, '-')
             return ['v0.0.0', b, _git("rev-list --count HEAD").strip.to_i, "g#{d[0]}"] if d.count == 1
