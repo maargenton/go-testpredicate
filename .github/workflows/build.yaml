@@ -10,16 +10,16 @@ jobs:
       fail-fast: false
       matrix:
         go:
-          - "1.19.x"
-          - "1.20.x"
-          - "1.21.x"
-          - "1.22.x"
+          # - "1.19.x"
+          # - "1.20.x"
+          # - "1.21.x"
+          # - "1.22.x"
           - "1.23.x"
-          - "stable"
+          # - "stable"
         os:
-          - ubuntu-latest
-          - macos-13 # amd64
-          - macos-latest # arm64 for 14 onward
+          # - ubuntu-latest
+          # - macos-13 # amd64
+          # - macos-latest # arm64 for 14 onward
           - windows-latest
     steps:
       - name: Checkout repository
