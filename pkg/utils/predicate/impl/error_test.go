@@ -20,6 +20,13 @@ func TestIsError(t *testing.T) {
 		errorMsg: "value of type 'int' is not an error",
 	})
 
+	verifyPredicate(t, pr(impl.IsError("")), expectation{value: nil, pass: false})
+	verifyPredicate(t, pr(impl.IsError("")), expectation{value: other, pass: true})
+	verifyPredicate(t, pr(impl.IsError("")), expectation{
+		value:    123,
+		errorMsg: "value of type 'int' is not an error",
+	})
+
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: err, pass: true})
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: sentinel, pass: true})
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: other, pass: false})
@@ -27,49 +34,17 @@ func TestIsError(t *testing.T) {
 		value:    123,
 		errorMsg: "value of type 'int' is not an error",
 	})
-}
 
-func TestIsError2(t *testing.T) {
-	var sentinel = fmt.Errorf("sentinel")
-	var err = fmt.Errorf("wrapper: %w", sentinel)
-	var other = fmt.Errorf("other")
-
-	verifyPredicate(t, pr(impl.IsError2(nil)), expectation{value: nil, pass: true})
-	verifyPredicate(t, pr(impl.IsError2(nil)), expectation{value: other, pass: false})
-	verifyPredicate(t, pr(impl.IsError2(nil)), expectation{
-		value:    123,
-		errorMsg: "value of type 'int' is not an error",
-	})
-
-	verifyPredicate(t, pr(impl.IsError2()), expectation{value: nil, pass: false})
-	verifyPredicate(t, pr(impl.IsError2()), expectation{value: other, pass: true})
-	verifyPredicate(t, pr(impl.IsError2()), expectation{
-		value:    123,
-		errorMsg: "value of type 'int' is not an error",
-	})
-
-	verifyPredicate(t, pr(impl.IsError2(sentinel)), expectation{value: err, pass: true})
-	verifyPredicate(t, pr(impl.IsError2(sentinel)), expectation{value: sentinel, pass: true})
-	verifyPredicate(t, pr(impl.IsError2(sentinel)), expectation{value: other, pass: false})
-	verifyPredicate(t, pr(impl.IsError2(sentinel)), expectation{
-		value:    123,
-		errorMsg: "value of type 'int' is not an error",
-	})
-
-	verifyPredicate(t, pr(impl.IsError2("not a part of the error")), expectation{value: err, pass: false})
-	verifyPredicate(t, pr(impl.IsError2("wrapper")), expectation{value: err, pass: true})
-	verifyPredicate(t, pr(impl.IsError2("sentinel")), expectation{value: err, pass: true})
+	verifyPredicate(t, pr(impl.IsError("not a part of the error")), expectation{value: err, pass: false})
+	verifyPredicate(t, pr(impl.IsError("wrapper")), expectation{value: err, pass: true})
+	verifyPredicate(t, pr(impl.IsError("sentinel")), expectation{value: err, pass: true})
 
 	var re = regexp.MustCompile(`^wrapper: sentinel$`)
-	verifyPredicate(t, pr(impl.IsError2(re)), expectation{value: err, pass: true})
-	verifyPredicate(t, pr(impl.IsError2(re)), expectation{value: sentinel, pass: false})
+	verifyPredicate(t, pr(impl.IsError(re)), expectation{value: err, pass: true})
+	verifyPredicate(t, pr(impl.IsError(re)), expectation{value: sentinel, pass: false})
 
-	verifyPredicate(t, pr(impl.IsError2(123)), expectation{value: err, pass: false,
+	verifyPredicate(t, pr(impl.IsError(123)), expectation{value: err, pass: false,
 		errorMsg: "invalid argument of type 'int' for 'IsError()' predicate"})
-
-	verifyPredicate(t, pr(impl.IsError2(sentinel, other)), expectation{value: err, pass: false,
-		errorMsg: "too many arguments for 'IsError()' predicate"})
-
 }
 
 type MyError struct {

@@ -10,61 +10,33 @@ import (
 	"github.com/maargenton/go-testpredicate/pkg/utils/predicate"
 )
 
-// IsError tests if a value is an error matching or wrapping the expected error
-// (according to go 1.13 error.Is()).
-func IsError(expected error) (desc string, f predicate.PredicateFunc) {
-	if expected != nil {
-		desc = fmt.Sprintf("{} is error '%v'", expected)
-	} else {
-		desc = "{} is no error"
-	}
-	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		if v == nil {
-			r = expected == nil
-		} else if errValue, ok := v.(error); ok {
-			r = errors.Is(errValue, expected)
-			ctx = []predicate.ContextValue{
-				{Name: "message", Value: errValue.Error()},
-			}
-
-		} else {
-			err = fmt.Errorf("value of type '%T' is not an error", v)
-		}
-		return
-	}
-	return
-}
-
-// IsError2 tests if a value is an error matching or wrapping the expected error
-// (according to go 1.13 error.Is()).
-func IsError2(match ...interface{}) (desc string, f predicate.PredicateFunc) {
+// IsError tests an error value to be either nil, a specific error according to
+// `errors.Is()`, or an error whose message contains a specified string or
+// matches a regexp. `.IsError("")` matches any error whose message contains an
+// empty string, which is any non-nil error.
+func IsError(expected any) (desc string, f predicate.PredicateFunc) {
 	var predicateError error
-	var expected interface{}
 
-	if len(match) == 0 {
-		desc = fmt.Sprintf("{} is an error")
-		expected = true
-	} else if len(match) == 1 {
-		expected = match[0]
-		if expected == nil {
-			desc = "{} is no error"
-		} else {
-			if _, ok := expected.(error); ok {
-				desc = fmt.Sprintf("{} is error '%v'", expected)
-			} else if s, ok := expected.(string); ok {
-				desc = fmt.Sprintf("{} is error containing '%v'", s)
-			} else if re, ok := expected.(*regexp.Regexp); ok {
-				desc = fmt.Sprintf("{} is error matching /%v/", re)
+	if expected == nil {
+		desc = "{} is no error"
+	} else {
+		if _, ok := expected.(error); ok {
+			desc = fmt.Sprintf("{} is error '%v'", expected)
+		} else if s, ok := expected.(string); ok {
+			if len(s) == 0 {
+				desc = "{} is an error"
 			} else {
-				predicateError = fmt.Errorf(
-					"invalid argument of type '%T' for 'IsError()' predicate",
-					expected)
+				desc = fmt.Sprintf("{} is error containing '%v'", s)
 			}
+		} else if re, ok := expected.(*regexp.Regexp); ok {
+			desc = fmt.Sprintf("{} is error matching /%v/", re)
+		} else {
+			predicateError = fmt.Errorf(
+				"invalid argument of type '%T' for 'IsError()' predicate",
+				expected)
 		}
-	} else if len(match) > 1 {
-		desc = "{} is error ..."
-		predicateError = fmt.Errorf("too many arguments for 'IsError()' predicate")
 	}
+
 	if predicateError != nil {
 		f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
 			err = predicateError
@@ -87,8 +59,6 @@ func IsError2(match ...interface{}) (desc string, f predicate.PredicateFunc) {
 
 		if expected == nil {
 			r = errValue == nil
-		} else if expected == true {
-			r = isError
 		} else if expectedErr, ok := expected.(error); ok {
 			r = errors.Is(errValue, expectedErr)
 		} else if expectedString, ok := expected.(string); ok && errValue != nil {
