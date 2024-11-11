@@ -44,5 +44,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/artifacts/*"
-          bodyFile: "build/release_notes"
+          bodyFile: "build/release_notes.md"
           token: ${{ secrets.GITHUB_TOKEN }}
