@@ -34,7 +34,7 @@ func TestIsNil(t *testing.T) {
 	verifyPredicate(t, pr(impl.IsNil()), expectation{
 		value:    123,
 		pass:     false,
-		errorMsg: "value of type 'int' is never nil",
+		errorMsg: "value of type 'int' can never be nil",
 	})
 }
 
@@ -43,11 +43,10 @@ func TestIsNotNil(t *testing.T) {
 	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: &struct{}{}, pass: true})
 	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: nil, pass: false})
 	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: p, pass: false})
-	verifyPredicate(t, pr(impl.IsNotNil()), expectation{
-		value:    123,
-		pass:     false,
-		errorMsg: "value of type 'int' can never be nil",
-	})
+
+	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: 123, pass: true})
+	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: "123", pass: true})
+	verifyPredicate(t, pr(impl.IsNotNil()), expectation{value: struct{}{}, pass: true})
 }
 
 func TestIsEqualTo(t *testing.T) {

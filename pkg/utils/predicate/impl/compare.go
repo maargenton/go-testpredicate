@@ -52,7 +52,7 @@ func IsNil() (desc string, f predicate.PredicateFunc) {
 			return vv.IsNil(), nil, nil
 		default:
 			return false, nil, fmt.Errorf(
-				"value of type '%v' is never nil",
+				"value of type '%v' can never be nil",
 				vv.Type())
 		}
 	}
@@ -60,7 +60,7 @@ func IsNil() (desc string, f predicate.PredicateFunc) {
 }
 
 // IsNotNil tests if a value is neither a nil literal nor a nillable type set to
-// nil
+// nil; any value of a non-nillable type is considered not nil.
 func IsNotNil() (desc string, f predicate.PredicateFunc) {
 	desc = "{} is not nil"
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
@@ -74,9 +74,7 @@ func IsNotNil() (desc string, f predicate.PredicateFunc) {
 
 			return !vv.IsNil(), nil, nil
 		default:
-			return false, nil, fmt.Errorf(
-				"value of type '%v' can never be nil",
-				vv.Type())
+			return true, nil, nil
 		}
 	}
 	return
