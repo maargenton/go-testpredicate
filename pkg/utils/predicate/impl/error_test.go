@@ -20,17 +20,17 @@ func TestIsError(t *testing.T) {
 		errorMsg: "value of type 'int' is not an error",
 	})
 
-	verifyPredicate(t, pr(impl.IsError("")), expectation{value: nil, pass: false})
-	verifyPredicate(t, pr(impl.IsError("")), expectation{value: other, pass: true})
-	verifyPredicate(t, pr(impl.IsError("")), expectation{
-		value:    123,
-		errorMsg: "value of type 'int' is not an error",
-	})
-
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: err, pass: true})
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: sentinel, pass: true})
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{value: other, pass: false})
 	verifyPredicate(t, pr(impl.IsError(sentinel)), expectation{
+		value:    123,
+		errorMsg: "value of type 'int' is not an error",
+	})
+
+	verifyPredicate(t, pr(impl.IsError("")), expectation{value: nil, pass: false})
+	verifyPredicate(t, pr(impl.IsError("")), expectation{value: other, pass: true})
+	verifyPredicate(t, pr(impl.IsError("")), expectation{
 		value:    123,
 		errorMsg: "value of type 'int' is not an error",
 	})
