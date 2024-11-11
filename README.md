@@ -152,19 +152,19 @@ func TestCompareAPI(t *testing.T) {
 }
 
 func TestErrorAPI(t *testing.T) {
-	var sentinel = fmt.Errorf("sentinel")
-	var err = fmt.Errorf("error: %w", sentinel)
-	var re = regexp.MustCompile("^error: sentinel$")
+    var sentinel = fmt.Errorf("sentinel")
+    var err = fmt.Errorf("error: %w", sentinel)
+    var re = regexp.MustCompile("^error: sentinel$")
 
-	verify.That(t, nil).IsError(nil)        // No error
-	verify.That(t, err).IsError("")         // Any error
-	verify.That(t, err).IsError(sentinel)   // Specific error or nested error
-	verify.That(t, err).IsError("sentinel") // Message contains string
-	verify.That(t, err).IsError(re)         // Message matches regexp
+    verify.That(t, nil).IsError(nil)        // No error
+    verify.That(t, err).IsError("")         // Any error
+    verify.That(t, err).IsError(sentinel)   // Specific error or nested error
+    verify.That(t, err).IsError("sentinel") // Message contains string
+    verify.That(t, err).IsError(re)         // Message matches regexp
 
-	var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
-	var myError *MyError
-	verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
+    var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
+    var myError *MyError
+    verify.That(t, err2).AsError(&myError).Field("Code").Eq(123)
 }
 
 func TestExtAPI(t *testing.T) {
