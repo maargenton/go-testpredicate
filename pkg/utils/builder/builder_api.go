@@ -125,9 +125,11 @@ func (b *Builder) Ne(rhs interface{}) *predicate.Predicate {
 // ---------------------------------------------------------------------------
 // From pkg/utils/predicate/impl/error.go
 
-// IsError tests if a value is an error matching or wrapping the expected error
-// (according to go 1.13 error.Is()).
-func (b *Builder) IsError(expected error) *predicate.Predicate {
+// IsError tests an error value to be either nil, a specific error according to
+// `errors.Is()`, or an error whose message contains a specified string or
+// matches a regexp. `.IsError(&#34;&#34;)` matches any error whose message contains an
+// empty string, which is any non-nil error.
+func (b *Builder) IsError(expected any) *predicate.Predicate {
 	b.p.RegisterPredicate(impl.IsError(expected))
 	if b.t != nil {
 		b.t.Helper()

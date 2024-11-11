@@ -4,29 +4,67 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
+	"strings"
 
 	"github.com/maargenton/go-testpredicate/pkg/utils/predicate"
 )
 
-// IsError tests if a value is an error matching or wrapping the expected error
-// (according to go 1.13 error.Is()).
-func IsError(expected error) (desc string, f predicate.PredicateFunc) {
-	if expected != nil {
-		desc = fmt.Sprintf("{} is error '%v'", expected)
-	} else {
+// IsError tests an error value to be either nil, a specific error according to
+// `errors.Is()`, or an error whose message contains a specified string or
+// matches a regexp. `.IsError("")` matches any error whose message contains an
+// empty string, which is any non-nil error.
+func IsError(expected any) (desc string, f predicate.PredicateFunc) {
+	var predicateError error
+
+	if expected == nil {
 		desc = "{} is no error"
+	} else {
+		if _, ok := expected.(error); ok {
+			desc = fmt.Sprintf("{} is error '%v'", expected)
+		} else if s, ok := expected.(string); ok {
+			if len(s) == 0 {
+				desc = "{} is an error"
+			} else {
+				desc = fmt.Sprintf("{} is error containing '%v'", s)
+			}
+		} else if re, ok := expected.(*regexp.Regexp); ok {
+			desc = fmt.Sprintf("{} is error matching /%v/", re)
+		} else {
+			predicateError = fmt.Errorf(
+				"invalid argument of type '%T' for 'IsError()' predicate",
+				expected)
+		}
 	}
+
+	if predicateError != nil {
+		f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
+			err = predicateError
+			return
+		}
+		return
+	}
+
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
-		if v == nil {
-			r = expected == nil
-		} else if errValue, ok := v.(error); ok {
-			r = errors.Is(errValue, expected)
+		var errValue, isError = v.(error)
+		if !isError && v != nil {
+			err = fmt.Errorf("value of type '%T' is not an error", v)
+			return
+		}
+		if isError {
 			ctx = []predicate.ContextValue{
 				{Name: "message", Value: errValue.Error()},
 			}
+		}
 
-		} else {
-			err = fmt.Errorf("value of type '%T' is not an error", v)
+		if expected == nil {
+			r = errValue == nil
+		} else if expectedErr, ok := expected.(error); ok {
+			r = errors.Is(errValue, expectedErr)
+		} else if expectedString, ok := expected.(string); ok && errValue != nil {
+			r = strings.Contains(errValue.Error(), expectedString)
+		} else if expectedRegexp, ok := expected.(*regexp.Regexp); ok && errValue != nil {
+			r = expectedRegexp.MatchString(errValue.Error())
 		}
 		return
 	}

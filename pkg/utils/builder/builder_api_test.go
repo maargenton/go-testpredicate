@@ -2,6 +2,7 @@ package builder_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/pkg/subexpr"
@@ -45,7 +46,13 @@ func (err *MyError) Error() string {
 func TestErrorAPI(t *testing.T) {
 	var sentinel = fmt.Errorf("sentinel")
 	var err = fmt.Errorf("error: %w", sentinel)
-	verify.That(t, err).IsError(sentinel)
+	var re = regexp.MustCompile("^error: sentinel$")
+
+	verify.That(t, nil).IsError(nil)        // No error
+	verify.That(t, err).IsError("")         // Any error
+	verify.That(t, err).IsError(sentinel)   // Specific error or nested error
+	verify.That(t, err).IsError("sentinel") // Message contains string
+	verify.That(t, err).IsError(re)         // Message matches regexp
 
 	var err2 = fmt.Errorf("error: %w", &MyError{Code: 123})
 	var myError *MyError
