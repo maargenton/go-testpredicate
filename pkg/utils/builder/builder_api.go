@@ -67,7 +67,7 @@ func (b *Builder) IsNil() *predicate.Predicate {
 }
 
 // IsNotNil tests if a value is neither a nil literal nor a nillable type set to
-// nil
+// nil; any value of a non-nillable type is considered not nil.
 func (b *Builder) IsNotNil() *predicate.Predicate {
 	b.p.RegisterPredicate(impl.IsNotNil())
 	if b.t != nil {
