@@ -1,3 +1,8 @@
+// Package builder is main underlying package in the implementation of
+// `verify.That()` and `require.That()`, with the `Builder` type providing the
+// core functionality of the predicate builder. It used go generate and a code
+// generator to forward individual predicates from `predicate/impl` onto the
+// `Builder` type.
 package builder
 
 //go:generate go run github.com/maargenton/go-testpredicate/pkg/utils/codegen/forward_api ../predicate/impl builder_api.tmpl

@@ -10,7 +10,7 @@ import (
 // Context captures an additional context value to be displayed upon failure.
 type Context = predicate.ContextValue
 
-// That captrues the test context and a value for the purpose of building and
+// That captures the test context and a value for the purpose of building and
 // evaluating a test predicate through call chaining. The current test will
 // proceed even if the predicate fails.
 func That(t predicate.T, v interface{}, ctx ...Context) *builder.Builder {
