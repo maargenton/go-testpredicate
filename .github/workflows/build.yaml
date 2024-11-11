@@ -36,14 +36,6 @@ jobs:
       - name: Test and build
         run: rake build
 
-      # - name: Run tests with coverage
-      #   if: matrix.os != 'windows-latest'
-      #   run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-
-      # - name: Run tests without coverage (windows)
-      #   if: matrix.os == 'windows-latest'
-      #   run: go test -race ./...
-
       - name: Upload coverage
         if: matrix.os != 'windows-latest'
         uses: codecov/codecov-action@v4
