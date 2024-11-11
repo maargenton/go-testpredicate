@@ -1,3 +1,5 @@
+// Package predicate defines both `Predicate“ and `Transform` types and handles
+// the predicate evaluation process.
 package predicate
 
 import "strings"

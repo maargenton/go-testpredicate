@@ -8,7 +8,7 @@ import (
 // Field takes a root value or an array of root values, navigates through the
 // data tree according to a keypath, and returns the targeted values. `keypath`
 // is a dot-separated list of keys, each used as either field name in a struct,
-// a key in a map, or a niladic method name. Any error during key evalation
+// a key in a map, or a niladic method name. Any error during key evaluation
 // results in a nil value. If a method invocation yields multiple return values,
 // only the first one is captured.
 //

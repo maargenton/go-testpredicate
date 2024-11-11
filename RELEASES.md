@@ -1,3 +1,41 @@
+# v1.4.0
+
+## Improvements
+
+- Add flexibility to `IsError()` to support:
+  - `IsError("")` matching any error
+  - `IsError(nil)` matching no error
+  - `IsError(err)` matching with `errors.Is()`,
+  - `IsError(<string>)` matching errors whose message contains the string
+  - `IsError(<regexp>)` matching errors whose message match the regular expression
+- Relax `IsNotNil()` to accept values of non-nillable types as not nil.
+- Add `t.With()` as an option to further qualify the test conditions
+
+
+## Code changes
+
+- Update CI, bump go min version to 1.19
+  ([#23](https://github.com/maargenton/go-testpredicate/pull/23))
+- Fix CI on Windows runners
+  ([#24](https://github.com/maargenton/go-testpredicate/pull/24))
+- Add support for `t.With(...)` in BDD-style test structure
+  ([#25](https://github.com/maargenton/go-testpredicate/pull/25))
+- Relax implementation of `.IsNotNil()` to return true for any value of a
+  non-nillable type
+  ([#26](https://github.com/maargenton/go-testpredicate/pull/26))
+- Make `.IsError(...)` more flexible
+  ([#27](https://github.com/maargenton/go-testpredicate/pull/27))
+
+## Related issues
+
+- BDD style given-when-then could benefit from a "with" clause
+  ([#22](https://github.com/maargenton/go-testpredicate/issues/22))
+- `IsNotNil()` predicate is too strict
+  ([#20](https://github.com/maargenton/go-testpredicate/issues/20))
+- `.IsError(...)` predicate could be more flexible
+  ([#21](https://github.com/maargenton/go-testpredicate/issues/21))
+
+
 # v1.3.0
 
 ## Improvements
