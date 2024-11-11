@@ -1,3 +1,5 @@
+//go:build go1.21
+
 // Package slogtest provides support for recording structured log slog messages
 // during tests and verifying that the expected messages have been emitted.
 //
