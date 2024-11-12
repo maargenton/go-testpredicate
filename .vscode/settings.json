@@ -4,6 +4,7 @@
         "errorf",
         "keypath",
         "niladic",
+        "slogtest",
         "struct",
         "subexpr",
         "testpredicate"
