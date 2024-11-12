@@ -1,6 +1,7 @@
 package value_test
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -19,7 +20,7 @@ func verifyFieldTestCase(t *testing.T, tc TestCase) {
 	t.Helper()
 	t.Run(fmt.Sprintf("Given %v", tc.name), func(t *testing.T) {
 		t.Helper()
-		t.Run("when calling extractValue", func(t *testing.T) {
+		t.Run(fmt.Sprintf("when calling Field(\"%v\")", tc.keypath), func(t *testing.T) {
 			t.Helper()
 			r := value.Field(tc.value, tc.keypath)
 			t.Run("then expected value is returned", func(t *testing.T) {
@@ -34,11 +35,16 @@ func verifyFieldTestCase(t *testing.T, tc TestCase) {
 	})
 }
 
-func TestField(t *testing.T) {
+func TestFieldOnNonFieldTypes(t *testing.T) {
+	verifyFieldTestCase(t, TestCase{
+		name:     "an integer value",
+		value:    123,
+		keypath:  "Name",
+		expected: nil,
+	})
+}
 
-	// -----------------------------------------------------------------------
-	// Struct-based cases
-
+func TestFieldOnStructTypes(t *testing.T) {
 	var v = []TestStruct{
 		{Name: "aaa"},
 		{Name: "bbb"},
@@ -100,9 +106,9 @@ func TestField(t *testing.T) {
 		keypath:  "FuncArgs",
 		expected: []interface{}{nil, nil, nil},
 	})
+}
 
-	// -----------------------------------------------------------------------
-	// Struct special cases
+func TestFieldOnArrayOfStructTypes(t *testing.T) {
 	verifyFieldTestCase(t, TestCase{
 		name: "an array of pointers to struct",
 		value: []*TestStruct{
@@ -113,10 +119,9 @@ func TestField(t *testing.T) {
 		keypath:  "Name",
 		expected: []interface{}{"aaa", "bbb", "ccc"},
 	})
+}
 
-	// -----------------------------------------------------------------------
-	// map-based cases
-
+func TestFieldOnMapTypes(t *testing.T) {
 	verifyFieldTestCase(t, TestCase{
 		name: "an map with matching keys",
 		value: []obj{
@@ -145,10 +150,9 @@ func TestField(t *testing.T) {
 		keypath:  "Name",
 		expected: []interface{}{nil, nil, nil},
 	})
+}
 
-	// -----------------------------------------------------------------------
-	// map-based special cases
-
+func TestFieldOnArrayOfMapTypes(t *testing.T) {
 	verifyFieldTestCase(t, TestCase{
 		name: "an map with non-matching keys",
 		value: []interface{}{
@@ -182,6 +186,19 @@ func TestField(t *testing.T) {
 		},
 		keypath:  "Name.aaa",
 		expected: []interface{}{nil, []interface{}{"bbb", "ccc"}, nil},
+	})
+
+}
+
+func TestFieldWithNiladicFunctionTarget(t *testing.T) {
+	var sentinel = errors.New("sentinel")
+	var err = fmt.Errorf("error: %w", sentinel)
+
+	verifyFieldTestCase(t, TestCase{
+		name:     "Error() value on an error",
+		value:    err,
+		keypath:  "Error",
+		expected: "error: sentinel",
 	})
 }
 
