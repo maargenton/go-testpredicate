@@ -28,8 +28,8 @@ func TestGetFlattenAttrs(t *testing.T) {
 			})
 			t.Then("values are fully resolved, preserving type", func(t *bdd.T) {
 				var attrs = slogtest.GetFlattenAttrs(r)
-				require.That(t, attrs["foo"]).Eq(123)
-				require.That(t, attrs["bar.baz"]).Eq("baz-value")
+				require.That(t, attrs).Field("foo").Eq(123)
+				require.That(t, attrs).Field("bar.baz").Eq("baz-value")
 			})
 		})
 	})
@@ -98,7 +98,7 @@ func TestRecorder(t *testing.T) {
 
 				var attrs = slogtest.GetFlattenAttrs(rr[0])
 				verify.That(t, attrs).MapKeys().IsEqualSet([]string{"group.key"})
-				verify.That(t, attrs["group.key"]).Eq("value")
+				verify.That(t, attrs).Field("group.key").Eq("value")
 			})
 		})
 
@@ -113,9 +113,9 @@ func TestRecorder(t *testing.T) {
 				verify.That(t, attrs).MapKeys().IsEqualSet([]string{
 					"group.key", "group.gkk", "kk",
 				})
-				verify.That(t, attrs["group.key"]).Eq("value")
-				verify.That(t, attrs["group.gkk"]).Eq("gvv")
-				verify.That(t, attrs["kk"]).Eq("vv")
+				verify.That(t, attrs).Field("group.key").Eq("value")
+				verify.That(t, attrs).Field("group.gkk").Eq("gvv")
+				verify.That(t, attrs).Field("kk").Eq("vv")
 			})
 		})
 	})
