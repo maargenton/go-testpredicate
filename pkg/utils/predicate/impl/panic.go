@@ -19,12 +19,8 @@ func Panics() (desc string, f predicate.PredicateFunc) {
 				"value of type '%v' is not callable",
 				reflect.TypeOf(v))
 		}
-		panicked, recoveredValue := recoverWrapper(fct)
-		if panicked && recoveredValue == nil {
-			return false, nil, fmt.Errorf(
-				"value() panicked with a nil value")
-		}
-		return panicked && recoveredValue != nil, nil, nil
+		var panicked, _ = recoverWrapper(fct)
+		return panicked, nil, nil
 	}
 	return
 }
