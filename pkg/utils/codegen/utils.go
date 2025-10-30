@@ -11,9 +11,9 @@ package codegen
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"strings"
+	"text/template"
 
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/imports"

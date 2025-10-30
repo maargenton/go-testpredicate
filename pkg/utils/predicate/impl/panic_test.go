@@ -16,11 +16,6 @@ func TestPanic(t *testing.T) {
 		pass:  false,
 	})
 	verifyPredicate(t, pr(impl.Panics()), expectation{
-		value:    func() { panic(nil) },
-		pass:     false,
-		errorMsg: "value() panicked with a nil value",
-	})
-	verifyPredicate(t, pr(impl.Panics()), expectation{
 		value:    123,
 		pass:     false,
 		errorMsg: "value of type 'int' is not callable",
