@@ -127,7 +127,7 @@ func (b *Builder) Ne(rhs interface{}) *predicate.Predicate {
 
 // IsError tests an error value to be either nil, a specific error according to
 // `errors.Is()`, or an error whose message contains a specified string or
-// matches a regexp. `.IsError(&#34;&#34;)` matches any error whose message contains an
+// matches a regexp. `.IsError("")` matches any error whose message contains an
 // empty string, which is any non-nil error.
 func (b *Builder) IsError(expected any) *predicate.Predicate {
 	b.p.RegisterPredicate(impl.IsError(expected))
@@ -311,8 +311,8 @@ func (b *Builder) Ge(rhs interface{}) *predicate.Predicate {
 // From pkg/utils/predicate/impl/panic.go
 
 // Panics verifies that the value under test is a callable function that panics.
-// Special case using panic(nil) is considered an error because common recover()
-// code will not catch it.
+// Since version > 1.5.0, `panic(nil)` is no longer a special case, reflecting
+// the change of behavior in Go 1.21.
 func (b *Builder) Panics() *predicate.Predicate {
 	b.p.RegisterPredicate(impl.Panics())
 	if b.t != nil {
@@ -323,7 +323,8 @@ func (b *Builder) Panics() *predicate.Predicate {
 }
 
 // PanicsAndRecoveredValue verifies that the value under test is a callable
-// function that panics, and captures the recovered value for further evalation.
+// function that panics, and captures the recovered value for further
+// evaluation.
 func (b *Builder) PanicsAndRecoveredValue() *Builder {
 	b.p.RegisterTransformation(impl.PanicsAndRecoveredValue())
 	return b

@@ -8,8 +8,8 @@ import (
 )
 
 // Panics verifies that the value under test is a callable function that panics.
-// Special case using panic(nil) is considered an error because common recover()
-// code will not catch it.
+// Since version > 1.5.0, `panic(nil)` is no longer a special case, reflecting
+// the change of behavior in Go 1.21.
 func Panics() (desc string, f predicate.PredicateFunc) {
 	desc = "{}() panics"
 	f = func(v interface{}) (r bool, ctx []predicate.ContextValue, err error) {
@@ -26,7 +26,8 @@ func Panics() (desc string, f predicate.PredicateFunc) {
 }
 
 // PanicsAndRecoveredValue verifies that the value under test is a callable
-// function that panics, and captures the recovered value for further evalation.
+// function that panics, and captures the recovered value for further
+// evaluation.
 func PanicsAndRecoveredValue() (desc string, f predicate.TransformFunc) {
 	desc = "recover({}())"
 	f = func(v interface{}) (r interface{}, ctx []predicate.ContextValue, err error) {
