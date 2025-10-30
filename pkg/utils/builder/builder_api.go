@@ -3,6 +3,8 @@
 package builder
 
 import (
+	"reflect"
+
 	"github.com/maargenton/go-testpredicate/pkg/utils/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/utils/predicate/impl"
 )
@@ -528,4 +530,20 @@ func (b *Builder) Field(keypath string) *Builder {
 }
 
 // From pkg/utils/predicate/impl/struct.go
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// From pkg/utils/predicate/impl/type.go
+
+// IsA tests if a value is of a given type.
+func (b *Builder) IsA(typ reflect.Type) *predicate.Predicate {
+	b.p.RegisterPredicate(impl.IsA(typ))
+	if b.t != nil {
+		b.t.Helper()
+		Evaluate(b)
+	}
+	return &b.p
+}
+
+// From pkg/utils/predicate/impl/type.go
 // ---------------------------------------------------------------------------
