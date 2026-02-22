@@ -299,20 +299,20 @@ func TestTypeAPI(t *testing.T) {
 ## Bifurcated test execution context
 
 The `bdd` package implements a different way to structure and execute nested
-tests, compared to the traditional Go `testing` package. It however remains 100%
+tests, compared to the traditional Go `testing` package. However, it remains 100%
 compatible with the `testing` package and all supporting tools around it.
 
 The alternate execution model is triggered by the use `bdd.Given()` or
 `bdd.Wrap()` as the root level function of a test, which produces a `bdd.T`
-instead of a`testing.T` as the test context. `bdd.T` is fully compatible with
+instead of a `testing.T` as the test context. `bdd.T` is fully compatible with
 `testing.T` and can be used with any third party library that expect either the
 `testing.TB` interface.
 
 Instead of executing all the test blocks sequentially, `bdd.T` identifies all
-the branches of the test tree, and executes each branch independently of the all
+the branches of the test tree, and executes each branch independently of all
 the others, re-evaluating the common blocks for each branch as needed. This is
 similar to the default behavior of the
-[Catch-2](https://github.com/catchorg/Catch2) library in C++, and that
+[Catch-2](https://github.com/catchorg/Catch2) library in C++, which
 simplifies sharing setup code between tests without tying them together in a
 strict dependency order.
 
@@ -338,7 +338,7 @@ or `t.When()` / `t.With()` / `t.Then()` for BDD style.
 ### Usage, traditional style
 
 ```go
-func TesTraditional(t *testing.T) {
+func TestTraditional(t *testing.T) {
     // (1) Global immutable setup code can go here
     bdd.Wrap(t, "Given something", func(t *bdd.T) {
         // (2) Local mutable setup code goes here
