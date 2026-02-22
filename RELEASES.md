@@ -1,3 +1,22 @@
+# v1.6.0
+
+## Improvements
+
+- Update required Go version to 1.24
+- Cleanup `Panics()` predicate -- no more `panic(nil)` special case
+- Add `IsA()` predicate and `bdd.TypeOf()` for type assertion
+- Add `itertest.VerifySeqCanStopAfterN()` and `itertest.VerifySeq2CanStopAfterN()` to verify proper implementation of `iter.Seq` and `iter.Seq2` interfaces
+- Add `bdd.Used()`, `bdd.First()`, `bdd.Second()` and `bdd.Third()` convenience functions
+
+## Code changes
+
+- Update bifurcated execution model description ([#36](https://github.com/maargenton/go-testpredicate/pull/36))
+- Add `bdd.First()`, `bdd.Second()` and `bdd.Third()` helper functions ([#35](https://github.com/maargenton/go-testpredicate/pull/35))
+- Add ` IsA()` predicate for type assertion ([#34](https://github.com/maargenton/go-testpredicate/pull/34))
+- Add `itertest` package to test expected iterator behavior ([#33](https://github.com/maargenton/go-testpredicate/pull/33))
+- Update dependency to Go 1.24 ([#32](https://github.com/maargenton/go-testpredicate/pull/32))
+
+
 # v1.5.0
 
 ## Improvements
