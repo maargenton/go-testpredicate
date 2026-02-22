@@ -10,8 +10,6 @@ import (
 )
 
 func TestIsA(t *testing.T) {
-	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[int]())), expectation{value: nil, pass: false})
-
 	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[int]())), expectation{value: 123, pass: true})
 	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[string]())), expectation{value: "test", pass: true})
 
@@ -22,4 +20,7 @@ func TestIsA(t *testing.T) {
 	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[io.Reader]())), expectation{value: r, pass: true})
 	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[io.Writer]())), expectation{value: r, pass: false})
 
+	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[int]())), expectation{value: nil, pass: false})
+	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[io.Reader]())), expectation{value: nil, pass: false})
+	verifyPredicate(t, pr(impl.IsA(bdd.TypeOf[io.Writer]())), expectation{value: nil, pass: false})
 }
