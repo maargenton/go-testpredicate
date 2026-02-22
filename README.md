@@ -243,7 +243,7 @@ func TestStringAPI(t *testing.T) {
 ## Additional packages
 
 - `slogtest` defines `Recorder` as a `slog.Handler` that records all logged
-  messages and attributes, and an helper function `WithSlogRecorder()`
+  messages and attributes, and a helper function `WithSlogRecorder()`
   that temporarily installs a `Recorder` as the default `slog.Handler` for the
   duration of a function. This allows for capture and suppression of log
   messages emitted during a test, and for assertions on the captured log
