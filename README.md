@@ -240,6 +240,43 @@ func TestStringAPI(t *testing.T) {
 }
 ```
 
+## Additional packages
+
+- `slogtest` defines `Recorder` as a `slog.Handler` that records all logged
+  messages and attributes, and a helper function `WithSlogRecorder()`
+  that temporarily installs a `Recorder` as the default `slog.Handler` for the
+  duration of a function. This allows for capture and suppression of log
+  messages emitted during a test, and for assertions on the captured log
+  messages and attributes.
+  ```go
+  slogtest.WithSlogRecorder(t, func(recorder *slogtest.Recorder) {
+      // code that emits log messages with slog
+      // ...
+
+      // assertions on the captured log messages and attributes
+      verify.That(t, recorder.Logs()).Length().Gt(0)
+      verify.That(t, recorder.Logs()[0].Message).Eq("expected log message")
+      var attrs0 = slogtest.GetFlattenAttrs(recorder.Logs()[0].Attrs)
+      verify.That(t, attrs0).MapKeys().IsSupersetOf([]string{"headers.reg.Accept"})
+  })
+  ```
+
+- `itertest` defines test functions to verify that `iter.Seq` and `iter.Seq2`
+  implementations properly stop iterating when `yield()` returns false.
+  ```go
+  itertest.VerifySeqCanStopAfterN(t, 3, seq_under_test)
+  itertest.VerifySeq2CanStopAfterN(t, 3, seq2_under_test)
+  ```
+
+
+## Helper functions
+
+- `bdd.Used(...)` silences the compiler unused variable errors for listed
+  variable, and can useful when preparing a complex setup that exposes variables
+  that are not used yet.
+
+
+
 ## BDD-style bifurcated tests
 
 ### Rationale
