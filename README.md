@@ -291,6 +291,9 @@ func TestTypeAPI(t *testing.T) {
 - `bdd.TypeOf[T]()` returns the `reflect.Type` of the type parameter `T`, and
   can be used with the `IsA()` predicate to check that a value is of an expected
   type.
+- `bdd.First(...)`, `bdd.Second(...)`, `bdd.Third(...)` can be used inline to
+  extract the first, second, or third value from a multi-value return function,
+  ignoring the rest.
 
 
 ## BDD-style bifurcated tests
