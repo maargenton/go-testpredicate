@@ -1,3 +1,6 @@
+// Package itertest defines test functions to verify that `iter.Seq` and
+// `iter.Seq2` implementations properly stop iterating when `yield()` returns
+// false.
 package itertest
 
 import (

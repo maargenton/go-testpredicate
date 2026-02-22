@@ -260,12 +260,12 @@ func TestStringAPI(t *testing.T) {
       verify.That(t, attrs0).MapKeys().IsSupersetOf([]string{"headers.reg.Accept"})
   })
   ```
-- `itertest` defines a pair of test functions `VerifySeqCanBreakAfterN` and
-  `VerifySeq2CanBreakAfterN` to ensure that `iter.Seq` and `iter.Seq2`
-  implementations properly stope iterating when `yield()` returns false.
+
+- `itertest` defines test functions to verify that `iter.Seq` and `iter.Seq2`
+  implementations properly stop iterating when `yield()` returns false.
   ```go
-  itertest.VerifySeqCanBreakAfterN(t, 3, seq_under_test)
-  itertest.VerifySeq2CanBreakAfterN(t, 3, seq2_under_test)
+  itertest.VerifySeqCanStopAfterN(t, 3, seq_under_test)
+  itertest.VerifySeq2CanStopAfterN(t, 3, seq2_under_test)
   ```
 
 
