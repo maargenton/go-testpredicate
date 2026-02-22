@@ -305,7 +305,7 @@ tests, compared to the traditional Go `testing` package. However, it remains
 The alternate execution model is triggered by the use of `bdd.Given()` or
 `bdd.Wrap()` as the root level function of a test, which produces a `bdd.T`
 instead of a `testing.T` as the testing context. `bdd.T` is fully compatible
-with `testing.T` and can be used with any third party library that expect a
+with `testing.T` and can be used with any third party library that expects a
 `testing.TB` interface.
 
 Instead of executing all the test blocks sequentially, `bdd.T` identifies all
@@ -319,11 +319,11 @@ dependency order.
 
 ### Usage overview
 
-`bdd.Wrap()` or `bdd.Given()` are the root level function that setup and iterate
-through the bifurcated test evaluation context. They define blocks that receive
-a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
-`testing.T` and can be used with any third party library that expect either the
-`testing.TB` interface or a subset of it (including out own `verify.That()` /
+`bdd.Wrap()` or `bdd.Given()` are the root level functions that setup and
+iterate through the bifurcated test evaluation context. They define blocks that
+receive a `bdd.T` instead of `testing.T`, but `bdd.T` is fully compatible with
+`testing.T` and can be used with any third party library that expects either the
+`testing.TB` interface or a subset of it (including our own `verify.That()` /
 `require.That()`).
 
 Nested and sibling bifurcated branches are defined with `t.Run()` (on `bdd.T`)
@@ -343,8 +343,8 @@ func TestTraditional(t *testing.T) {
     bdd.Wrap(t, "Given something", func(t *bdd.T) {
         // (2) Local mutable setup code goes here
         t.Run("something happens", func(t *bdd.T) {
-            // (3) When this code runs, the code in following `t.Run()` blocks
-            // will be skipped.
+            // (3) When this code runs, the code in the following `t.Run()`
+            // blocks will be skipped.
         })
         t.Run("something else happens", func(t *bdd.T) {
             // (4) When this code runs, all code in preceding `t.Run()` blocks
