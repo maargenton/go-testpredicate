@@ -137,6 +137,10 @@ func TestCollectionAPI(t *testing.T) {
         subexpr.Value().Length().Lt(5))
     verify.That(t, []string{"a", "bb", "ccc"}).Any(
         subexpr.Value().Length().Ge(3))
+
+    verify.That(t, [][]string{{"a", "bb", "cc"}, {"a", "bb", "ccc"}}).All(
+        subexpr.Value().All(
+            subexpr.Value().Length().Lt(5)))
 }
 
 func TestCompareAPI(t *testing.T) {
@@ -146,7 +150,6 @@ func TestCompareAPI(t *testing.T) {
     verify.That(t, &struct{}{}).IsNotNil()
     verify.That(t, 123).IsEqualTo(123)
     verify.That(t, 123).IsNotEqualTo(124)
-
     verify.That(t, 123).Eq(123)
     verify.That(t, 123).Ne(124)
 }
@@ -238,6 +241,18 @@ func TestStringAPI(t *testing.T) {
     verify.That(t, "aBc").ToLower().Eq("abc")
     verify.That(t, "aBc").ToUpper().Eq("ABC")
 }
+
+func TestStructAPI(t *testing.T) {
+    var v = struct {
+        Name  string
+        Value string
+    }{Name: "name", Value: "value"}
+    verify.That(t, v).Field("Name").Eq("name")
+}
+
+func TestTypeAPI(t *testing.T) {
+    verify.That(t, &strings.Builder{}).IsA(bdd.TypeOf[io.Writer]())
+}
 ```
 
 ## Additional packages
@@ -260,7 +275,6 @@ func TestStringAPI(t *testing.T) {
       verify.That(t, attrs0).MapKeys().IsSupersetOf([]string{"headers.reg.Accept"})
   })
   ```
-
 - `itertest` defines test functions to verify that `iter.Seq` and `iter.Seq2`
   implementations properly stop iterating when `yield()` returns false.
   ```go
@@ -274,7 +288,9 @@ func TestStringAPI(t *testing.T) {
 - `bdd.Used(...)` silences the compiler unused variable errors for listed
   variable, and can useful when preparing a complex setup that exposes variables
   that are not used yet.
-
+- `bdd.TypeOf[T]()` returns the `reflect.Type` of the type parameter `T`, and
+  can be used with the `IsA()` predicate to check that a value is of an expected
+  type.
 
 
 ## BDD-style bifurcated tests

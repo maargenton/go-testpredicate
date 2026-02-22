@@ -2,9 +2,12 @@ package builder_test
 
 import (
 	"fmt"
+	"io"
 	"regexp"
+	"strings"
 	"testing"
 
+	"github.com/maargenton/go-testpredicate/pkg/bdd"
 	"github.com/maargenton/go-testpredicate/pkg/subexpr"
 	"github.com/maargenton/go-testpredicate/pkg/utils/predicate"
 	"github.com/maargenton/go-testpredicate/pkg/verify"
@@ -24,6 +27,7 @@ func TestCollectionAPI(t *testing.T) {
 		subexpr.Value().All(
 			subexpr.Value().Length().Lt(5)))
 }
+
 func TestCompareAPI(t *testing.T) {
 	verify.That(t, true).IsTrue()
 	verify.That(t, false).IsFalse()
@@ -88,10 +92,8 @@ func TestExtAPI(t *testing.T) {
 }
 
 func TestMapAPI(t *testing.T) {
-	var m = map[string]string{
-		"aaa": "bbb",
-		"ccc": "ddd",
-	}
+	var m = map[string]string{"aaa": "bbb", "ccc": "ddd"}
+
 	verify.That(t, m).MapKeys().IsEqualSet([]string{"aaa", "ccc"})
 	verify.That(t, m).MapValues().IsEqualSet([]string{"bbb", "ddd"})
 }
@@ -150,9 +152,10 @@ func TestStructAPI(t *testing.T) {
 	var v = struct {
 		Name  string
 		Value string
-	}{
-		Name:  "name",
-		Value: "value",
-	}
+	}{Name: "name", Value: "value"}
 	verify.That(t, v).Field("Name").Eq("name")
+}
+
+func TestTypeAPI(t *testing.T) {
+	verify.That(t, &strings.Builder{}).IsA(bdd.TypeOf[io.Writer]())
 }
