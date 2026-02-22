@@ -296,36 +296,26 @@ func TestTypeAPI(t *testing.T) {
   ignoring the rest.
 
 
-## BDD-style bifurcated tests
+## Bifurcated test execution context
 
-### Rationale
+The `bdd` package implements a different way to structure and execute nested
+tests, compared to the traditional Go `testing` package. It however remains 100%
+compatible with the `testing` package and all supporting tools around it.
 
-First of all, the Go `testing` package is great and the fact that it is
-standard, built in and integrated with the Go tooling infrastructure is awesome.
-This is why the `go-testpredicate` packages strives to enhance it instead of
-replacing it, unlike many other testing packages.
+The alternate execution model is triggered by the use `bdd.Given()` or
+`bdd.Wrap()` as the root level function of a test, which produces a `bdd.T`
+instead of a`testing.T` as the test context. `bdd.T` is fully compatible with
+`testing.T` and can be used with any third party library that expect either the
+`testing.TB` interface.
 
-If you look at other unit-testing packages, in other languages, you will find
-either traditional xUnit style packages relying on classes to define test suites
-and fixtures and test cases, or more recent testing packages (like
-[Catch-2](https://github.com/catchorg/Catch2) for C++) that provide, through
-other means, ways to define setup and test cases than run independently. The
-common pattern is that setup code, that may be shared by multiple test cases, is
-usually re-evaluated for every test case so that, despite their potentially
-mutating interactions with the setup, test cases don't affect each other.
+Instead of executing all the test blocks sequentially, `bdd.T` identifies all
+the branches of the test tree, and executes each branch independently of the all
+the others, re-evaluating the common blocks for each branch as needed. This is
+similar to the default behavior of the
+[Catch-2](https://github.com/catchorg/Catch2) library in C++, and that
+simplifies sharing setup code between tests without tying them together in a
+strict dependency order.
 
-Some great articles and blog posts have explained how the leverage nested
-`t.Run()` calls to structure tests in way that is closer to BDD-style given /
-when / then paradigm. Unfortunately, when using thees approaches, and especially
-with shared setup sections, the test cases are no longer independent, as all
-branches are run sequentially, going up and down each branch and into the next
-branch, without resetting the setup.
-
-The `bdd` package in `go-testpredicate` provides a way to write tests with a
-BDD-style structure, using the built-in `testing.T`, but evaluating the test
-cases in a bifurcated fashion, repeating the evaluation of each entire branch
-for every leaf test case, so that test cases are independent from each other
-again.
 
 ### Usage overview
 
@@ -348,73 +338,48 @@ or `t.When()` / `t.With()` / `t.Then()` for BDD style.
 ### Usage, traditional style
 
 ```go
-package example_test
-
-import (
-    "testing"
-    "github.com/maargenton/go-testpredicate/pkg/bdd"
-)
-
 func TesTraditional(t *testing.T) {
-
-    // Global immutable setup code can go here
-
+    // (1) Global immutable setup code can go here
     bdd.Wrap(t, "Given something", func(t *bdd.T) {
-
-        // Local mutable setup code goes here
-
+        // (2) Local mutable setup code goes here
         t.Run("something happens", func(t *bdd.T) {
-
-            // When this code runs, the code in following `t.Run()` blocks
+            // (3) When this code runs, the code in following `t.Run()` blocks
             // will be skipped.
         })
         t.Run("something else happens", func(t *bdd.T) {
-
-            // When this code runs, all code in preceding `t.Run()` blocks
-            // has been skipped and did not affect the local setup.
+            // (4) When this code runs, all code in preceding `t.Run()` blocks
+            // has been skipped and did not affect the local setup
         })
     })
 }
 ```
 
+The execution order is (1), (2), (3), (2), (4)
+
 ### Usage, BDD style
 
 ```go
-package bdd_test
-
-import (
-    "testing"
-    "github.com/maargenton/go-testpredicate/pkg/bdd"
-)
-
 func TestBDDStyle(t *testing.T) {
-
-    // Global immutable setup code can go here
-
+    // (1) Global immutable setup code can go here
     bdd.Given(t, "something", func(t *bdd.T) {
-
-        // Local mutable setup code goes here
-
+        // (2) Local mutable setup code goes here
         t.When("doing something", func(t *bdd.T) {
-
-            // or here
-
+            // (3) or here
             t.With("something", func(t *bdd.T) {
-
-                // or here
-
+                // (4) or here
                 t.Then("something happens", func(t *bdd.T) {
-
-                    // When this code runs, the code in the following `t.Then()`
-                    // blocks will be skipped.
+                    // (5) When this code runs, the code in the following
+                    // `t.Then()` blocks will be skipped
                 })
                 t.Then("something else happens", func(t *bdd.T) {
-
-                    // When this code runs, all code in preceding `t.Then()`
-                    // blocks has been skipped and did not affect the local setup.
+                    // (6) When this code runs, all code in preceding
+                    // `t.Then()` blocks has been skipped and did not affect
+                    // the local setup
                 })
             })
         })
     })
 }
 ```
+
+The execution order is (1), (2), (3), (4), (5), (2), (3), (4), (6)
