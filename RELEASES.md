@@ -2,7 +2,7 @@
 
 ## Improvements
 
-- Update required Go version to 1.24
+- Update Go version requirement to 1.23 minimum (up from Go 1.19 in release v1.5.0, lowered from 1.24 in prior PR)
 - Cleanup `Panics()` predicate -- no more `panic(nil)` special case
 - Add `IsA()` predicate and `bdd.TypeOf()` for type assertion
 - Add `itertest.VerifySeqCanStopAfterN()` and `itertest.VerifySeq2CanStopAfterN()` to verify proper implementation of `iter.Seq` and `iter.Seq2` interfaces
