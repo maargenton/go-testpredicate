@@ -1,6 +1,6 @@
 module github.com/maargenton/go-testpredicate
 
-go 1.24
+go 1.23.0
 
 require golang.org/x/tools v0.34.0
 
