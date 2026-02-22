@@ -302,19 +302,19 @@ The `bdd` package implements a different way to structure and execute nested
 tests, compared to the traditional Go `testing` package. However, it remains
 100% compatible with the `testing` package and all supporting tools around it.
 
-The alternate execution model is triggered by the use `bdd.Given()` or
+The alternate execution model is triggered by the use of `bdd.Given()` or
 `bdd.Wrap()` as the root level function of a test, which produces a `bdd.T`
-instead of a `testing.T` as the test context. `bdd.T` is fully compatible with
-`testing.T` and can be used with any third party library that expect a
+instead of a `testing.T` as the testing context. `bdd.T` is fully compatible
+with `testing.T` and can be used with any third party library that expect a
 `testing.TB` interface.
 
 Instead of executing all the test blocks sequentially, `bdd.T` identifies all
-the branches of the test tree, and executes each branch independently of all
-the others, re-evaluating the common blocks for each branch as needed. This is
+the branches of the test tree, and executes each branch independently of all the
+others, re-evaluating the common blocks for each branch as needed. This is
 similar to the default behavior of the
-[Catch-2](https://github.com/catchorg/Catch2) library in C++, which
-simplifies sharing setup code between tests without tying them together in a
-strict dependency order.
+[Catch-2](https://github.com/catchorg/Catch2) library in C++. That simplifies
+sharing setup code between tests without tying them together in a strict
+dependency order.
 
 
 ### Usage overview
