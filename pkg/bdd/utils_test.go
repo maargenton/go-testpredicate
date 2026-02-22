@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/maargenton/go-testpredicate/pkg/bdd"
-	"github.com/maargenton/go-testpredicate/pkg/require"
 	"github.com/maargenton/go-testpredicate/pkg/verify"
 )
 
@@ -32,17 +31,17 @@ func TestFirstSecondThird(t *testing.T) {
 	bdd.Given(t, "a multi-value return function ", func(t *bdd.T) {
 		t.When("wrapped with bdd.First()", func(t *bdd.T) {
 			t.Then("it returns the first value", func(t *bdd.T) {
-				require.That(t, bdd.First(f3())).Eq(1)
+				verify.That(t, bdd.First(f3())).Eq(1)
 			})
 		})
 		t.When("wrapped with bdd.Second()", func(t *bdd.T) {
 			t.Then("it returns the second value", func(t *bdd.T) {
-				require.That(t, bdd.Second(f3())).Eq("two")
+				verify.That(t, bdd.Second(f3())).Eq("two")
 			})
 		})
 		t.When("wrapped with bdd.Third()", func(t *bdd.T) {
 			t.Then("it returns the third value", func(t *bdd.T) {
-				require.That(t, bdd.Third(f3())).Eq(3.0)
+				verify.That(t, bdd.Third(f3())).Eq(3.0)
 			})
 		})
 	})
