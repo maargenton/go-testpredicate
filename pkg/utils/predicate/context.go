@@ -43,7 +43,7 @@ func FormatContextValues(values []ContextValue) string {
 values_loop:
 	for _, c := range values {
 		for _, name := range ordered {
-			if c.Name == name {
+			if c.Name == name || c.Name == "" {
 				continue values_loop
 			}
 		}

@@ -5,7 +5,16 @@ package bdd
 import (
 	"fmt"
 	"testing"
+	"time"
 )
+
+// TB is an interface definition that exposes all the `testing.T` functions that
+// are not redefined by `bdd.T`. As of Go 1.15, that also includes a
+// `Deadline()` method, in addition to what is defined in `testing.TB`.
+type TB interface {
+	testing.TB
+	Deadline() (deadline time.Time, ok bool)
+}
 
 // T is a testing context, similar to testing.T, passed to the testing functions
 // in the BDD style bifurcated test evaluation. It forwards most of the
