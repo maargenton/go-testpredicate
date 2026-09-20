@@ -35,6 +35,12 @@ type T struct {
 	tracker *tracker
 }
 
+// UnderlyingT returns the underlying *testing.T instance associated with this
+// BDD test context.
+func (t *T) UnderlyingT() *testing.T {
+	return t.t
+}
+
 // Run defines a new fork in the current bifurcated evaluation context.
 func (b *T) Run(name string, f func(t *T)) bool {
 	b.Helper()
