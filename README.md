@@ -11,9 +11,6 @@ Test predicate style assertions library with extensive diagnostics output.
 [![Codecov](
   https://img.shields.io/codecov/c/github/maargenton/go-testpredicate?label=codecov&logo=codecov&logoColor=aaaaaa&token=fVZ3ZMAgfo)](
   https://codecov.io/gh/maargenton/go-testpredicate)
-[![Go Report Card](
-  https://goreportcard.com/badge/github.com/maargenton/go-testpredicate)](
-  https://goreportcard.com/report/github.com/maargenton/go-testpredicate)
 
 
 ---------------------------

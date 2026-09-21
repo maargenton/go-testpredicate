@@ -20,10 +20,10 @@ jobs:
           - windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go }}
 
@@ -35,17 +35,17 @@ jobs:
 
       - name: Upload coverage
         if: matrix.os != 'windows-latest'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           # fail_ci_if_error: true
           verbose: true
           flags: unittests
-          file: build/go-test-coverage.txt
+          files: build/go-test-coverage.txt
 
       - name: Archive build artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-${{env.VERSION}}-${{ matrix.os }}-go${{ matrix.go }}
           path: |
