@@ -9,9 +9,9 @@
 
 ## Code changes
 
-Add `bdd.T.UnderlyingT()` and `bdd.T.SyncTest()` ([#40](https://github.com/maargenton/go-testpredicate/pull/40))
-Add `t.Helper()` in bdd inner functions for improved usability ([#39](https://github.com/maargenton/go-testpredicate/pull/39))
-Update minimal go version to 1.24 ([#38](https://github.com/maargenton/go-testpredicate/pull/38))
+- Add `bdd.T.UnderlyingT()` and `bdd.T.SyncTest()` ([#40](https://github.com/maargenton/go-testpredicate/pull/40))
+- Add `t.Helper()` in bdd inner functions for improved usability ([#39](https://github.com/maargenton/go-testpredicate/pull/39))
+- Update minimal go version to 1.24 ([#38](https://github.com/maargenton/go-testpredicate/pull/38))
 
 
 # v1.6.0
