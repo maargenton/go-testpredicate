@@ -306,7 +306,8 @@ The alternate execution model is triggered by the use of `bdd.Given()` or
 `bdd.Wrap()` as the root level function of a test, which produces a `bdd.T`
 instead of a `testing.T` as the testing context. `bdd.T` is fully compatible
 with `testing.T` and can be used with any third party library that expects a
-`testing.TB` interface.
+`testing.TB` interface. However, if an explicit `*testing.T` is required, the
+current underlying one can be obtained from `bdd.T.UnderlyingT()`.
 
 Instead of executing all the test blocks sequentially, `bdd.T` identifies all
 the branches of the test tree, and executes each branch independently of all the
@@ -383,3 +384,29 @@ func TestBDDStyle(t *testing.T) {
 ```
 
 The execution order is (1), (2), (3), (4), (5), (2), (3), (4), (6)
+
+
+## SyncTest Support
+
+`bdd.T.SyncTest()` invokes `synctest.Test()` from within a leaf BDD context, to
+run test code in a synctest bubble in which time and synchronization works
+differently. This helper is only available when building with Go 1.25 or later.
+Note that it passes out a standard `*testing.T` to the provided function, as no
+further nesting is allowed inside the synctest bubble; this is a limitation
+imposed by the synctest package.
+
+
+### Usage
+
+```go
+func TestSyncTest(t *testing.T) {
+    bdd.Given(t, "something", func(t *bdd.T) {
+        t.Then("a leaf synctest context can be used", func(t *bdd.T) {
+            t.SyncTest(func(t *testing.T) {
+                // Time is stopped here, with additional restriction on what can be done.
+                // Further nesting with t.Run() is not allowed.
+            })
+        })
+    })
+}
+```
