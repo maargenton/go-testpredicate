@@ -390,9 +390,11 @@ The execution order is (1), (2), (3), (4), (5), (2), (3), (4), (6)
 
 `bdd.T.SyncTest()` invokes `synctest.Test()` from within a leaf BDD context, to
 run test code in a synctest bubble in which time and synchronization works
-differently. Note that it passes out a standard `*testing.T` to the provided
-function, as no further nesting is allowed inside the synctest bubble; this is a
-limitation imposed by the synctest package.
+differently. This helper is only available when building with Go 1.25 or later.
+Note that it passes out a standard `*testing.T` to the provided function, as no
+further nesting is allowed inside the synctest bubble; this is a limitation
+imposed by the synctest package.
+
 
 ### Usage
 

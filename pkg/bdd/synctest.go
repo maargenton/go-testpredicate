@@ -12,7 +12,9 @@ import (
 // regular `*testing.T` instance because synctest does not allow any further
 // nesting within the synctest bubble.
 func (t *T) SyncTest(f func(t *testing.T)) {
+	t.Helper()
 	synctest.Test(t.UnderlyingT(), func(bubbleT *testing.T) {
+		bubbleT.Helper()
 		f(bubbleT)
 	})
 }
