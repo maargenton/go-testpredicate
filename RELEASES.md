@@ -1,3 +1,19 @@
+# v1.7.0
+
+## Improvements
+
+- Update minimal Go version to 1.24.
+- Add `t.Helper()` in bdd inner functions for improved usability.
+- Add `bdd.T.UnderlyingT()` to access the underlying `*testing.T` instance.
+- Add `bdd.T.SyncTest()` to run test code in a synctest bubble.
+
+## Code changes
+
+Add `bdd.T.UnderlyingT()` and `bdd.T.SyncTest()` ([#40](https://github.com/maargenton/go-testpredicate/pull/40))
+Add `t.Helper()` in bdd inner functions for improved usability ([#39](https://github.com/maargenton/go-testpredicate/pull/39))
+Update minimal go version to 1.24 ([#38](https://github.com/maargenton/go-testpredicate/pull/38))
+
+
 # v1.6.0
 
 ## Improvements
