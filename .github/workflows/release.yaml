@@ -28,7 +28,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
           flags: unittests
-          file: build/go-test-coverage.txt
+          files: build/go-test-coverage.txt
 
       - name: Archive build artifacts
         if: ${{ !cancelled() }}
